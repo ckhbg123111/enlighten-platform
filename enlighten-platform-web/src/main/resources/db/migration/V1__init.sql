@@ -19,6 +19,23 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 
+-- 用户文章配置表
+CREATE TABLE IF NOT EXISTS `user_article_config` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+    `category` varchar(50) NOT NULL COMMENT '分类: style, length, mode, scene',
+    `option_name` varchar(100) NOT NULL COMMENT '选项名称',
+    `option_code` varchar(100) NOT NULL COMMENT '配置项编码 uuid',
+    `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+    `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deleted` tinyint(4) DEFAULT '0' COMMENT '逻辑删除：0-未删除，1-已删除',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_category_code` (`user_id`, `category`, `config_code`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_category` (`category`),
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户文章配置表';
+
 -- 初始化数据（幂等）
 INSERT INTO `user` (`username`, `password`, `email`, `phone`, `status`)
 SELECT * FROM (
