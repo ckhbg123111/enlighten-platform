@@ -4,16 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -36,8 +30,15 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Value("${spring.datasource.password}")
     private String datasourcePassword;
 
+    @Value("${app.database-initializer.enabled:false}")
+    private boolean initializerEnabled;
+
     @Override
     public void run(String... args) throws Exception {
+        if (!initializerEnabled) {
+            log.info("已禁用内置 DatabaseInitializer，交由 Flyway 管理迁移");
+            return;
+        }
         if (datasourceUrl == null || !datasourceUrl.startsWith("jdbc:mysql:")) {
             log.info("跳过数据库初始化：当前非 MySQL 或未配置数据源 URL");
             return;
@@ -53,18 +54,15 @@ public class DatabaseInitializer implements CommandLineRunner {
             return;
         }
 
-        log.warn("数据库不存在：{}，将执行初始化脚本", parsed.databaseName);
-        String sql = loadInitSqlFromClasspath("db/database_init.sql");
-        if (sql == null || sql.isEmpty()) {
-            log.error("无法读取初始化脚本 db/database_init.sql（classpath）");
-            return;
-        }
-        executeSqlMultiStatements(parsed, datasourceUsername, datasourcePassword, sql);
+        log.warn("数据库不存在：{}，将仅创建数据库，后续由 Flyway 执行表结构与数据迁移", parsed.databaseName);
+        // 仅建库，不建表；后续交给 Flyway
+        String createDbSql = String.format("CREATE DATABASE IF NOT EXISTS `%s` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;", parsed.databaseName);
+        executeSqlMultiStatements(parsed, datasourceUsername, datasourcePassword, createDbSql);
 
         if (databaseExists(parsed, datasourceUsername, datasourcePassword)) {
-            log.info("数据库初始化完成：{}", parsed.databaseName);
+            log.info("数据库创建完成：{}", parsed.databaseName);
         } else {
-            log.error("数据库初始化后仍不可用：{}", parsed.databaseName);
+            log.error("数据库创建后仍不可用：{}", parsed.databaseName);
         }
     }
 
@@ -128,26 +126,6 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
         sb.append("?").append(query);
         return sb.toString();
-    }
-
-    private String loadInitSqlFromClasspath(String classpathLocation) {
-        ClassPathResource resource = new ClassPathResource(classpathLocation);
-        if (!resource.exists()) {
-            return null;
-        }
-        try (InputStream in = resource.getInputStream();
-             InputStreamReader isr = new InputStreamReader(in, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(isr)) {
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append('\n');
-            }
-            return sb.toString();
-        } catch (IOException e) {
-            log.error("读取初始化 SQL 失败: {}", e.getMessage());
-            return null;
-        }
     }
 
     private void executeSqlMultiStatements(ParsedMysqlUrl p, String user, String pass, String sqlText) {

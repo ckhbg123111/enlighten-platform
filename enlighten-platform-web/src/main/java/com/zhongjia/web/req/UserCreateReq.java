@@ -18,4 +18,14 @@ public class UserCreateReq {
     private String phone;
     
     private Integer status = 1; // 默认启用
+
+    /**
+     * 角色：ADMIN/USER
+     */
+    private String role;
+
+    /**
+     * 租户ID（可选）
+     */
+    private Long tenantId;
 }

@@ -44,6 +44,21 @@ public class User {
      * 状态：0-禁用，1-启用
      */
     private Integer status;
+
+    /**
+     * 角色：ADMIN/USER
+     */
+    private String role;
+
+    /**
+     * 最后登录时间
+     */
+    private LocalDateTime lastLoginTime;
+
+    /**
+     * 租户ID（ToB 多租户）
+     */
+    private Long tenantId;
     
     /**
      * 创建时间

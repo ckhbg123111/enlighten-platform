@@ -16,4 +16,8 @@ public class UserUpdateReq {
     private String phone;
     
     private Integer status;
+
+    private String role;
+
+    private Long tenantId;
 }
