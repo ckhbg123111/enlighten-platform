@@ -40,6 +40,11 @@ public class UserController {
         // 创建用户
         User user = new User();
         BeanUtils.copyProperties(req, user);
+        // 简易：入库保存为MD5（演示）。生产建议BCrypt。
+        if (req.getPassword() != null) {
+            String md5 = org.springframework.util.DigestUtils.md5DigestAsHex(req.getPassword().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            user.setPassword(md5);
+        }
         boolean success = userService.save(user);
         
         if (success) {
