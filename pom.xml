@@ -28,6 +28,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.version>0.0.1-SNAPSHOT</project.version>
         <spring-boot.version>3.5.4</spring-boot.version>
+        <mybatis-plus.version>3.5.12</mybatis-plus.version>
     </properties>
     
     <dependencyManagement>
@@ -47,6 +48,28 @@
                 <groupId>com.zhongjia</groupId>
                 <artifactId>enlighten-platform-web</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            
+            <!-- MyBatis-Plus 依赖管理（适配 Spring Boot 3） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            
+            <!-- MySQL驱动依赖管理 -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.33</version>
+            </dependency>
+            
+            <!-- Lombok依赖管理 -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+                <scope>provided</scope>
             </dependency>
             
             <!-- Spring Boot 依赖管理 -->
