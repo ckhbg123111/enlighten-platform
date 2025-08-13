@@ -1,5 +1,7 @@
 package com.zhongjia.biz.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.User;
 
 import java.util.List;
@@ -34,9 +36,9 @@ public interface UserService {
 
     java.util.List<User> list();
 
-    com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page(
-            com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page,
-            com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User> wrapper);
+    Page<User> page(
+            Page<User> page,
+            LambdaQueryWrapper<User> wrapper);
 
     long count();
 }

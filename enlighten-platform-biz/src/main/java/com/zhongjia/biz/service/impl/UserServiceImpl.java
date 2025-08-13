@@ -2,6 +2,7 @@ package com.zhongjia.biz.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.User;
 import com.zhongjia.biz.repository.UserRepository;
 import com.zhongjia.biz.service.UserService;
@@ -20,21 +21,21 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
+
     @Override
     public User getByUsername(String username) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, username);
         return userRepository.getOne(wrapper);
     }
-    
+
     @Override
     public List<User> getByStatus(Integer status) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getStatus, status);
         return userRepository.list(wrapper);
     }
-    
+
     @Override
     public boolean updateStatusByIds(List<Long> ids, Integer status) {
         LambdaUpdateWrapper<User> wrapper = new LambdaUpdateWrapper<>();
@@ -69,9 +70,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page(
-            com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page,
-            com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User> wrapper) {
+    public Page<User> page(
+            Page<User> page,
+            LambdaQueryWrapper<User> wrapper) {
         return userRepository.page(page, wrapper);
     }
 
