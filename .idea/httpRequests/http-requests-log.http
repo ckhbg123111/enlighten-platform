@@ -1,3 +1,110 @@
+GET http://localhost:8080/api/convert2media/records?essayCode=uuid_example_1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY1Nzg0LCJleHAiOjE3NTU2NzA1ODR9.b9SCMRdPS7xlvC5ok98bjvUa_KBLTiXOD-HRP0h10MY
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T141657.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY1Nzg0LCJleHAiOjE3NTU2NzA1ODR9.b9SCMRdPS7xlvC5ok98bjvUa_KBLTiXOD-HRP0h10MY
+Content-Length: 3618
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "卒中发作别拖延，记住这4个字救命\n全国每10分钟就有1人因卒中死亡，但80%的患者在发病后未能及时就医。你可能不知道，时间就是大脑——每耽误1分钟，就有约190万个脑细胞永久消失。掌握早期识别方法，关键时刻能抢回一条命。\n\n什么是卒中？两种类型要分清\n卒中，俗称“脑中风”，是脑血管突然堵塞或破裂导致脑组织缺血、缺氧甚至坏死的急症。主要分为两类：  \n缺血性卒中：占80%，因血管被血栓堵住，血流中断。  \n出血性卒中：占20%，由脑内血管破裂引起，出血压迫脑组织。\n两者症状相似，但处理方式完全不同。一旦怀疑，必须立即送医明确诊断，切勿自行判断或用药。\n\nFAST口诀：30秒识破卒中信号\n发现以下任一表现，立刻拨打急救电话：\nF（Face）面部歪斜：一侧嘴角下垂，笑时不对称。\nA（Arm）手臂无力：抬手时一侧手臂无法抬起或迅速下垂。\nS（Speech）言语不清：说话含糊、说不出来或听不懂别人的话。\nT（Time）立即送医：从症状出现那一刻起，每一分钟都至关重要。\n真实案例：一位65岁老人在家看电视时突然说不出话，家人用FAST测试发现右侧肢体无力，15分钟后救护车抵达，及时溶栓治疗，恢复良好。\n\n黄金救治时间窗：4.5小时内是关键\n缺血性卒中在发病后4.5小时内接受静脉溶栓治疗，可显著改善预后。部分符合条件者还可进行取栓手术，进一步提升康复机会。\n超过这个时间窗，治疗效果大幅下降，甚至可能加重损伤。因此，“快识别、快送医、快治疗”是唯一出路。\n\n高危人群要警惕：这些因素最危险\n以下人群发生卒中的风险明显增高：  \n高血压患者（占比超60%）  \n糖尿病、高血脂、肥胖者  \n有房颤等心律失常的人群  \n吸烟、酗酒、长期熬夜者\n建议40岁以上人群每年至少做一次颈动脉超声和心电图筛查，尤其有家族史者更需重视。\n\n家中如何初步评估？简单三步法\n当身边人突然出现异常，可快速判断：  \n让对方微笑，看是否一侧脸下垂；  \n双臂平举，观察是否一侧无力下垂；  \n说出一句简单句子，如“今天天气真好”，听是否有含糊或停顿。\n若任一环节异常，立即启动应急流程。\n\n紧急送医不是小事，提前准备很重要\n拨打120时说明“疑似卒中”，医院会优先接诊；  \n保持患者平卧，头偏向一侧防误吸；  \n不要喂水、喂药，避免呛咳或加重病情；  \n记录症状出现的具体时间，这对医生判断能否溶栓至关重要。\n\n这些误区千万不能踩\n① “先观察一下再说”——错！延迟即损失。\n② “吃点活血药就行”——错！未经专业评估擅自用药可能加重出血。\n③ “只有老年人会得卒中”——错！年轻群体也越来越多见。\n④ “症状好了就没事了”——错！短暂性脑缺血（TIA）是卒中的前兆，必须就医。\n\n康复与长期管理：卒中不是终点\n即使抢救成功，后续仍需规范管理：控制血压、血糖、血脂，坚持规律服药，定期复查。康复训练越早开始，功能恢复越好。\n\n卒中不可怕，可怕的是延误救治。掌握FAST口诀，熟悉黄金时间窗，关键时刻才能守住生命线。转发给家人，也许就能救下一个家庭。",
+  "platform": "douyin",
+  "essayCode": "uuid_example_1"
+}
+
+<> 2025-08-13T141651.200.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T141624.200.json
+
+###
+
+GET http://localhost:8080/api/convert2media/records?essayCode=uuid_example_1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDYzNzczLCJleHAiOjE3NTU2Njg1NzN9.R4mjsKdiWsRlT2wHlHxPKpodLqIZX3eXwTFyiopPmV4
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T134511.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDYzNzczLCJleHAiOjE3NTU2Njg1NzN9.R4mjsKdiWsRlT2wHlHxPKpodLqIZX3eXwTFyiopPmV4
+Content-Length: 3618
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "卒中发作别拖延，记住这4个字救命\n全国每10分钟就有1人因卒中死亡，但80%的患者在发病后未能及时就医。你可能不知道，时间就是大脑——每耽误1分钟，就有约190万个脑细胞永久消失。掌握早期识别方法，关键时刻能抢回一条命。\n\n什么是卒中？两种类型要分清\n卒中，俗称“脑中风”，是脑血管突然堵塞或破裂导致脑组织缺血、缺氧甚至坏死的急症。主要分为两类：  \n缺血性卒中：占80%，因血管被血栓堵住，血流中断。  \n出血性卒中：占20%，由脑内血管破裂引起，出血压迫脑组织。\n两者症状相似，但处理方式完全不同。一旦怀疑，必须立即送医明确诊断，切勿自行判断或用药。\n\nFAST口诀：30秒识破卒中信号\n发现以下任一表现，立刻拨打急救电话：\nF（Face）面部歪斜：一侧嘴角下垂，笑时不对称。\nA（Arm）手臂无力：抬手时一侧手臂无法抬起或迅速下垂。\nS（Speech）言语不清：说话含糊、说不出来或听不懂别人的话。\nT（Time）立即送医：从症状出现那一刻起，每一分钟都至关重要。\n真实案例：一位65岁老人在家看电视时突然说不出话，家人用FAST测试发现右侧肢体无力，15分钟后救护车抵达，及时溶栓治疗，恢复良好。\n\n黄金救治时间窗：4.5小时内是关键\n缺血性卒中在发病后4.5小时内接受静脉溶栓治疗，可显著改善预后。部分符合条件者还可进行取栓手术，进一步提升康复机会。\n超过这个时间窗，治疗效果大幅下降，甚至可能加重损伤。因此，“快识别、快送医、快治疗”是唯一出路。\n\n高危人群要警惕：这些因素最危险\n以下人群发生卒中的风险明显增高：  \n高血压患者（占比超60%）  \n糖尿病、高血脂、肥胖者  \n有房颤等心律失常的人群  \n吸烟、酗酒、长期熬夜者\n建议40岁以上人群每年至少做一次颈动脉超声和心电图筛查，尤其有家族史者更需重视。\n\n家中如何初步评估？简单三步法\n当身边人突然出现异常，可快速判断：  \n让对方微笑，看是否一侧脸下垂；  \n双臂平举，观察是否一侧无力下垂；  \n说出一句简单句子，如“今天天气真好”，听是否有含糊或停顿。\n若任一环节异常，立即启动应急流程。\n\n紧急送医不是小事，提前准备很重要\n拨打120时说明“疑似卒中”，医院会优先接诊；  \n保持患者平卧，头偏向一侧防误吸；  \n不要喂水、喂药，避免呛咳或加重病情；  \n记录症状出现的具体时间，这对医生判断能否溶栓至关重要。\n\n这些误区千万不能踩\n① “先观察一下再说”——错！延迟即损失。\n② “吃点活血药就行”——错！未经专业评估擅自用药可能加重出血。\n③ “只有老年人会得卒中”——错！年轻群体也越来越多见。\n④ “症状好了就没事了”——错！短暂性脑缺血（TIA）是卒中的前兆，必须就医。\n\n康复与长期管理：卒中不是终点\n即使抢救成功，后续仍需规范管理：控制血压、血糖、血脂，坚持规律服药，定期复查。康复训练越早开始，功能恢复越好。\n\n卒中不可怕，可怕的是延误救治。掌握FAST口诀，熟悉黄金时间窗，关键时刻才能守住生命线。转发给家人，也许就能救下一个家庭。",
+  "platform": "douyin",
+  "essayCode": "uuid_example_1"
+}
+
+<> 2025-08-13T134338.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDYzNzczLCJleHAiOjE3NTU2Njg1NzN9.R4mjsKdiWsRlT2wHlHxPKpodLqIZX3eXwTFyiopPmV4
+Content-Length: 3585
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "卒中发作别拖延，记住这4个字救命\n全国每10分钟就有1人因卒中死亡，但80%的患者在发病后未能及时就医。你可能不知道，时间就是大脑——每耽误1分钟，就有约190万个脑细胞永久消失。掌握早期识别方法，关键时刻能抢回一条命。\n\n什么是卒中？两种类型要分清\n卒中，俗称“脑中风”，是脑血管突然堵塞或破裂导致脑组织缺血、缺氧甚至坏死的急症。主要分为两类：  \n缺血性卒中：占80%，因血管被血栓堵住，血流中断。  \n出血性卒中：占20%，由脑内血管破裂引起，出血压迫脑组织。\n两者症状相似，但处理方式完全不同。一旦怀疑，必须立即送医明确诊断，切勿自行判断或用药。\n\nFAST口诀：30秒识破卒中信号\n发现以下任一表现，立刻拨打急救电话：\nF（Face）面部歪斜：一侧嘴角下垂，笑时不对称。\nA（Arm）手臂无力：抬手时一侧手臂无法抬起或迅速下垂。\nS（Speech）言语不清：说话含糊、说不出来或听不懂别人的话。\nT（Time）立即送医：从症状出现那一刻起，每一分钟都至关重要。\n真实案例：一位65岁老人在家看电视时突然说不出话，家人用FAST测试发现右侧肢体无力，15分钟后救护车抵达，及时溶栓治疗，恢复良好。\n\n黄金救治时间窗：4.5小时内是关键\n缺血性卒中在发病后4.5小时内接受静脉溶栓治疗，可显著改善预后。部分符合条件者还可进行取栓手术，进一步提升康复机会。\n超过这个时间窗，治疗效果大幅下降，甚至可能加重损伤。因此，“快识别、快送医、快治疗”是唯一出路。\n\n高危人群要警惕：这些因素最危险\n以下人群发生卒中的风险明显增高：  \n高血压患者（占比超60%）  \n糖尿病、高血脂、肥胖者  \n有房颤等心律失常的人群  \n吸烟、酗酒、长期熬夜者\n建议40岁以上人群每年至少做一次颈动脉超声和心电图筛查，尤其有家族史者更需重视。\n\n家中如何初步评估？简单三步法\n当身边人突然出现异常，可快速判断：  \n让对方微笑，看是否一侧脸下垂；  \n双臂平举，观察是否一侧无力下垂；  \n说出一句简单句子，如“今天天气真好”，听是否有含糊或停顿。\n若任一环节异常，立即启动应急流程。\n\n紧急送医不是小事，提前准备很重要\n拨打120时说明“疑似卒中”，医院会优先接诊；  \n保持患者平卧，头偏向一侧防误吸；  \n不要喂水、喂药，避免呛咳或加重病情；  \n记录症状出现的具体时间，这对医生判断能否溶栓至关重要。\n\n这些误区千万不能踩\n① “先观察一下再说”——错！延迟即损失。\n② “吃点活血药就行”——错！未经专业评估擅自用药可能加重出血。\n③ “只有老年人会得卒中”——错！年轻群体也越来越多见。\n④ “症状好了就没事了”——错！短暂性脑缺血（TIA）是卒中的前兆，必须就医。\n\n康复与长期管理：卒中不是终点\n即使抢救成功，后续仍需规范管理：控制血压、血糖、血脂，坚持规律服药，定期复查。康复训练越早开始，功能恢复越好。\n\n卒中不可怕，可怕的是延误救治。掌握FAST口诀，熟悉黄金时间窗，关键时刻才能守住生命线。转发给家人，也许就能救下一个家庭。",
+  "platform": "douyin"
+}
+
+<> 2025-08-13T134309.400.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T134253.200.json
+
+###
+
 POST http://localhost:8080/api/drafts/save
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
@@ -714,90 +821,6 @@ Accept-Encoding: br,deflate,gzip,x-gzip
 }
 
 <> 2025-08-13T072610.401.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 59
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser2",
-  "password": "testpassword"
-}
-
-<> 2025-08-12T124321.200.json
-
-###
-
-GET http://localhost:8080/api/user/5
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-12T120019.200.json
-
-###
-
-GET http://localhost:8080/api/user/4
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-12T120015.200.json
-
-###
-
-GET http://localhost:8080/api/user/3
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-12T120008.200.json
-
-###
-
-GET http://localhost:8080/api/user/1
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-12T115955.200.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 58
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser",
-  "password": "testpassword"
-}
-
-<> 2025-08-12T115840.200.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 58
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser",
-  "password": "testpassword"
-}
-
-<> 2025-08-12T114845.500.json
 
 ###
 
