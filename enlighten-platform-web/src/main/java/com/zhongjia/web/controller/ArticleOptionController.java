@@ -18,7 +18,7 @@ import java.util.*;
 @RequestMapping("/api/article/options")
 public class ArticleOptionController {
 
-    private static final Set<String> CATEGORIES = Set.of("style", "length", "form", "scene");
+    private static final java.util.List<String> CATEGORIES = java.util.List.of("style", "length", "mode", "scene");
 
     @Autowired
     private UserArticleConfigService configService;
@@ -91,7 +91,7 @@ public class ArticleOptionController {
         Map<String, List<String>> defaults = new LinkedHashMap<>();
         defaults.put("style", List.of("亲切口语", "专业严谨", "故事化", "小红书", "公众号"));
         defaults.put("length", List.of("短", "中", "长"));
-        defaults.put("form", List.of("常规文章", "双人对话", "故事案例"));
+        defaults.put("mode", List.of("常规文章", "双人对话", "故事案例"));
         defaults.put("scene", List.of("日常科普", "入院须知", "术前指导", "术后康复", "慢病管理"));
 
         List<UserArticleConfig> list = new ArrayList<>();

@@ -19,11 +19,11 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 
--- 说明：category 固定集合 { style, length, form, scene }
+-- 说明：category 固定集合 { style, length, mode, scene }
 CREATE TABLE IF NOT EXISTS `user_article_config` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `user_id` bigint(20) NOT NULL COMMENT '用户ID',
-    `category` varchar(50) NOT NULL COMMENT '分类: style, length, form, scene',
+    `category` varchar(50) NOT NULL COMMENT '分类: style, length, mode, scene',
     `option_name` varchar(100) NOT NULL COMMENT '选项名称',
     `option_code` varchar(100) NOT NULL COMMENT '配置项编码 uuid',
     `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
