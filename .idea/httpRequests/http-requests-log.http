@@ -1,5 +1,243 @@
 GET http://localhost:8080/api/convert2media/records?essayCode=uuid_example_1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T152544.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Content-Length: 6987
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_4"
+
+}
+
+<> 2025-08-13T152541.200.json
+
+###
+
+GET http://localhost:8080/api/convert2media/records?essayCode=uuid_example_1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T152442.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Content-Length: 6987
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_3"
+
+}
+
+<> 2025-08-13T152407.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Content-Length: 6987
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_2"
+
+}
+
+<> 2025-08-13T152310.401.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Content-Length: 6987
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_2"
+
+}
+
+<> 2025-08-13T152157.401.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NjkyLCJleHAiOjE3NTU2NzQ0OTJ9.OYj4Eu0Nr2V1NN2l5XKmmW2jrZ6L8pjN5I6aU3H3-U4
+Content-Length: 6987
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_2"
+
+}
+
+<> 2025-08-13T152143.401.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T152132.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NTM5LCJleHAiOjE3NTU2NzQzMzl9.mjNNngvLMbMP6Q8ep0BAryDo8N_ocLVuAchzBgZodcM
+Content-Length: 6989
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_2"
+
+}
+
+<> 2025-08-13T152125.401.json
+
+###
+
+POST http://localhost:8080/api/convert2media/convert2gzh_re
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NTM5LCJleHAiOjE3NTU2NzQzMzl9.mjNNngvLMbMP6Q8ep0BAryDo8N_ocLVuAchzBgZodcM
+Content-Length: 6914
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "<h1>百日咳别误当感冒，这些信号要警惕</h1><p>最近门诊接诊的咳嗽患儿中，不少家长都提到：“一开始就是流鼻涕、低烧，以为是普通感冒。”可两周后，孩子开始剧烈咳嗽，甚至咳到呕吐、脸憋得发紫。这种“咳得不像话”的情况，很可能是百日咳在作祟。它不是普通咳嗽，而是一种传染性强、危害大的呼吸道疾病，尤其对婴幼儿威胁极大。</p><hr/><ol><li><strong>百日咳的三个阶段：你家孩子可能正处在“隐形期”</strong></li></ol><p>百日咳病程分为三个阶段，初期症状极像感冒，极易被忽视。</p><ul><li><strong>卡他期（约1-2周）</strong>：表现为流清涕、轻微发热、干咳，持续几天到一周，与普通感冒几乎无异。此时传染性最强，却最易被误判。</li><li><strong>痉咳期（持续2-6周）</strong>：咳嗽转为阵发性、剧烈，连续十余声短促咳嗽后，深吸一口气发出高调“鸡鸣样”回音。常伴随呕吐、面红耳赤，严重时出现呼吸暂停或发绀。</li><li><strong>恢复期（数周至数月）</strong>：咳嗽频率逐渐减少，但遇刺激仍可能反复，整个过程可能长达2-3个月。</li></ul><hr/><ol><li><strong>为什么总被当成感冒？关键识别点藏在这三处</strong></li></ol><p>百日咳早期症状与普通感冒高度相似，但有三大特征可帮助辨别：</p><ul><li><strong>咳嗽持续时间长</strong>：普通感冒咳嗽一般3-7天缓解，百日咳则持续超过两周且逐渐加重。</li><li><strong>夜间加重明显</strong>：痉挛性咳嗽多在夜间或平卧时加剧，影响睡眠。</li><li><strong>“鸡鸣样”吸气声</strong>：剧烈咳嗽后深吸气时发出类似“哮鸣”的声音，是典型标志。</li></ul><p>若孩子出现上述表现，尤其是未接种疫苗或接触过感染者，应高度警惕。</p><hr/><ol><li><strong>谁最危险？婴幼儿是重灾区，成人也是“隐形传播者”</strong></li></ol><ul><li>婴幼儿（尤其是6个月以下）因免疫系统未发育完全，是百日咳重症高发人群，易引发肺炎、脑缺氧等并发症。</li><li>成人和青少年虽症状较轻，但仍是重要传染源。他们可能仅表现为长期干咳，却在不知不觉中将病菌传给婴儿。</li></ul><p>特别提醒：新生儿无法接种疫苗，其防护依赖于“围产期防护”——即家庭成员提前完成<strong>Tdap疫苗</strong>接种，形成保护屏障。</p><hr/><ol><li><strong>疫苗是唯一有效防线，接种时机要记牢</strong></li></ol><p>预防百日咳的核心手段是疫苗接种，遵循国家免疫规划程序：</p><ul><li><strong>DTaP疫苗</strong>：适用于3月龄、4月龄、5月龄、18月龄各接种一剂，共4针。</li><li><strong>Tdap疫苗</strong>：建议在青少年时期（11-12岁）加强接种一次，成年人每10年可考虑补种一次。</li></ul><p><em>注意：孕妇应在孕27-36周接种Tdap疫苗，通过胎盘传递抗体，保护新生儿出生后前两个月。</em></p><hr/><ol><li><strong>家庭护理怎么做？科学应对才能减轻痛苦</strong></li></ol><p>一旦确诊或疑似百日咳，家庭护理至关重要，但需避免不当操作：</p><ul><li><strong>保持空气湿润</strong>：使用加湿器维持湿度在50%左右，有助于缓解气道刺激。</li><li><strong>少量多次喂养</strong>：避免一次性进食过多，以防咳嗽诱发呕吐。</li><li><strong>远离刺激物</strong>：禁烟、避免油烟、香水等气味刺激，减少咳嗽诱因。</li><li><strong>注意观察病情变化</strong>：如出现呼吸急促、口唇发青、意识模糊、抽搐等，立即就医。</li></ul><hr/><ol><li><strong>何时必须看医生？这几点不能拖</strong></li></ol><p>以下情况提示病情危重，需尽快就医：</p><ul><li>咳嗽后出现呼吸暂停或发绀（嘴唇、指甲发紫）</li><li>频繁呕吐，影响进食与水分摄入</li><li>精神萎靡、嗜睡或烦躁不安</li><li>咳嗽持续超过三周且无改善趋势</li></ul><p>早诊断、早治疗，可显著降低并发症风险。</p><hr/><ol><li><strong>家人如何防护？切断传播链从细节做起</strong></li></ol><p>百日咳传染力极强，飞沫传播是主要途径，家庭内防控不容忽视：</p><ul><li>患者应佩戴口罩，尽量单独居住，避免与婴幼儿近距离接触。</li><li>家庭成员应勤洗手，尤其在接触患者后。</li><li>定期通风，每日至少两次，每次不少于30分钟。</li><li>接触物表面可用含氯消毒液擦拭，如门把手、玩具等。</li></ul><hr/><p><strong>百日咳与普通咳嗽对比表</strong></p><table style=\"width: auto;\"><tbody><tr><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">项目</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">百日咳</th><th colSpan=\"1\" rowSpan=\"1\" width=\"auto\">普通咳嗽</th></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">起病特点</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">初期似感冒，持续2周以上</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">通常3-7天自愈</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">咳嗽类型</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">阵发性痉挛性咳嗽，伴“鸡鸣样”吸气声</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">间断性，无特定模式</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">发作时间</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">多在夜间或平卧时加重</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">无明显规律</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">是否伴有呕吐</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">常见，剧烈咳嗽后发生</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极少见</td></tr><tr><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">传染性强弱</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">极强，尤其卡他期</td><td colSpan=\"1\" rowSpan=\"1\" width=\"auto\">较弱，多为自限性</td></tr></tbody></table><hr/><p><strong>家长观察记录清单（建议随身携带）</strong></p><ul><li>咳嗽开始时间及频率（每天几次？）</li><li>是否出现“鸡鸣样”吸气声？</li><li>是否有咳嗽后呕吐、呼吸暂停或发绀？</li><li>近期是否有接触过咳嗽病人？</li><li>孩子是否按时接种百日咳疫苗？</li></ul><hr/><p>百日咳不是“小毛病”，它能悄无声息地夺走婴幼儿的生命。每一次看似普通的咳嗽，都可能是危险的前兆。了解它的特点，掌握识别方法，及时接种疫苗，才是对孩子最好的守护。收藏本文，转发给身边照顾孩子的亲人，让这份知识成为一道安全防线。</p>"
+}
+
+<> 2025-08-13T152059.400.json
+
+###
+
+POST http://localhost:8080/api/convert2media/common
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5NTM5LCJleHAiOjE3NTU2NzQzMzl9.mjNNngvLMbMP6Q8ep0BAryDo8N_ocLVuAchzBgZodcM
+Content-Length: 3658
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "卒中发作别拖延，记住这4个字救命\n全国每10分钟就有1人因卒中死亡，但80%的患者在发病后未能及时就医。你可能不知道，时间就是大脑——每耽误1分钟，就有约190万个脑细胞永久消失。掌握早期识别方法，关键时刻能抢回一条命。\n\n什么是卒中？两种类型要分清\n卒中，俗称“脑中风”，是脑血管突然堵塞或破裂导致脑组织缺血、缺氧甚至坏死的急症。主要分为两类：  \n缺血性卒中：占80%，因血管被血栓堵住，血流中断。  \n出血性卒中：占20%，由脑内血管破裂引起，出血压迫脑组织。\n两者症状相似，但处理方式完全不同。一旦怀疑，必须立即送医明确诊断，切勿自行判断或用药。\n\nFAST口诀：30秒识破卒中信号\n发现以下任一表现，立刻拨打急救电话：\nF（Face）面部歪斜：一侧嘴角下垂，笑时不对称。\nA（Arm）手臂无力：抬手时一侧手臂无法抬起或迅速下垂。\nS（Speech）言语不清：说话含糊、说不出来或听不懂别人的话。\nT（Time）立即送医：从症状出现那一刻起，每一分钟都至关重要。\n真实案例：一位65岁老人在家看电视时突然说不出话，家人用FAST测试发现右侧肢体无力，15分钟后救护车抵达，及时溶栓治疗，恢复良好。\n\n黄金救治时间窗：4.5小时内是关键\n缺血性卒中在发病后4.5小时内接受静脉溶栓治疗，可显著改善预后。部分符合条件者还可进行取栓手术，进一步提升康复机会。\n超过这个时间窗，治疗效果大幅下降，甚至可能加重损伤。因此，“快识别、快送医、快治疗”是唯一出路。\n\n高危人群要警惕：这些因素最危险\n以下人群发生卒中的风险明显增高：  \n高血压患者（占比超60%）  \n糖尿病、高血脂、肥胖者  \n有房颤等心律失常的人群  \n吸烟、酗酒、长期熬夜者\n建议40岁以上人群每年至少做一次颈动脉超声和心电图筛查，尤其有家族史者更需重视。\n\n家中如何初步评估？简单三步法\n当身边人突然出现异常，可快速判断：  \n让对方微笑，看是否一侧脸下垂；  \n双臂平举，观察是否一侧无力下垂；  \n说出一句简单句子，如“今天天气真好”，听是否有含糊或停顿。\n若任一环节异常，立即启动应急流程。\n\n紧急送医不是小事，提前准备很重要\n拨打120时说明“疑似卒中”，医院会优先接诊；  \n保持患者平卧，头偏向一侧防误吸；  \n不要喂水、喂药，避免呛咳或加重病情；  \n记录症状出现的具体时间，这对医生判断能否溶栓至关重要。\n\n这些误区千万不能踩\n① “先观察一下再说”——错！延迟即损失。\n② “吃点活血药就行”——错！未经专业评估擅自用药可能加重出血。\n③ “只有老年人会得卒中”——错！年轻群体也越来越多见。\n④ “症状好了就没事了”——错！短暂性脑缺血（TIA）是卒中的前兆，必须就医。\n\n康复与长期管理：卒中不是终点\n即使抢救成功，后续仍需规范管理：控制血压、血糖、血脂，坚持规律服药，定期复查。康复训练越早开始，功能恢复越好。\n\n卒中不可怕，可怕的是延误救治。掌握FAST口诀，熟悉黄金时间窗，关键时刻才能守住生命线。转发给家人，也许就能救下一个家庭。",
+  "platform": "douyin",
+  "essayCode": "uuid_example_1",
+  "mediaCode": "media_uuid_example_2"
+
+}
+
+<> 2025-08-13T151927.200.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T151900.200.json
+
+###
+
+POST http://localhost:8080/api/convert2media/common
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY5MjU5LCJleHAiOjE3NTU2NzQwNTl9.d3zHyb4oCRA7hK-LaX2jEmZmJseguHxtQaSd40KGndI
+Content-Length: 3618
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "卒中发作别拖延，记住这4个字救命\n全国每10分钟就有1人因卒中死亡，但80%的患者在发病后未能及时就医。你可能不知道，时间就是大脑——每耽误1分钟，就有约190万个脑细胞永久消失。掌握早期识别方法，关键时刻能抢回一条命。\n\n什么是卒中？两种类型要分清\n卒中，俗称“脑中风”，是脑血管突然堵塞或破裂导致脑组织缺血、缺氧甚至坏死的急症。主要分为两类：  \n缺血性卒中：占80%，因血管被血栓堵住，血流中断。  \n出血性卒中：占20%，由脑内血管破裂引起，出血压迫脑组织。\n两者症状相似，但处理方式完全不同。一旦怀疑，必须立即送医明确诊断，切勿自行判断或用药。\n\nFAST口诀：30秒识破卒中信号\n发现以下任一表现，立刻拨打急救电话：\nF（Face）面部歪斜：一侧嘴角下垂，笑时不对称。\nA（Arm）手臂无力：抬手时一侧手臂无法抬起或迅速下垂。\nS（Speech）言语不清：说话含糊、说不出来或听不懂别人的话。\nT（Time）立即送医：从症状出现那一刻起，每一分钟都至关重要。\n真实案例：一位65岁老人在家看电视时突然说不出话，家人用FAST测试发现右侧肢体无力，15分钟后救护车抵达，及时溶栓治疗，恢复良好。\n\n黄金救治时间窗：4.5小时内是关键\n缺血性卒中在发病后4.5小时内接受静脉溶栓治疗，可显著改善预后。部分符合条件者还可进行取栓手术，进一步提升康复机会。\n超过这个时间窗，治疗效果大幅下降，甚至可能加重损伤。因此，“快识别、快送医、快治疗”是唯一出路。\n\n高危人群要警惕：这些因素最危险\n以下人群发生卒中的风险明显增高：  \n高血压患者（占比超60%）  \n糖尿病、高血脂、肥胖者  \n有房颤等心律失常的人群  \n吸烟、酗酒、长期熬夜者\n建议40岁以上人群每年至少做一次颈动脉超声和心电图筛查，尤其有家族史者更需重视。\n\n家中如何初步评估？简单三步法\n当身边人突然出现异常，可快速判断：  \n让对方微笑，看是否一侧脸下垂；  \n双臂平举，观察是否一侧无力下垂；  \n说出一句简单句子，如“今天天气真好”，听是否有含糊或停顿。\n若任一环节异常，立即启动应急流程。\n\n紧急送医不是小事，提前准备很重要\n拨打120时说明“疑似卒中”，医院会优先接诊；  \n保持患者平卧，头偏向一侧防误吸；  \n不要喂水、喂药，避免呛咳或加重病情；  \n记录症状出现的具体时间，这对医生判断能否溶栓至关重要。\n\n这些误区千万不能踩\n① “先观察一下再说”——错！延迟即损失。\n② “吃点活血药就行”——错！未经专业评估擅自用药可能加重出血。\n③ “只有老年人会得卒中”——错！年轻群体也越来越多见。\n④ “症状好了就没事了”——错！短暂性脑缺血（TIA）是卒中的前兆，必须就医。\n\n康复与长期管理：卒中不是终点\n即使抢救成功，后续仍需规范管理：控制血压、血糖、血脂，坚持规律服药，定期复查。康复训练越早开始，功能恢复越好。\n\n卒中不可怕，可怕的是延误救治。掌握FAST口诀，熟悉黄金时间窗，关键时刻才能守住生命线。转发给家人，也许就能救下一个家庭。",
+  "platform": "douyin",
+  "essayCode": "uuid_example_1"
+}
+
+<> 2025-08-13T151449.400.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T151419.200.json
+
+###
+
+GET http://localhost:8080/api/convert2media/records?essayCode=uuid_example_1
+Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDY1Nzg0LCJleHAiOjE3NTU2NzA1ODR9.b9SCMRdPS7xlvC5ok98bjvUa_KBLTiXOD-HRP0h10MY
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
@@ -605,222 +843,6 @@ User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
 Accept-Encoding: br,deflate,gzip,x-gzip
 
 <> 2025-08-13T074223.401.json
-
-###
-
-GET http://localhost:8080/api/article/options
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-13T074122.200.json
-
-###
-
-POST http://localhost:8080/api/article/options/add
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
-Content-Length: 64
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "category": "style",
-  "optionName": "TikTok",
-  "sort": 1
-}
-
-<> 2025-08-13T074114.200.json
-
-###
-
-POST http://localhost:8080/api/article/options/add
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
-Content-Length: 62
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "category": "aaa",
-  "optionName": "TikTok",
-  "sort": 1
-}
-
-<> 2025-08-13T074101.200.json
-
-###
-
-POST http://localhost:8080/api/article/options/update
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
-Content-Length: 89
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "optionCode": "4968475f-106b-4d23-bd6d-267cd67d694a",
-  "optionName": "xiaohongshu"
-}
-
-<> 2025-08-13T073933.200.json
-
-###
-
-POST http://localhost:8080/api/article/options/update
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjIiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTQyNywiZXhwIjoxNzU1NjQ2MjI3fQ.MTMpjm_KvzawjvVMDASDxnCqVhMmQjU-m5EOU1tMd3E
-Content-Length: 89
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "optionCode": "4968475f-106b-4d23-bd6d-267cd67d694a",
-  "optionName": "xiaohongshu"
-}
-
-<> 2025-08-13T073833.200.json
-
-###
-
-POST http://localhost:8080/api/article/options/update
-Content-Type: application/json
-Authorization: Bearer Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjIiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTQyNywiZXhwIjoxNzU1NjQ2MjI3fQ.MTMpjm_KvzawjvVMDASDxnCqVhMmQjU-m5EOU1tMd3E
-Content-Length: 89
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "optionCode": "4968475f-106b-4d23-bd6d-267cd67d694a",
-  "optionName": "xiaohongshu"
-}
-
-<> 2025-08-13T073821.401.json
-
-###
-
-GET http://localhost:8080/api/article/options
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-13T073809.200.json
-
-###
-
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-Content-Length: 53
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser3",
-  "password": "654321"
-}
-
-<> 2025-08-13T073716.200.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 53
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser3",
-  "password": "654321"
-}
-
-<> 2025-08-13T073711.200.json
-
-###
-
-GET http://localhost:8080/api/article/options
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjIiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTQyNywiZXhwIjoxNzU1NjQ2MjI3fQ.MTMpjm_KvzawjvVMDASDxnCqVhMmQjU-m5EOU1tMd3E
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2025-08-13T073420.200.json
-
-###
-
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-Content-Length: 53
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser2",
-  "password": "654321"
-}
-
-<> 2025-08-13T073027.200.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 53
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser2",
-  "password": "654321"
-}
-
-<> 2025-08-13T072951.200.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 59
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser2",
-  "password": "testpassword"
-}
-
-<> 2025-08-13T072734.401.json
-
-###
-
-POST http://localhost:8080/api/user/create
-Content-Type: application/json
-Content-Length: 59
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "username": "testuser2",
-  "password": "testpassword"
-}
-
-<> 2025-08-13T072610.401.json
 
 ###
 

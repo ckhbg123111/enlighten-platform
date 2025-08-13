@@ -36,8 +36,14 @@ public class MediaConvertController {
     @Value("${app.upstream.convert2media-url:http://192.168.1.65:8000/convert2media}")
     private String upstreamUrl;
 
+    @Value("${app.upstream.convert2gzh-re-url:http://192.168.1.65:8000/convert2gzh_re}")
+    private String upstreamGzhReUrl;
+
+    @Value("${app.upstream.convert2gzh-url:http://192.168.1.65:8000/convert2gzh}")
+    private String upstreamGzhUrl;
+
     // 1) 转换：解析上游，并记录
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "common", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void convert(@Valid @RequestBody ConvertReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
@@ -74,6 +80,99 @@ public class MediaConvertController {
                     .setRespData(dataRaw);
 
             // 只返回data，其他字段由本服务包装
+            int code = parsed == null || parsed.code == null ? 200 : parsed.code;
+            boolean success = parsed != null && parsed.success != null && parsed.success;
+            String msg = parsed == null || parsed.msg == null ? "ok" : parsed.msg;
+            writeJson(response, code, success, msg, dataRaw);
+        } catch (Exception ex) {
+            record.setSuccess(false).setErrorMessage(ex.getMessage());
+            writeJson(response, 500, false, "服务异常！", null);
+        } finally {
+            recordService.updateById(record);
+        }
+    }
+
+    // 1.1) 转公众号：重新生成
+    @PostMapping(path = "convert2gzh_re", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void convertToGzhRe(@Valid @RequestBody ConvertGzhReReq req, HttpServletResponse response) throws IOException {
+        UserContext.UserInfo user = requireUser();
+
+        MediaConvertRecord record = new MediaConvertRecord()
+                .setUserId(user.userId())
+                .setCode(req.getMediaCode())
+                .setTenantId(user.tenantId())
+                .setEssayCode(req.getEssayCode())
+                .setContent(req.getContent())
+                .setPlatform("ghz")
+                .setCreateTime(LocalDateTime.now());
+        recordService.save(record);
+
+        try {
+            String upstreamResp = callUpstreamGzhRe(req.getContent());
+            UpstreamResp parsed = parseUpstreamJson(upstreamResp);
+            String dataRaw;
+            try {
+                dataRaw = parsed == null || parsed.data == null ? "null" : JSON.writeValueAsString(parsed.data);
+            } catch (Exception ignore) {
+                dataRaw = "null";
+            }
+
+            record.setSuccess(Boolean.TRUE)
+                    .setRespCode(parsed == null ? null : parsed.code)
+                    .setRespMsg(parsed == null ? null : parsed.msg)
+                    .setRespSuccess(parsed == null ? null : parsed.success)
+                    .setRespData(dataRaw);
+
+            int code = parsed == null || parsed.code == null ? 200 : parsed.code;
+            boolean success = parsed != null && parsed.success != null && parsed.success;
+            String msg = parsed == null || parsed.msg == null ? "ok" : parsed.msg;
+            writeJson(response, code, success, msg, dataRaw);
+        } catch (Exception ex) {
+            record.setSuccess(false).setErrorMessage(ex.getMessage());
+            writeJson(response, 500, false, "服务异常！", null);
+        } finally {
+            recordService.updateById(record);
+        }
+    }
+
+    // 1.2) 转公众号：按结构化内容
+    @PostMapping(path = "convert2gzh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void convertToGzh(@Valid @RequestBody ConvertGzhReq req, HttpServletResponse response) throws IOException {
+        UserContext.UserInfo user = requireUser();
+
+        String contentStr;
+        try {
+            contentStr = JSON.writeValueAsString(req.getContent());
+        } catch (Exception e) {
+            contentStr = String.valueOf(req.getContent());
+        }
+
+        MediaConvertRecord record = new MediaConvertRecord()
+                .setUserId(user.userId())
+                .setCode(req.getMediaCode())
+                .setTenantId(user.tenantId())
+                .setEssayCode(req.getEssayCode())
+                .setContent(contentStr)
+                .setPlatform("ghz")
+                .setCreateTime(LocalDateTime.now());
+        recordService.save(record);
+
+        try {
+            String upstreamResp = callUpstreamGzh(req.getContent());
+            UpstreamResp parsed = parseUpstreamJson(upstreamResp);
+            String dataRaw;
+            try {
+                dataRaw = parsed == null || parsed.data == null ? "null" : JSON.writeValueAsString(parsed.data);
+            } catch (Exception ignore) {
+                dataRaw = "null";
+            }
+
+            record.setSuccess(Boolean.TRUE)
+                    .setRespCode(parsed == null ? null : parsed.code)
+                    .setRespMsg(parsed == null ? null : parsed.msg)
+                    .setRespSuccess(parsed == null ? null : parsed.success)
+                    .setRespData(dataRaw);
+
             int code = parsed == null || parsed.code == null ? 200 : parsed.code;
             boolean success = parsed != null && parsed.success != null && parsed.success;
             String msg = parsed == null || parsed.msg == null ? "ok" : parsed.msg;
@@ -145,6 +244,40 @@ public class MediaConvertController {
         response.flushBuffer();
     }
 
+    private String callUpstreamGzhRe(String content) throws Exception {
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+        String body = "{" +
+                "\"content\":\"" + escapeJson(content) + "\"" +
+                "}";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(upstreamGzhReUrl))
+                .timeout(Duration.ofMinutes(2))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                .build();
+        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        if (upstream.statusCode() != 200) {
+            throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
+        }
+        return upstream.body();
+    }
+
+    private String callUpstreamGzh(Object content) throws Exception {
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+        String body = JSON.writeValueAsString(java.util.Collections.singletonMap("content", content));
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(upstreamGzhUrl))
+                .timeout(Duration.ofMinutes(2))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                .build();
+        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        if (upstream.statusCode() != 200) {
+            throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
+        }
+        return upstream.body();
+    }
+
     private static String escapeJson(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
@@ -183,6 +316,26 @@ public class MediaConvertController {
         private String content;
         @NotBlank
         private String platform; // xiaohongshu / douyin
+        @NotBlank
+        private String essayCode; // 额外字段
+        @NotBlank
+        private String mediaCode; // 媒体唯一编码 uuid
+    }
+
+    @Data
+    public static class ConvertGzhReReq {
+        @NotBlank
+        private String content;
+        @NotBlank
+        private String essayCode; // 额外字段
+        @NotBlank
+        private String mediaCode; // 媒体唯一编码 uuid
+    }
+
+    @Data
+    public static class ConvertGzhReq {
+        @jakarta.validation.constraints.NotNull
+        private Object content; // 前端解析后的结构化内容 list[dict]
         @NotBlank
         private String essayCode; // 额外字段
         @NotBlank
