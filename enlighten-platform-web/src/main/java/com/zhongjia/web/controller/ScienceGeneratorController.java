@@ -2,6 +2,8 @@ package com.zhongjia.web.controller;
 
 import com.zhongjia.biz.service.ScienceGenRecordService;
 import com.zhongjia.web.security.UserContext;
+import com.zhongjia.web.exception.BizException;
+import com.zhongjia.web.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -45,11 +47,11 @@ public class ScienceGeneratorController {
 		response.flushBuffer();
 	}
 
-	private UserContext.UserInfo requireUser() {
-		UserContext.UserInfo info = UserContext.get();
-		if (info == null || info.userId() == null) throw new RuntimeException("未认证");
-		return info;
-	}
+    private UserContext.UserInfo requireUser() {
+        UserContext.UserInfo info = UserContext.get();
+        if (info == null || info.userId() == null) throw new BizException(ErrorCode.UNAUTHORIZED);
+        return info;
+    }
 
 
 	@Data

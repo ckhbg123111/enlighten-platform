@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.DraftPO;
 import com.zhongjia.biz.service.DraftService;
 import com.zhongjia.web.security.UserContext;
+import com.zhongjia.web.exception.BizException;
+import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.DraftVO;
 import jakarta.validation.Valid;
@@ -84,11 +86,11 @@ public class DraftController {
         return Result.success(true);
 	}
 
-	private UserContext.UserInfo requireUser() {
-		UserContext.UserInfo info = UserContext.get();
-		if (info == null || info.userId() == null) throw new RuntimeException("未认证");
-		return info;
-	}
+    private UserContext.UserInfo requireUser() {
+        UserContext.UserInfo info = UserContext.get();
+        if (info == null || info.userId() == null) throw new BizException(ErrorCode.UNAUTHORIZED);
+        return info;
+    }
 
 	@Data
 	public static class SaveReq {

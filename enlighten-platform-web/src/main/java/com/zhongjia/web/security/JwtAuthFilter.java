@@ -50,20 +50,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
                 return;
             } catch (Exception e) {
-                writeJson(response, 401, Result.error(401, "无效的令牌"));
+                writeJson(response, 401, Result.error(401, "无效的令牌"), path);
                 return;
             }
         }
 
-        writeJson(response, 401, Result.error(401, "未认证"));
+        writeJson(response, 401, Result.error(401, "未认证"), path);
     }
 
-    private void writeJson(HttpServletResponse response, int status, Object body) throws IOException {
+    private void writeJson(HttpServletResponse response, int status, Object body, String path) throws IOException {
         response.setStatus(status);
         response.setContentType("application/json;charset=UTF-8");
-        String json = "{\"code\":" + status + ",\"message\":\"未认证\"}";
+        int code = status;
+        String message = "未认证";
         if (body instanceof Result<?> r) {
-            json = "{\"code\":" + r.getCode() + ",\"message\":\"" + r.getMessage() + "\"}";
+            if (r.getCode() != null) code = r.getCode();
+            if (r.getMessage() != null) message = r.getMessage();
+        }
+        String json;
+        if (path != null && path.startsWith("/api/convert2media/")) {
+            json = "{\"code\":" + code + ",\"success\":false,\"msg\":\"" + message + "\",\"data\":null}";
+        } else {
+            json = "{\"code\":" + code + ",\"message\":\"" + message + "\",\"data\":null}";
         }
         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
     }

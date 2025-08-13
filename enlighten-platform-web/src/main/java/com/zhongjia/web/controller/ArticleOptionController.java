@@ -3,6 +3,8 @@ package com.zhongjia.web.controller;
 import com.zhongjia.biz.entity.UserArticleConfig;
 import com.zhongjia.biz.service.UserArticleConfigService;
 import com.zhongjia.web.security.UserContext;
+import com.zhongjia.web.exception.BizException;
+import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.ArticleOptionVO;
 import jakarta.validation.Valid;
@@ -94,7 +96,7 @@ public class ArticleOptionController {
 
     private Long requireUserId() {
         UserContext.UserInfo info = UserContext.get();
-        if (info == null || info.userId() == null) throw new RuntimeException("未认证");
+        if (info == null || info.userId() == null) throw new BizException(ErrorCode.UNAUTHORIZED);
         return info.userId();
     }
 

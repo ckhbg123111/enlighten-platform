@@ -7,6 +7,7 @@ import com.zhongjia.biz.service.UserService;
 import com.zhongjia.web.req.UserCreateReq;
 import com.zhongjia.web.req.UserUpdateReq;
 import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class UserController {
         // 检查用户名是否已存在
         User existingUser = userService.getByUsername(req.getUsername());
         if (existingUser != null) {
-            return Result.error("用户名已存在");
+            return Result.error(ErrorCode.BAD_REQUEST, "用户名已存在");
         }
         
         // 创建用户
@@ -51,7 +52,7 @@ public class UserController {
             UserVO userVO = convertToVO(user);
             return Result.success(userVO);
         } else {
-            return Result.error("创建用户失败");
+            return Result.error(ErrorCode.INTERNAL_ERROR, "创建用户失败");
         }
     }
     
@@ -62,7 +63,7 @@ public class UserController {
     public Result<UserVO> updateUser(@Validated @RequestBody UserUpdateReq req) {
         User user = userService.getById(req.getId());
         if (user == null) {
-            return Result.error("用户不存在");
+            return Result.error(ErrorCode.NOT_FOUND, "用户不存在");
         }
         
         // 更新用户信息
@@ -73,7 +74,7 @@ public class UserController {
             UserVO userVO = convertToVO(user);
             return Result.success(userVO);
         } else {
-            return Result.error("更新用户失败");
+            return Result.error(ErrorCode.INTERNAL_ERROR, "更新用户失败");
         }
     }
     
@@ -86,7 +87,7 @@ public class UserController {
         if (success) {
             return Result.success();
         } else {
-            return Result.error("删除用户失败");
+            return Result.error(ErrorCode.INTERNAL_ERROR, "删除用户失败");
         }
     }
     
@@ -191,7 +192,7 @@ public class UserController {
             long count = userService.count();
             return Result.success("数据库连接成功，当前用户总数：" + count);
         } catch (Exception e) {
-            return Result.error("数据库连接失败：" + e.getMessage());
+            return Result.error(ErrorCode.INTERNAL_ERROR, "数据库连接失败：" + e.getMessage());
         }
     }
     
