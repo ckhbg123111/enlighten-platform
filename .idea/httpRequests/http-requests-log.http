@@ -1,0 +1,803 @@
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 662
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期ddd识别与dww科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "essayCode": "uuid_example_1"
+}
+
+<> 2025-08-13T112936.200.json
+
+###
+
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 659
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期ddd识别与科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "essayCode": "uuid_example_1"
+}
+
+<> 2025-08-13T112657.200.json
+
+###
+
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 659
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期ddd识别与科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "essayCode": "uuid_example_2"
+}
+
+<> 2025-08-13T112650.200.json
+
+###
+
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 656
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期识别与科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "essayCode": "uuid_example_1"
+}
+
+<> 2025-08-13T112521.200.json
+
+###
+
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 644
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期识别与科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "essayCode": null
+}
+
+<> 2025-08-13T112513.400.json
+
+###
+
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 655
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期识别与科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "essayCod": "uuid_example_1"
+}
+
+<> 2025-08-13T112459.400.json
+
+###
+
+POST http://localhost:8080/api/drafts/save
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU1MzU0LCJleHAiOjE3NTU2NjAxNTR9.gUHYZ0EXC-Kb0IBWDxiWSJ03ycYKyMGwPQ1WYVGbp1M
+Content-Length: 651
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "title": "感冒的早期识别与科学应对策略",
+  "content": "感冒的早期识别与科学应对策略\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "code": "uuid_example_1"
+}
+
+<> 2025-08-13T112314.400.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T112234.200.json
+
+###
+
+POST http://localhost:8080/api/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110643.500.json
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110618.500.json
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110541.500.json
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110506.500.json
+
+###
+
+GET http://localhost:8080/api/article/options
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T110455.200.json
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110418.500.json
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MTk5LCJleHAiOjE3NTU2NTg5OTl9._yxah8UpqEVkKg6KXpwKSLK5kw2RG41RUwGkm-JyeTA
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110332.500.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T110320.200.json
+
+###
+
+POST http://localhost:8080/science-generator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDU0MDAwLCJleHAiOjE3NTU2NTg4MDB9.XrX9es3pQQOvW4AI3ZV52mGTwclNzOrlqYmLQp-5V88
+Content-Length: 1109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "code": "uuid_example_1",
+  "topic": "感冒的早期识别与科学应对策略",
+  "content": "文章需系统介绍感冒的常见症状、与流感的区别、不同阶段的应对方法，以及何时需要就医。重点强调普通感冒的自限性特点，避免滥用抗生素，并提供居家护理建议，如合理补水、休息、退热药物使用原则等。同时，应提醒公众注意病毒传播途径，普及戴口罩、勤洗手等预防措施。\n\n【内容大纲】\n1. 普通感冒的典型症状与病程特点（持续时间、发热程度等）\n2. 感冒与流感的关键区别（症状强度、起病方式、并发症风险）\n3. 家庭护理的核心原则：休息、补水、对症处理\n4. 常见误区澄清：抗生素无效、抗病毒药不推荐用于普通感冒\n5. 何时应及时就诊：高热不退、呼吸困难、持续咳嗽超过一周等警示信号\n6. 预防措施：手卫生、佩戴口罩、避免接触感染者",
+  "style": "专业严谨",
+  "length": "中",
+  "mode": "常规文章",
+  "scene": "日常科普",
+  "contains_image": true
+}
+
+<> 2025-08-13T110251.500.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T110000.200.json
+
+###
+
+POST http://localhost:8080/api/fill_in
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDQ0NjY1LCJleHAiOjE3NTU2NDk0NjV9.n6NIotXobCdHwYNl0njkaQnZTxdCRKw4rLvvPPteOQk
+Content-Length: 31
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "content": "风寒感冒"
+}
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T082425.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T082421.200.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T082413.200.json
+
+###
+
+GET http://localhost:8080/api/article/options
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzU1MDQyNzAzLCJleHAiOjE3NTU2NDc1MDN9.J4q5DnIik90Hsw40kWn-IExKYYhQm-z_Jn2-GRY3m4U
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T075219.200.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T075143.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 52
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "654321"
+}
+
+<> 2025-08-13T075134.200.json
+
+###
+
+GET http://localhost:8080/api/article/options
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T074551.200.json
+
+###
+
+DELETE http://localhost:8080/api/article/options/89de223f-69e8-44a6-91ca-5ac2738c617e
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T074241.200.json
+
+###
+
+DELETE http://localhost:8080/api/article/options/89de223f-69e8-44a6-91ca-5ac2738c617e
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T074223.401.json
+
+###
+
+GET http://localhost:8080/api/article/options
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T074122.200.json
+
+###
+
+POST http://localhost:8080/api/article/options/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Content-Length: 64
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "category": "style",
+  "optionName": "TikTok",
+  "sort": 1
+}
+
+<> 2025-08-13T074114.200.json
+
+###
+
+POST http://localhost:8080/api/article/options/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Content-Length: 62
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "category": "aaa",
+  "optionName": "TikTok",
+  "sort": 1
+}
+
+<> 2025-08-13T074101.200.json
+
+###
+
+POST http://localhost:8080/api/article/options/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Content-Length: 89
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "optionCode": "4968475f-106b-4d23-bd6d-267cd67d694a",
+  "optionName": "xiaohongshu"
+}
+
+<> 2025-08-13T073933.200.json
+
+###
+
+POST http://localhost:8080/api/article/options/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjIiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTQyNywiZXhwIjoxNzU1NjQ2MjI3fQ.MTMpjm_KvzawjvVMDASDxnCqVhMmQjU-m5EOU1tMd3E
+Content-Length: 89
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "optionCode": "4968475f-106b-4d23-bd6d-267cd67d694a",
+  "optionName": "xiaohongshu"
+}
+
+<> 2025-08-13T073833.200.json
+
+###
+
+POST http://localhost:8080/api/article/options/update
+Content-Type: application/json
+Authorization: Bearer Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjIiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTQyNywiZXhwIjoxNzU1NjQ2MjI3fQ.MTMpjm_KvzawjvVMDASDxnCqVhMmQjU-m5EOU1tMd3E
+Content-Length: 89
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "optionCode": "4968475f-106b-4d23-bd6d-267cd67d694a",
+  "optionName": "xiaohongshu"
+}
+
+<> 2025-08-13T073821.401.json
+
+###
+
+GET http://localhost:8080/api/article/options
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjMiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTgzNSwiZXhwIjoxNzU1NjQ2NjM1fQ.SpeOgE5tWP41NTHT29dqTlEkGqDMWromQkndp9bHCtE
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T073809.200.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 53
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser3",
+  "password": "654321"
+}
+
+<> 2025-08-13T073716.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 53
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser3",
+  "password": "654321"
+}
+
+<> 2025-08-13T073711.200.json
+
+###
+
+GET http://localhost:8080/api/article/options
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjIiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NTA0MTQyNywiZXhwIjoxNzU1NjQ2MjI3fQ.MTMpjm_KvzawjvVMDASDxnCqVhMmQjU-m5EOU1tMd3E
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-13T073420.200.json
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+Content-Length: 53
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser2",
+  "password": "654321"
+}
+
+<> 2025-08-13T073027.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 53
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser2",
+  "password": "654321"
+}
+
+<> 2025-08-13T072951.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 59
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser2",
+  "password": "testpassword"
+}
+
+<> 2025-08-13T072734.401.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 59
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser2",
+  "password": "testpassword"
+}
+
+<> 2025-08-13T072610.401.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 59
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser2",
+  "password": "testpassword"
+}
+
+<> 2025-08-12T124321.200.json
+
+###
+
+GET http://localhost:8080/api/user/5
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-12T120019.200.json
+
+###
+
+GET http://localhost:8080/api/user/4
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-12T120015.200.json
+
+###
+
+GET http://localhost:8080/api/user/3
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-12T120008.200.json
+
+###
+
+GET http://localhost:8080/api/user/1
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2025-08-12T115955.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 58
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "testpassword"
+}
+
+<> 2025-08-12T115840.200.json
+
+###
+
+POST http://localhost:8080/api/user/create
+Content-Type: application/json
+Content-Length: 58
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "username": "testuser",
+  "password": "testpassword"
+}
+
+<> 2025-08-12T114845.500.json
+
+###
+

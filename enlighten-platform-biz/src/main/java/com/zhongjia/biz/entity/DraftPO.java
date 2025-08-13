@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @TableName("draft")
-public class Draft {
+public class DraftPO {
 	@TableId(type = IdType.AUTO)
 	private Long id;
 
