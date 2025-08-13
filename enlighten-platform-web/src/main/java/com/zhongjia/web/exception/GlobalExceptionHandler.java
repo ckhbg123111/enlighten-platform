@@ -1,0 +1,86 @@
+package com.zhongjia.web.exception;
+
+import com.zhongjia.web.vo.Result;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BizException.class)
+    public Object handleBiz(BizException e, HttpServletRequest request) {
+        if (isConvert2Media(request)) {
+            return convert2MediaError(e.getCode(), e.getMessage());
+        }
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, ConstraintViolationException.class,
+            MissingServletRequestParameterException.class, HttpMessageNotReadableException.class})
+    public Object handleBadRequest(Exception e, HttpServletRequest request) {
+        String msg = firstMsg(e);
+        if (isConvert2Media(request)) {
+            return convert2MediaError(ErrorCode.BAD_REQUEST.getCode(), msg);
+        }
+        return Result.error(ErrorCode.BAD_REQUEST.getCode(), msg);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Object handleMethodNotAllowed(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        if (isConvert2Media(request)) {
+            return convert2MediaError(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
+        }
+        return Result.error(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public Object handleOther(Exception e, HttpServletRequest request) {
+        if (isConvert2Media(request)) {
+            return convert2MediaError(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
+        }
+        return Result.error(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
+    }
+
+    private String firstMsg(Exception e) {
+        if (e instanceof MethodArgumentNotValidException manv) {
+            if (manv.getBindingResult() != null && manv.getBindingResult().hasErrors()) {
+                return manv.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+            }
+        }
+        if (e instanceof BindException be) {
+            if (be.getBindingResult() != null && be.getBindingResult().hasErrors()) {
+                return be.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+            }
+        }
+        if (e instanceof ConstraintViolationException cve) {
+            if (!cve.getConstraintViolations().isEmpty()) {
+                return cve.getConstraintViolations().iterator().next().getMessage();
+            }
+        }
+        return ErrorCode.BAD_REQUEST.getDefaultMessage();
+    }
+
+    private boolean isConvert2Media(HttpServletRequest request) {
+        if (request == null) return false;
+        String uri = request.getRequestURI();
+        return uri != null && uri.startsWith("/api/convert2media/");
+    }
+
+    private java.util.Map<String, Object> convert2MediaError(int code, String msg) {
+        java.util.Map<String, Object> m = new java.util.HashMap<>();
+        m.put("code", code);
+        m.put("success", false);
+        m.put("msg", msg);
+        m.put("data", null);
+        return m;
+    }
+}
+
+
