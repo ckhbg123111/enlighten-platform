@@ -15,6 +15,8 @@ public class MediaConvertRecord {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    private String code;
+
     private Long userId;
 
     private Long tenantId;

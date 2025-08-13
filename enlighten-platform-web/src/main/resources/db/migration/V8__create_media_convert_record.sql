@@ -2,6 +2,7 @@ USE `enlighten_platform`;
 
 CREATE TABLE IF NOT EXISTS `media_convert_record` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `code` varchar(64) NOT NULL COMMENT '转换记录编码',
     `user_id` bigint(20) NOT NULL COMMENT '用户ID',
     `tenant_id` bigint(20) DEFAULT NULL COMMENT '租户ID',
     `essay_code` varchar(128) NOT NULL COMMENT '生成文章编码',

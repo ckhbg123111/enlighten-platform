@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/drafts")
@@ -37,6 +38,7 @@ public class DraftController {
 					.setEssayCode(req.getEssayCode())
 					.setTitle(req.getTitle())
 					.setContent(req.getContent())
+					.setMediaIdListString(req.getMediaCodeList() == null ? null : String.join(",", req.getMediaCodeList()))
 					.setDeleted(0)
 					.setCreateTime(LocalDateTime.now())
 					.setUpdateTime(LocalDateTime.now());
@@ -45,6 +47,7 @@ public class DraftController {
 		} else {
 			exist.setTitle(req.getTitle());
 			exist.setContent(req.getContent());
+			exist.setMediaIdListString(req.getMediaCodeList() == null ? null : String.join(",", req.getMediaCodeList()));
 			exist.setDeleted(0);
 			exist.setUpdateTime(LocalDateTime.now());
 			draftService.updateById(exist);
@@ -72,6 +75,13 @@ public class DraftController {
             vo.setTitle(d.getTitle());
             vo.setContent(d.getContent());
             vo.setDeleted(d.getDeleted());
+			if (d.getMediaIdListString() != null) {
+				// 将字符串转换为列表
+				List<String> mediaIds = List.of(d.getMediaIdListString().split(","));
+				vo.setMediaCodeList(mediaIds);
+			} else {
+				vo.setMediaCodeList(null);
+			}
             vo.setCreateTime(d.getCreateTime());
             vo.setUpdateTime(d.getUpdateTime());
             vo.setDeleteTime(d.getDeleteTime());
@@ -134,6 +144,7 @@ public class DraftController {
 		private String content;
 		@NotBlank
 		private String essayCode;
+		private List<String> mediaCodeList;
 	}
 
 	@Data

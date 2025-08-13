@@ -3,6 +3,7 @@ package com.zhongjia.web.vo;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class DraftVO {
@@ -11,6 +12,8 @@ public class DraftVO {
     private String title;
     private String content;
     private Integer deleted;
+
+    private List<String> mediaCodeList;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private LocalDateTime deleteTime;

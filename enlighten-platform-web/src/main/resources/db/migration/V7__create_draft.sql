@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `draft` (
 	`essay_code` varchar(128) NOT NULL COMMENT '生成文章编码',
 	`title` varchar(255) NOT NULL COMMENT '草稿标题',
 	`content` longtext NOT NULL COMMENT '草稿内容',
+    `media_code_list_string` text DEFAULT NULL COMMENT '草稿中包含的媒体ID列表，逗号分隔',
 	`deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除：0-未删除，1-已删除',
 	`create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	`update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

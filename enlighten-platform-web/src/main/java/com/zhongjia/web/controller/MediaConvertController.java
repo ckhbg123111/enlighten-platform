@@ -48,6 +48,7 @@ public class MediaConvertController {
 
         MediaConvertRecord record = new MediaConvertRecord()
                 .setUserId(user.userId())
+                .setCode(req.getMediaCode())
                 .setTenantId(user.tenantId())
                 .setEssayCode(req.getEssayCode())
                 .setContent(req.getContent())
@@ -184,6 +185,8 @@ public class MediaConvertController {
         private String platform; // xiaohongshu / douyin
         @NotBlank
         private String essayCode; // 额外字段
+        @NotBlank
+        private String mediaCode; // 媒体唯一编码 uuid
     }
 }
 
