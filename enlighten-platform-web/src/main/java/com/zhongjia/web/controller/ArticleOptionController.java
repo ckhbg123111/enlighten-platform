@@ -1,6 +1,5 @@
 package com.zhongjia.web.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhongjia.biz.entity.UserArticleConfig;
 import com.zhongjia.biz.service.UserArticleConfigService;
 import com.zhongjia.web.security.UserContext;
@@ -24,42 +23,37 @@ public class ArticleOptionController {
     @Autowired
     private UserArticleConfigService configService;
 
+
     // 接口一：选项列表，GET，无参，通过 jwt 获取用户ID
     @GetMapping
     public Result<Map<String, List<ArticleOptionVO>>> listAll() {
         Long userId = requireUserId();
-        List<UserArticleConfig> list = configService.listByUserId(userId);
-        if (list.isEmpty()) {
-            // 首次访问：注入默认选项
-            List<UserArticleConfig> seeds = buildDefaultOptions(userId);
-            if (!seeds.isEmpty()) {
-                configService.saveBatch(seeds);
-                list = configService.listByUserId(userId);
+        Map<String, List<UserArticleConfig>> grouped = configService.loadOrInitByUser(userId);
+        Map<String, List<ArticleOptionVO>> resp = new LinkedHashMap<>();
+        for (String cat : CATEGORIES) resp.put(cat, new ArrayList<>());
+        grouped.forEach((cat, list) -> {
+            List<ArticleOptionVO> vos = new ArrayList<>();
+            for (UserArticleConfig c : list) {
+                ArticleOptionVO vo = new ArticleOptionVO();
+                vo.setId(c.getId());
+                vo.setCategory(c.getCategory());
+                vo.setOptionName(c.getOptionName());
+                vo.setOptionCode(c.getOptionCode());
+                vo.setSort(c.getSort());
+                vo.setCreateTime(c.getCreateTime());
+                vo.setUpdateTime(c.getUpdateTime());
+                vos.add(vo);
             }
-        }
-        Map<String, List<ArticleOptionVO>> grouped = new LinkedHashMap<>();
-        for (String cat : CATEGORIES) grouped.put(cat, new ArrayList<>());
-        for (UserArticleConfig c : list) {
-            ArticleOptionVO vo = new ArticleOptionVO();
-            vo.setId(c.getId());
-            vo.setCategory(c.getCategory());
-            vo.setOptionName(c.getOptionName());
-            vo.setOptionCode(c.getOptionCode());
-            vo.setSort(c.getSort());
-            vo.setCreateTime(c.getCreateTime());
-            vo.setUpdateTime(c.getUpdateTime());
-            grouped.computeIfAbsent(c.getCategory(), k -> new ArrayList<>()).add(vo);
-        }
-        return Result.success(grouped);
+            resp.put(cat, vos);
+        });
+        return Result.success(resp);
     }
 
     // 接口二：选项更新，POST，按 option_code 修改名称/排序
     @PostMapping("/update")
     public Result<Boolean> update(@Valid @RequestBody UpdateReq req) {
         Long userId = requireUserId();
-        UserArticleConfig exist = configService.getOne(new LambdaQueryWrapper<UserArticleConfig>()
-                .eq(UserArticleConfig::getUserId, userId)
-                .eq(UserArticleConfig::getOptionCode, req.getOptionCode()));
+        UserArticleConfig exist = configService.getByUserIdAndOptionCode(userId, req.getOptionCode());
         if (exist == null) return Result.error(404, "选项不存在");
         if (req.getOptionName() != null) exist.setOptionName(req.getOptionName());
         if (req.getSort() != null) exist.setSort(req.getSort());
@@ -104,27 +98,7 @@ public class ArticleOptionController {
         return info.userId();
     }
 
-    private List<UserArticleConfig> buildDefaultOptions(Long userId) {
-        Map<String, List<String>> defaults = new LinkedHashMap<>();
-        defaults.put("style", List.of("亲切口语", "专业严谨", "故事化", "小红书", "公众号"));
-        defaults.put("length", List.of("短", "中", "长"));
-        defaults.put("mode", List.of("常规文章", "双人对话", "故事案例"));
-        defaults.put("scene", List.of("日常科普", "入院须知", "术前指导", "术后康复", "慢病管理"));
-
-        List<UserArticleConfig> list = new ArrayList<>();
-        defaults.forEach((category, names) -> {
-            for (int i = 0; i < names.size(); i++) {
-                UserArticleConfig c = new UserArticleConfig();
-                c.setUserId(userId);
-                c.setCategory(category);
-                c.setOptionName(names.get(i));
-                c.setOptionCode(UUID.randomUUID().toString());
-                c.setSort(i);
-                list.add(c);
-            }
-        });
-        return list;
-    }
+    // 默认选项初始化逻辑已移动至 Service 层
 
     @Data
     public static class UpdateReq {

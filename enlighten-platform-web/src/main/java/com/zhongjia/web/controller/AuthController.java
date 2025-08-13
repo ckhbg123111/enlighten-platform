@@ -1,6 +1,5 @@
 package com.zhongjia.web.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhongjia.biz.entity.User;
 import com.zhongjia.biz.service.UserService;
 import com.zhongjia.web.security.JwtUtil;
@@ -26,8 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Result<Map<String, String>> login(@Validated @RequestBody LoginReq req) {
-        User user = userService.getOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUsername, req.getUsername()));
+        User user = userService.getByUsername(req.getUsername());
         if (user == null) {
             return Result.error(401, "用户名或密码错误");
         }

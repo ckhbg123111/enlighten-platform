@@ -1,6 +1,5 @@
 package com.zhongjia.biz.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhongjia.biz.entity.User;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 /**
  * 用户服务接口
  */
-public interface UserService extends IService<User> {
+public interface UserService {
     
     /**
      * 根据用户名查询用户
@@ -24,4 +23,20 @@ public interface UserService extends IService<User> {
      * 批量更新用户状态
      */
     boolean updateStatusByIds(List<Long> ids, Integer status);
+
+    User getById(Long id);
+
+    boolean updateById(User user);
+
+    boolean removeById(Long id);
+
+    boolean save(User user);
+
+    java.util.List<User> list();
+
+    com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page(
+            com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page,
+            com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User> wrapper);
+
+    long count();
 }

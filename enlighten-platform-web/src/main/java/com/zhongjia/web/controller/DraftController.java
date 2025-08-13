@@ -1,6 +1,5 @@
 package com.zhongjia.web.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.DraftPO;
 import com.zhongjia.biz.service.DraftService;
@@ -14,7 +13,6 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,47 +22,18 @@ public class DraftController {
 	@Autowired
 	private DraftService draftService;
 
-	@PostMapping("/save")
-	public Result<Long> save(@Valid @RequestBody SaveReq req) {
-		UserContext.UserInfo user = requireUser();
-		DraftPO exist = draftService.getOne(new LambdaQueryWrapper<DraftPO>()
-				.eq(DraftPO::getUserId, user.userId())
-				.eq(DraftPO::getEssayCode, req.getEssayCode())
-				.last("limit 1"));
-		if (exist == null) {
-			DraftPO draftPO = new DraftPO()
-					.setUserId(user.userId())
-					.setTenantId(user.tenantId())
-					.setEssayCode(req.getEssayCode())
-					.setTitle(req.getTitle())
-					.setContent(req.getContent())
-					.setMediaIdListString(req.getMediaCodeList() == null ? null : String.join(",", req.getMediaCodeList()))
-					.setDeleted(0)
-					.setCreateTime(LocalDateTime.now())
-					.setUpdateTime(LocalDateTime.now());
-			draftService.save(draftPO);
-			return Result.success(draftPO.getId());
-		} else {
-			exist.setTitle(req.getTitle());
-			exist.setContent(req.getContent());
-			exist.setMediaIdListString(req.getMediaCodeList() == null ? null : String.join(",", req.getMediaCodeList()));
-			exist.setDeleted(0);
-			exist.setUpdateTime(LocalDateTime.now());
-			draftService.updateById(exist);
-			return Result.success(exist.getId());
-		}
-	}
+    @PostMapping("/save")
+    public Result<Long> save(@Valid @RequestBody SaveReq req) {
+        UserContext.UserInfo user = requireUser();
+        Long id = draftService.saveOrUpdateByEssayCode(user.userId(), user.tenantId(), req.getEssayCode(), req.getTitle(), req.getContent(), req.getMediaCodeList());
+        return Result.success(id);
+    }
 
 	@GetMapping("/list")
     public Result<Page<DraftVO>> list(@RequestParam(defaultValue = "1") int page,
                                       @RequestParam(defaultValue = "10") int pageSize) {
-		UserContext.UserInfo user = requireUser();
-		Page<DraftPO> p = new Page<>(page, pageSize);
-		LambdaQueryWrapper<DraftPO> w = new LambdaQueryWrapper<DraftPO>()
-				.eq(DraftPO::getUserId, user.userId())
-				.eq(DraftPO::getDeleted, 0)
-				.orderByDesc(DraftPO::getUpdateTime);
-        Page<DraftPO> result = draftService.page(p, w);
+        UserContext.UserInfo user = requireUser();
+        Page<DraftPO> result = draftService.pageByUser(user.userId(), page, pageSize);
         Page<DraftVO> voPage = new Page<>();
         org.springframework.beans.BeanUtils.copyProperties(result, voPage);
         java.util.List<DraftVO> voList = new java.util.ArrayList<>();
@@ -93,41 +62,26 @@ public class DraftController {
 
 	@PostMapping("/edit")
 	public Result<Boolean> edit(@Valid @RequestBody EditReq req) {
-		UserContext.UserInfo user = requireUser();
-		DraftPO draftPO = draftService.getById(req.getDraftId());
-		if (draftPO == null || !draftPO.getUserId().equals(user.userId())) {
-			return Result.error(404, "草稿不存在");
-		}
-		if (req.getTitle() != null) draftPO.setTitle(req.getTitle());
-		if (req.getContent() != null) draftPO.setContent(req.getContent());
-		draftPO.setUpdateTime(LocalDateTime.now());
-		return Result.success(draftService.updateById(draftPO));
+        UserContext.UserInfo user = requireUser();
+        boolean ok = draftService.editDraft(user.userId(), req.getDraftId(), req.getTitle(), req.getContent());
+        if (!ok) return Result.error(404, "草稿不存在");
+        return Result.success(true);
 	}
 
 	@PostMapping("/delete")
 	public Result<Boolean> delete(@Valid @RequestBody DeleteReq req) {
-		UserContext.UserInfo user = requireUser();
-		DraftPO draftPO = draftService.getById(req.getDraftId());
-		if (draftPO == null || !draftPO.getUserId().equals(user.userId())) {
-			return Result.error(404, "草稿不存在");
-		}
-		draftPO.setDeleted(1);
-		draftPO.setDeleteTime(LocalDateTime.now());
-		draftPO.setUpdateTime(LocalDateTime.now());
-		return Result.success(draftService.updateById(draftPO));
+        UserContext.UserInfo user = requireUser();
+        boolean ok = draftService.softDelete(user.userId(), req.getDraftId());
+        if (!ok) return Result.error(404, "草稿不存在");
+        return Result.success(true);
 	}
 
 	@PostMapping("/restore")
 	public Result<Boolean> restore(@Valid @RequestBody RestoreReq req) {
-		UserContext.UserInfo user = requireUser();
-		DraftPO draftPO = draftService.getById(req.getDraftId());
-		if (draftPO == null || !draftPO.getUserId().equals(user.userId())) {
-			return Result.error(404, "草稿不存在");
-		}
-		draftPO.setDeleted(0);
-		draftPO.setDeleteTime(null);
-		draftPO.setUpdateTime(LocalDateTime.now());
-		return Result.success(draftService.updateById(draftPO));
+        UserContext.UserInfo user = requireUser();
+        boolean ok = draftService.restore(user.userId(), req.getDraftId());
+        if (!ok) return Result.error(404, "草稿不存在");
+        return Result.success(true);
 	}
 
 	private UserContext.UserInfo requireUser() {

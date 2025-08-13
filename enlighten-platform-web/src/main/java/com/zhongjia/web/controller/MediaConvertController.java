@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhongjia.biz.entity.MediaConvertRecord;
 import com.zhongjia.biz.enums.MediaPlatform;
 import com.zhongjia.biz.service.MediaConvertRecordService;
+import com.zhongjia.biz.service.dto.UpstreamResult;
+import com.zhongjia.biz.repository.MediaConvertRecordRepository;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.vo.Result;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,17 +13,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,14 +29,10 @@ public class MediaConvertController {
     @Autowired
     private MediaConvertRecordService recordService;
 
-    @Value("${app.upstream.convert2media-url:http://192.168.1.65:8000/convert2media}")
-    private String upstreamUrl;
+    @Autowired
+    private MediaConvertRecordRepository recordRepository;
 
-    @Value("${app.upstream.convert2gzh-re-url:http://192.168.1.65:8000/convert2gzh_re}")
-    private String upstreamGzhReUrl;
-
-    @Value("${app.upstream.convert2gzh-url:http://192.168.1.65:8000/convert2gzh}")
-    private String upstreamGzhUrl;
+    // 上游调用与记录统一移至 Service 层
 
     // 1) 转换：解析上游，并记录
     @PostMapping(path = "common", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,44 +44,9 @@ public class MediaConvertController {
             return;
         }
 
-        MediaConvertRecord record = new MediaConvertRecord()
-                .setUserId(user.userId())
-                .setCode(req.getMediaCode())
-                .setTenantId(user.tenantId())
-                .setEssayCode(req.getEssayCode())
-                .setContent(req.getContent())
-                .setPlatform(req.getPlatform())
-                .setCreateTime(LocalDateTime.now());
-        recordService.save(record);
-
-        try {
-            String upstreamResp = callUpstream(req);
-            // 使用固定结构体承接上游返回
-            UpstreamResp parsed = parseUpstreamJson(upstreamResp);
-            String dataRaw;
-            try {
-                dataRaw = parsed == null || parsed.data == null ? "null" : JSON.writeValueAsString(parsed.data);
-            } catch (Exception ignore) {
-                dataRaw = "null";
-            }
-
-            record.setSuccess(Boolean.TRUE)
-                    .setRespCode(parsed == null ? null : parsed.code)
-                    .setRespMsg(parsed == null ? null : parsed.msg)
-                    .setRespSuccess(parsed == null ? null : parsed.success)
-                    .setRespData(dataRaw);
-
-            // 只返回data，其他字段由本服务包装
-            int code = parsed == null || parsed.code == null ? 200 : parsed.code;
-            boolean success = parsed != null && parsed.success != null && parsed.success;
-            String msg = parsed == null || parsed.msg == null ? "ok" : parsed.msg;
-            writeJson(response, code, success, msg, dataRaw);
-        } catch (Exception ex) {
-            record.setSuccess(false).setErrorMessage(ex.getMessage());
-            writeJson(response, 500, false, "服务异常！", null);
-        } finally {
-            recordService.updateById(record);
-        }
+        UpstreamResult r = recordService.convertCommon(
+                user.userId(), user.tenantId(), req.getMediaCode(), req.getEssayCode(), req.getContent(), req.getPlatform());
+        writeJson(response, r.getCode(), Boolean.TRUE.equals(r.getSuccess()), r.getMsg(), r.getDataRaw());
     }
 
     // 1.1) 转公众号：重新生成
@@ -97,42 +54,9 @@ public class MediaConvertController {
     public void convertToGzhRe(@Valid @RequestBody ConvertGzhReReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
-        MediaConvertRecord record = new MediaConvertRecord()
-                .setUserId(user.userId())
-                .setCode(req.getMediaCode())
-                .setTenantId(user.tenantId())
-                .setEssayCode(req.getEssayCode())
-                .setContent(req.getContent())
-                .setPlatform("ghz")
-                .setCreateTime(LocalDateTime.now());
-        recordService.save(record);
-
-        try {
-            String upstreamResp = callUpstreamGzhRe(req.getContent());
-            UpstreamResp parsed = parseUpstreamJson(upstreamResp);
-            String dataRaw;
-            try {
-                dataRaw = parsed == null || parsed.data == null ? "null" : JSON.writeValueAsString(parsed.data);
-            } catch (Exception ignore) {
-                dataRaw = "null";
-            }
-
-            record.setSuccess(Boolean.TRUE)
-                    .setRespCode(parsed == null ? null : parsed.code)
-                    .setRespMsg(parsed == null ? null : parsed.msg)
-                    .setRespSuccess(parsed == null ? null : parsed.success)
-                    .setRespData(dataRaw);
-
-            int code = parsed == null || parsed.code == null ? 200 : parsed.code;
-            boolean success = parsed != null && parsed.success != null && parsed.success;
-            String msg = parsed == null || parsed.msg == null ? "ok" : parsed.msg;
-            writeJson(response, code, success, msg, dataRaw);
-        } catch (Exception ex) {
-            record.setSuccess(false).setErrorMessage(ex.getMessage());
-            writeJson(response, 500, false, "服务异常！", null);
-        } finally {
-            recordService.updateById(record);
-        }
+        UpstreamResult r = recordService.convertGzhRe(
+                user.userId(), user.tenantId(), req.getMediaCode(), req.getEssayCode(), req.getContent());
+        writeJson(response, r.getCode(), Boolean.TRUE.equals(r.getSuccess()), r.getMsg(), r.getDataRaw());
     }
 
     // 1.2) 转公众号：按结构化内容
@@ -146,50 +70,16 @@ public class MediaConvertController {
         } catch (Exception e) {
             contentStr = String.valueOf(req.getContent());
         }
-
-        MediaConvertRecord record = new MediaConvertRecord()
-                .setUserId(user.userId())
-                .setCode(req.getMediaCode())
-                .setTenantId(user.tenantId())
-                .setEssayCode(req.getEssayCode())
-                .setContent(contentStr)
-                .setPlatform("ghz")
-                .setCreateTime(LocalDateTime.now());
-        recordService.save(record);
-
-        try {
-            String upstreamResp = callUpstreamGzh(req.getContent());
-            UpstreamResp parsed = parseUpstreamJson(upstreamResp);
-            String dataRaw;
-            try {
-                dataRaw = parsed == null || parsed.data == null ? "null" : JSON.writeValueAsString(parsed.data);
-            } catch (Exception ignore) {
-                dataRaw = "null";
-            }
-
-            record.setSuccess(Boolean.TRUE)
-                    .setRespCode(parsed == null ? null : parsed.code)
-                    .setRespMsg(parsed == null ? null : parsed.msg)
-                    .setRespSuccess(parsed == null ? null : parsed.success)
-                    .setRespData(dataRaw);
-
-            int code = parsed == null || parsed.code == null ? 200 : parsed.code;
-            boolean success = parsed != null && parsed.success != null && parsed.success;
-            String msg = parsed == null || parsed.msg == null ? "ok" : parsed.msg;
-            writeJson(response, code, success, msg, dataRaw);
-        } catch (Exception ex) {
-            record.setSuccess(false).setErrorMessage(ex.getMessage());
-            writeJson(response, 500, false, "服务异常！", null);
-        } finally {
-            recordService.updateById(record);
-        }
+        UpstreamResult r = recordService.convertGzh(
+                user.userId(), user.tenantId(), req.getMediaCode(), req.getEssayCode(), contentStr);
+        writeJson(response, r.getCode(), Boolean.TRUE.equals(r.getSuccess()), r.getMsg(), r.getDataRaw());
     }
 
     // 2) 查询：通过 essayCode，倒序（按时间）
     @GetMapping("/records")
     public Result<List<MediaConvertRecord>> listByEssayCode(@RequestParam("essayCode") String essayCode) {
         UserContext.UserInfo user = requireUser();
-        List<MediaConvertRecord> list = recordService.list(new LambdaQueryWrapper<MediaConvertRecord>()
+        List<MediaConvertRecord> list = recordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
                 .eq(MediaConvertRecord::getUserId, user.userId())
                 .eq(MediaConvertRecord::getEssayCode, essayCode)
                 .eq(MediaConvertRecord::getDeleted, 0)
@@ -201,7 +91,7 @@ public class MediaConvertController {
     @DeleteMapping("/{id}")
     public Result<Boolean> softDelete(@PathVariable("id") Long id) {
         UserContext.UserInfo user = requireUser();
-        MediaConvertRecord exist = recordService.getById(id);
+        MediaConvertRecord exist = recordRepository.getById(id);
         if (exist == null || exist.getDeleted() != null && exist.getDeleted() == 1) {
             return Result.error(404, "记录不存在");
         }
@@ -209,27 +99,8 @@ public class MediaConvertController {
             return Result.error(403, "无权限");
         }
         exist.setDeleted(1).setDeleteTime(LocalDateTime.now());
-        boolean ok = recordService.updateById(exist);
+        boolean ok = recordRepository.updateById(exist);
         return ok ? Result.success(true) : Result.error(500, "删除失败");
-    }
-
-    private String callUpstream(ConvertReq req) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-        String body = "{" +
-                "\"content\":\"" + escapeJson(req.getContent()) + "\"," +
-                "\"platform\":\"" + escapeJson(req.getPlatform()) + "\"" +
-                "}";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(upstreamUrl))
-                .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
-                .build();
-        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-        if (upstream.statusCode() != 200) {
-            throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
-        }
-        return upstream.body();
     }
 
     private static void writeJson(HttpServletResponse response, int code, boolean success, String msg, Object data) throws IOException {
@@ -244,40 +115,6 @@ public class MediaConvertController {
         response.flushBuffer();
     }
 
-    private String callUpstreamGzhRe(String content) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-        String body = "{" +
-                "\"content\":\"" + escapeJson(content) + "\"" +
-                "}";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(upstreamGzhReUrl))
-                .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
-                .build();
-        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-        if (upstream.statusCode() != 200) {
-            throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
-        }
-        return upstream.body();
-    }
-
-    private String callUpstreamGzh(Object content) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-        String body = JSON.writeValueAsString(java.util.Collections.singletonMap("content", content));
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(upstreamGzhUrl))
-                .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
-                .build();
-        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-        if (upstream.statusCode() != 200) {
-            throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
-        }
-        return upstream.body();
-    }
-
     private static String escapeJson(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
@@ -287,22 +124,6 @@ public class MediaConvertController {
     }
 
     private static final ObjectMapper JSON = new ObjectMapper();
-
-    private static UpstreamResp parseUpstreamJson(String json) {
-        if (json == null || json.isEmpty()) return null;
-        try {
-            return JSON.readValue(json, UpstreamResp.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static class UpstreamResp {
-        public Integer code;
-        public Boolean success;
-        public String msg;
-        public Object data;
-    }
 
     private UserContext.UserInfo requireUser() {
         UserContext.UserInfo info = UserContext.get();
