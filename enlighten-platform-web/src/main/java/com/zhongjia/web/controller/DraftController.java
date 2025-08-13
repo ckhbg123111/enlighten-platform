@@ -6,6 +6,7 @@ import com.zhongjia.biz.entity.DraftPO;
 import com.zhongjia.biz.service.DraftService;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.vo.DraftVO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -52,16 +53,32 @@ public class DraftController {
 	}
 
 	@GetMapping("/list")
-	public Result<Page<DraftPO>> list(@RequestParam(defaultValue = "1") int page,
-									  @RequestParam(defaultValue = "10") int pageSize) {
+    public Result<Page<DraftVO>> list(@RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "10") int pageSize) {
 		UserContext.UserInfo user = requireUser();
 		Page<DraftPO> p = new Page<>(page, pageSize);
 		LambdaQueryWrapper<DraftPO> w = new LambdaQueryWrapper<DraftPO>()
 				.eq(DraftPO::getUserId, user.userId())
 				.eq(DraftPO::getDeleted, 0)
 				.orderByDesc(DraftPO::getUpdateTime);
-		Page<DraftPO> result = draftService.page(p, w);
-		return Result.success(result);
+        Page<DraftPO> result = draftService.page(p, w);
+        Page<DraftVO> voPage = new Page<>();
+        org.springframework.beans.BeanUtils.copyProperties(result, voPage);
+        java.util.List<DraftVO> voList = new java.util.ArrayList<>();
+        for (DraftPO d : result.getRecords()) {
+            DraftVO vo = new DraftVO();
+            vo.setId(d.getId());
+            vo.setEssayCode(d.getEssayCode());
+            vo.setTitle(d.getTitle());
+            vo.setContent(d.getContent());
+            vo.setDeleted(d.getDeleted());
+            vo.setCreateTime(d.getCreateTime());
+            vo.setUpdateTime(d.getUpdateTime());
+            vo.setDeleteTime(d.getDeleteTime());
+            voList.add(vo);
+        }
+        voPage.setRecords(voList);
+        return Result.success(voPage);
 	}
 
 	@PostMapping("/edit")

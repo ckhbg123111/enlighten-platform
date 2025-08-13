@@ -5,6 +5,7 @@ import com.zhongjia.biz.entity.UserArticleConfig;
 import com.zhongjia.biz.service.UserArticleConfigService;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.vo.ArticleOptionVO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class ArticleOptionController {
 
     // 接口一：选项列表，GET，无参，通过 jwt 获取用户ID
     @GetMapping
-    public Result<Map<String, List<UserArticleConfig>>> listAll() {
+    public Result<Map<String, List<ArticleOptionVO>>> listAll() {
         Long userId = requireUserId();
         List<UserArticleConfig> list = configService.listByUserId(userId);
         if (list.isEmpty()) {
@@ -36,10 +37,18 @@ public class ArticleOptionController {
                 list = configService.listByUserId(userId);
             }
         }
-        Map<String, List<UserArticleConfig>> grouped = new LinkedHashMap<>();
+        Map<String, List<ArticleOptionVO>> grouped = new LinkedHashMap<>();
         for (String cat : CATEGORIES) grouped.put(cat, new ArrayList<>());
         for (UserArticleConfig c : list) {
-            grouped.computeIfAbsent(c.getCategory(), k -> new ArrayList<>()).add(c);
+            ArticleOptionVO vo = new ArticleOptionVO();
+            vo.setId(c.getId());
+            vo.setCategory(c.getCategory());
+            vo.setOptionName(c.getOptionName());
+            vo.setOptionCode(c.getOptionCode());
+            vo.setSort(c.getSort());
+            vo.setCreateTime(c.getCreateTime());
+            vo.setUpdateTime(c.getUpdateTime());
+            grouped.computeIfAbsent(c.getCategory(), k -> new ArrayList<>()).add(vo);
         }
         return Result.success(grouped);
     }
@@ -59,7 +68,7 @@ public class ArticleOptionController {
 
     // 接口三：选项新增，POST，为大类新增选项
     @PostMapping("/add")
-    public Result<UserArticleConfig> add(@Valid @RequestBody AddReq req) {
+    public Result<ArticleOptionVO> add(@Valid @RequestBody AddReq req) {
         Long userId = requireUserId();
         if (!CATEGORIES.contains(req.getCategory())) {
             return Result.error(400, "非法分类");
@@ -70,7 +79,15 @@ public class ArticleOptionController {
         cfg.setOptionCode(UUID.randomUUID().toString());
         cfg.setSort(Optional.ofNullable(req.getSort()).orElse(0));
         configService.save(cfg);
-        return Result.success(cfg);
+        ArticleOptionVO vo = new ArticleOptionVO();
+        vo.setId(cfg.getId());
+        vo.setCategory(cfg.getCategory());
+        vo.setOptionName(cfg.getOptionName());
+        vo.setOptionCode(cfg.getOptionCode());
+        vo.setSort(cfg.getSort());
+        vo.setCreateTime(cfg.getCreateTime());
+        vo.setUpdateTime(cfg.getUpdateTime());
+        return Result.success(vo);
     }
 
     // 接口四：选项删除，DELETE，通过选项 code 删除
