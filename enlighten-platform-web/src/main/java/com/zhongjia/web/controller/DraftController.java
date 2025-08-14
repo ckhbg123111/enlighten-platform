@@ -11,6 +11,7 @@ import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.DraftVO;
+import com.zhongjia.web.mapper.DraftMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +37,9 @@ public class DraftController {
 
 	@Autowired
 	private MediaConvertRecordRepository mediaConvertRecordRepository;
+
+	@Autowired
+	private DraftMapper draftMapper;
 
     @PostMapping("/save")
     @Operation(summary = "保存或更新草稿", security = {@SecurityRequirement(name = "bearer-jwt")})
@@ -74,26 +78,17 @@ public class DraftController {
         Page<DraftPO> result = draftService.pageByUser(user.userId(), page, pageSize);
         Page<DraftVO> voPage = new Page<>();
         org.springframework.beans.BeanUtils.copyProperties(result, voPage);
-        java.util.List<DraftVO> voList = new java.util.ArrayList<>();
-        for (DraftPO d : result.getRecords()) {
-            DraftVO vo = new DraftVO();
-            vo.setId(d.getId());
-            vo.setEssayCode(d.getEssayCode());
-            vo.setTitle(d.getTitle());
-            vo.setContent(d.getContent());
-            vo.setTags(d.getTags());
-            vo.setDeleted(d.getDeleted());
-			if (d.getMediaCodeListString() != null) {
-				// 将字符串转换为列表
-				List<String> mediaIds = List.of(d.getMediaCodeListString().split(","));
-				vo.setMediaCodeList(mediaIds);
-			} else {
-				vo.setMediaCodeList(null);
-			}
-            vo.setCreateTime(d.getCreateTime());
-            vo.setUpdateTime(d.getUpdateTime());
-            vo.setDeleteTime(d.getDeleteTime());
-            voList.add(vo);
+        java.util.List<DraftVO> voList = draftMapper.toVOList(result.getRecords());
+        // 手动处理 mediaCodeListString -> mediaCodeList
+        for (int i = 0; i < result.getRecords().size(); i++) {
+            DraftPO d = result.getRecords().get(i);
+            DraftVO vo = voList.get(i);
+            if (d.getMediaCodeListString() != null) {
+                List<String> mediaIds = List.of(d.getMediaCodeListString().split(","));
+                vo.setMediaCodeList(mediaIds);
+            } else {
+                vo.setMediaCodeList(null);
+            }
         }
         voPage.setRecords(voList);
         return Result.success(voPage);

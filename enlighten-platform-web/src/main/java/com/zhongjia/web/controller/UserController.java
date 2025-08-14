@@ -9,11 +9,9 @@ import com.zhongjia.web.req.UserUpdateReq;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.UserVO;
+import com.zhongjia.web.mapper.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 用户控制器
@@ -34,6 +31,8 @@ public class UserController {
     
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserMapper userMapper;
     
     /**
      * 创建用户
@@ -58,7 +57,7 @@ public class UserController {
         boolean success = userService.save(user);
         
         if (success) {
-            UserVO userVO = convertToVO(user);
+            UserVO userVO = userMapper.toVO(user);
             return Result.success(userVO);
         } else {
             return Result.error(ErrorCode.INTERNAL_ERROR, "创建用户失败");
@@ -81,7 +80,7 @@ public class UserController {
         boolean success = userService.updateById(user);
         
         if (success) {
-            UserVO userVO = convertToVO(user);
+            UserVO userVO = userMapper.toVO(user);
             return Result.success(userVO);
         } else {
             return Result.error(ErrorCode.INTERNAL_ERROR, "更新用户失败");
@@ -113,7 +112,7 @@ public class UserController {
             return Result.error("用户不存在");
         }
         
-        UserVO userVO = convertToVO(user);
+        UserVO userVO = userMapper.toVO(user);
         return Result.success(userVO);
     }
     
@@ -147,9 +146,7 @@ public class UserController {
         Page<UserVO> userVOPage = new Page<>();
         BeanUtils.copyProperties(userPage, userVOPage);
         
-        List<UserVO> userVOList = userPage.getRecords().stream()
-                .map(this::convertToVO)
-                .collect(Collectors.toList());
+        List<UserVO> userVOList = userMapper.toVOList(userPage.getRecords());
         
         userVOPage.setRecords(userVOList);
         
@@ -163,9 +160,7 @@ public class UserController {
     @Operation(summary = "查询所有用户", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<List<UserVO>> getAllUsers() {
         List<User> users = userService.list();
-        List<UserVO> userVOList = users.stream()
-                .map(this::convertToVO)
-                .collect(Collectors.toList());
+        List<UserVO> userVOList = userMapper.toVOList(users);
         
         return Result.success(userVOList);
     }
@@ -177,9 +172,7 @@ public class UserController {
     @Operation(summary = "根据状态查询用户", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<List<UserVO>> getUsersByStatus(@Parameter(description = "状态：1启用/0禁用") @PathVariable Integer status) {
         List<User> users = userService.getByStatus(status);
-        List<UserVO> userVOList = users.stream()
-                .map(this::convertToVO)
-                .collect(Collectors.toList());
+        List<UserVO> userVOList = userMapper.toVOList(users);
         
         return Result.success(userVOList);
     }
@@ -217,9 +210,5 @@ public class UserController {
     /**
      * 将User实体转换为UserVO
      */
-    private UserVO convertToVO(User user) {
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
-        return userVO;
-    }
+    
 }

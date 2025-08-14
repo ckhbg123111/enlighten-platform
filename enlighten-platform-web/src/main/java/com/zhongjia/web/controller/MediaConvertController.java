@@ -11,6 +11,7 @@ import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.MediaConvertRecordVO;
+import com.zhongjia.web.mapper.MediaConvertRecordMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -40,6 +41,9 @@ public class MediaConvertController {
 
     @Autowired
     private MediaConvertRecordRepository recordRepository;
+
+    @Autowired
+    private MediaConvertRecordMapper mediaConvertRecordMapper;
 
     // 上游调用与记录统一移至 Service 层
 
@@ -97,7 +101,7 @@ public class MediaConvertController {
                 .eq(MediaConvertRecord::getEssayCode, essayCode)
                 .eq(MediaConvertRecord::getDeleted, 0)
                 .orderByDesc(MediaConvertRecord::getCreateTime));
-        return Result.success(toVOList(list));
+        return Result.success(mediaConvertRecordMapper.toVOList(list));
     }
 
     // 2.1) 查询：通过 userId，限制在当前租户内，倒序（按时间）
@@ -110,7 +114,7 @@ public class MediaConvertController {
                 .eq(MediaConvertRecord::getUserId, user.userId())
                 .eq(MediaConvertRecord::getDeleted, 0)
                 .orderByDesc(MediaConvertRecord::getCreateTime));
-        return Result.success(toVOList(list));
+        return Result.success(mediaConvertRecordMapper.toVOList(list));
     }
 
     // 3) 删除：软删除
@@ -158,30 +162,7 @@ public class MediaConvertController {
         return info;
     }
 
-    private static List<MediaConvertRecordVO> toVOList(List<MediaConvertRecord> records) {
-        java.util.ArrayList<MediaConvertRecordVO> result = new java.util.ArrayList<>();
-        if (records == null || records.isEmpty()) return result;
-        for (MediaConvertRecord r : records) {
-            result.add(toVO(r));
-        }
-        return result;
-    }
-
-    private static MediaConvertRecordVO toVO(MediaConvertRecord r) {
-        MediaConvertRecordVO vo = new MediaConvertRecordVO();
-        vo.setId(r.getId());
-        vo.setCode(r.getCode());
-        vo.setEssayCode(r.getEssayCode());
-        vo.setPlatform(r.getPlatform());
-        vo.setRespCode(r.getRespCode());
-        vo.setRespMsg(r.getRespMsg());
-        vo.setRespSuccess(r.getRespSuccess());
-        vo.setRespData(r.getRespData());
-        vo.setSuccess(r.getSuccess());
-        vo.setErrorMessage(r.getErrorMessage());
-        vo.setCreateTime(r.getCreateTime());
-        return vo;
-    }
+    
 
     @Data
     @Schema(name = "ConvertCommonReq", description = "通用媒体转换请求")
