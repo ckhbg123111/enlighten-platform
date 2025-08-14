@@ -10,6 +10,7 @@ import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.vo.MediaConvertRecordVO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -89,27 +90,27 @@ public class MediaConvertController {
     // 2) 查询：通过 essayCode，倒序（按时间）
     @GetMapping("/records")
     @Operation(summary = "按文章编码查询转换记录", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<List<MediaConvertRecord>> listByEssayCode(@Parameter(description = "文章编码") @RequestParam("essayCode") String essayCode) {
+    public Result<List<MediaConvertRecordVO>> listByEssayCode(@Parameter(description = "文章编码") @RequestParam("essayCode") String essayCode) {
         UserContext.UserInfo user = requireUser();
         List<MediaConvertRecord> list = recordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
                 .eq(MediaConvertRecord::getUserId, user.userId())
                 .eq(MediaConvertRecord::getEssayCode, essayCode)
                 .eq(MediaConvertRecord::getDeleted, 0)
                 .orderByDesc(MediaConvertRecord::getCreateTime));
-        return Result.success(list);
+        return Result.success(toVOList(list));
     }
 
     // 2.1) 查询：通过 userId，限制在当前租户内，倒序（按时间）
     @GetMapping("/records/by-user")
     @Operation(summary = "按用户ID查询转换记录", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<List<MediaConvertRecord>> listByUserId() {
+    public Result<List<MediaConvertRecordVO>> listByUserId() {
         UserContext.UserInfo user = requireUser();
         List<MediaConvertRecord> list = recordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
                 .eq(MediaConvertRecord::getTenantId, user.tenantId())
                 .eq(MediaConvertRecord::getUserId, user.userId())
                 .eq(MediaConvertRecord::getDeleted, 0)
                 .orderByDesc(MediaConvertRecord::getCreateTime));
-        return Result.success(list);
+        return Result.success(toVOList(list));
     }
 
     // 3) 删除：软删除
@@ -155,6 +156,31 @@ public class MediaConvertController {
         UserContext.UserInfo info = UserContext.get();
         if (info == null || info.userId() == null) throw new BizException(ErrorCode.UNAUTHORIZED);
         return info;
+    }
+
+    private static List<MediaConvertRecordVO> toVOList(List<MediaConvertRecord> records) {
+        java.util.ArrayList<MediaConvertRecordVO> result = new java.util.ArrayList<>();
+        if (records == null || records.isEmpty()) return result;
+        for (MediaConvertRecord r : records) {
+            result.add(toVO(r));
+        }
+        return result;
+    }
+
+    private static MediaConvertRecordVO toVO(MediaConvertRecord r) {
+        MediaConvertRecordVO vo = new MediaConvertRecordVO();
+        vo.setId(r.getId());
+        vo.setCode(r.getCode());
+        vo.setEssayCode(r.getEssayCode());
+        vo.setPlatform(r.getPlatform());
+        vo.setRespCode(r.getRespCode());
+        vo.setRespMsg(r.getRespMsg());
+        vo.setRespSuccess(r.getRespSuccess());
+        vo.setRespData(r.getRespData());
+        vo.setSuccess(r.getSuccess());
+        vo.setErrorMessage(r.getErrorMessage());
+        vo.setCreateTime(r.getCreateTime());
+        return vo;
     }
 
     @Data
