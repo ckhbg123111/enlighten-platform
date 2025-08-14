@@ -26,7 +26,7 @@ public class DraftPO {
 
 	private String content;
 
-	private String mediaIdListString;
+	private String mediaCodeListString;
 
 	/** 标签（单字段字符串） */
 	private String tags;

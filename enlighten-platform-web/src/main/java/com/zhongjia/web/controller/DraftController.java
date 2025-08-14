@@ -1,8 +1,11 @@
 package com.zhongjia.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.DraftPO;
+import com.zhongjia.biz.entity.MediaConvertRecord;
 import com.zhongjia.biz.service.DraftService;
+import com.zhongjia.biz.repository.MediaConvertRecordRepository;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
@@ -31,11 +34,26 @@ public class DraftController {
 	@Autowired
 	private DraftService draftService;
 
+	@Autowired
+	private MediaConvertRecordRepository mediaConvertRecordRepository;
+
     @PostMapping("/save")
     @Operation(summary = "保存或更新草稿", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<Long> save(@Valid @RequestBody SaveReq req) {
         UserContext.UserInfo user = requireUser();
-        // fixme 增加mediaCode 有效性，检查media_convert_record表中是否存在
+        // 增加mediaCode有效性校验，检查media_convert_record表中是否存在
+        if (req.getMediaCodeList() != null && !req.getMediaCodeList().isEmpty()) {
+            java.util.Set<String> codes = new java.util.HashSet<>(req.getMediaCodeList());
+            LambdaQueryWrapper<MediaConvertRecord> w =
+                    new LambdaQueryWrapper<MediaConvertRecord>()
+                            .eq(MediaConvertRecord::getUserId, user.userId())
+                            .in(MediaConvertRecord::getCode, codes)
+                            .eq(MediaConvertRecord::getDeleted, 0);
+            long count = mediaConvertRecordRepository.count(w);
+            if (count < codes.size()) {
+                return Result.error(ErrorCode.BAD_REQUEST.getCode(), "存在无效的mediaCode");
+            }
+        }
         Long id = draftService.saveOrUpdateByEssayCode(
             user.userId(),
             user.tenantId(),
@@ -65,9 +83,9 @@ public class DraftController {
             vo.setContent(d.getContent());
             vo.setTags(d.getTags());
             vo.setDeleted(d.getDeleted());
-			if (d.getMediaIdListString() != null) {
+			if (d.getMediaCodeListString() != null) {
 				// 将字符串转换为列表
-				List<String> mediaIds = List.of(d.getMediaIdListString().split(","));
+				List<String> mediaIds = List.of(d.getMediaCodeListString().split(","));
 				vo.setMediaCodeList(mediaIds);
 			} else {
 				vo.setMediaCodeList(null);
