@@ -2,7 +2,9 @@ package com.zhongjia.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhongjia.biz.entity.DraftMediaMap;
+import com.zhongjia.biz.entity.DraftPO;
 import com.zhongjia.biz.entity.MediaConvertRecord;
+import com.zhongjia.biz.repository.DraftRepository;
 import com.zhongjia.biz.repository.DraftMediaMapRepository;
 import com.zhongjia.biz.repository.MediaConvertRecordRepository;
 import com.zhongjia.web.exception.BizException;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "内容库")
@@ -34,6 +37,9 @@ public class ContentLibraryController {
 
     @Autowired
     private MediaConvertRecordRepository mediaConvertRecordRepository;
+
+    @Autowired
+    private DraftRepository draftRepository;
 
     @GetMapping("/query")
     @Operation(summary = "按用户+标签查询内容库", security = {@SecurityRequirement(name = "bearer-jwt")})
@@ -56,7 +62,9 @@ public class ContentLibraryController {
         }
 
         Set<String> mediaCodes = new HashSet<>();
+        Set<Long> draftIds = new HashSet<>();
         for (DraftMediaMap m : maps) mediaCodes.add(m.getMediaCode());
+        for (DraftMediaMap m : maps) draftIds.add(m.getDraftId());
 
         List<MediaConvertRecord> records = mediaConvertRecordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
                 .eq(MediaConvertRecord::getUserId, user.userId())
@@ -65,6 +73,14 @@ public class ContentLibraryController {
 
         Map<String, MediaConvertRecord> code2rec = new HashMap<>();
         for (MediaConvertRecord r : records) code2rec.put(r.getCode(), r);
+
+        // 批量查询草稿，获取标题与正文
+        List<DraftPO> drafts = draftRepository.list(new LambdaQueryWrapper<DraftPO>()
+                .eq(DraftPO::getUserId, user.userId())
+                .in(DraftPO::getId, draftIds)
+                .eq(DraftPO::getDeleted, 0));
+        Map<Long, DraftPO> id2draft = drafts.stream()
+                .collect(Collectors.toMap(DraftPO::getId, d -> d));
 
         List<ItemVO> result = new ArrayList<>();
         for (DraftMediaMap m : maps) {
@@ -77,6 +93,11 @@ public class ContentLibraryController {
             vo.setEssayCode(r.getEssayCode());
             vo.setPlatform(r.getPlatform());
             vo.setContent(r.getContent());
+            DraftPO d = id2draft.get(m.getDraftId());
+            if (d != null) {
+                vo.setTitle(d.getTitle());
+                vo.setDraftBody(d.getContent());
+            }
             result.add(vo);
         }
         return Result.success(result);
