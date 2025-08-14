@@ -1,6 +1,7 @@
 package com.zhongjia.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.zhongjia.biz.entity.DraftMediaMap;
 import com.zhongjia.biz.entity.DraftPO;
 import com.zhongjia.biz.entity.MediaConvertRecord;
@@ -95,7 +96,7 @@ public class ContentLibraryController {
                     vo.setMediaCode(r.getCode());
                     vo.setEssayCode(r.getEssayCode());
                     vo.setPlatform(r.getPlatform());
-                    vo.setContent(r.getContent());
+                    vo.setContent(r.getRespData());
                     DraftPO d = id2draft.get(m.getDraftId());
                     if (d != null) {
                         vo.setTitle(d.getTitle());
@@ -128,6 +129,7 @@ public class ContentLibraryController {
         @Schema(description = "平台")
         private String platform;
         @Schema(description = "内容")
+        @JsonRawValue
         private String content;
 
         @Schema(description = "草稿箱标题")
