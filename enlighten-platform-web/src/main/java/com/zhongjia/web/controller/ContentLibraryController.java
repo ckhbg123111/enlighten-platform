@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.function.Function;
 
 @RestController
 @Tag(name = "内容库")
@@ -61,18 +62,20 @@ public class ContentLibraryController {
             return Result.success(Collections.emptyList());
         }
 
-        Set<String> mediaCodes = new HashSet<>();
-        Set<Long> draftIds = new HashSet<>();
-        for (DraftMediaMap m : maps) mediaCodes.add(m.getMediaCode());
-        for (DraftMediaMap m : maps) draftIds.add(m.getDraftId());
+        Set<String> mediaCodes = maps.stream()
+                .map(DraftMediaMap::getMediaCode)
+                .collect(Collectors.toSet());
+        Set<Long> draftIds = maps.stream()
+                .map(DraftMediaMap::getDraftId)
+                .collect(Collectors.toSet());
 
         List<MediaConvertRecord> records = mediaConvertRecordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
                 .eq(MediaConvertRecord::getUserId, user.userId())
                 .in(MediaConvertRecord::getCode, mediaCodes)
                 .eq(MediaConvertRecord::getDeleted, 0));
 
-        Map<String, MediaConvertRecord> code2rec = new HashMap<>();
-        for (MediaConvertRecord r : records) code2rec.put(r.getCode(), r);
+        Map<String, MediaConvertRecord> code2rec = records.stream()
+                .collect(Collectors.toMap(MediaConvertRecord::getCode, Function.identity(), (a, b) -> a));
 
         // 批量查询草稿，获取标题与正文
         List<DraftPO> drafts = draftRepository.list(new LambdaQueryWrapper<DraftPO>()
@@ -82,24 +85,26 @@ public class ContentLibraryController {
         Map<Long, DraftPO> id2draft = drafts.stream()
                 .collect(Collectors.toMap(DraftPO::getId, d -> d));
 
-        List<ItemVO> result = new ArrayList<>();
-        for (DraftMediaMap m : maps) {
-            MediaConvertRecord r = code2rec.get(m.getMediaCode());
-            if (r == null) continue;
-            ItemVO vo = new ItemVO();
-            vo.setDraftId(m.getDraftId());
-            vo.setTag(m.getTag());
-            vo.setMediaCode(r.getCode());
-            vo.setEssayCode(r.getEssayCode());
-            vo.setPlatform(r.getPlatform());
-            vo.setContent(r.getContent());
-            DraftPO d = id2draft.get(m.getDraftId());
-            if (d != null) {
-                vo.setTitle(d.getTitle());
-                vo.setDraftBody(d.getContent());
-            }
-            result.add(vo);
-        }
+        List<ItemVO> result = maps.stream()
+                .map(m -> {
+                    MediaConvertRecord r = code2rec.get(m.getMediaCode());
+                    if (r == null) return null;
+                    ItemVO vo = new ItemVO();
+                    vo.setDraftId(m.getDraftId());
+                    vo.setTag(m.getTag());
+                    vo.setMediaCode(r.getCode());
+                    vo.setEssayCode(r.getEssayCode());
+                    vo.setPlatform(r.getPlatform());
+                    vo.setContent(r.getContent());
+                    DraftPO d = id2draft.get(m.getDraftId());
+                    if (d != null) {
+                        vo.setTitle(d.getTitle());
+                        vo.setDraftBody(d.getContent());
+                    }
+                    return vo;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         return Result.success(result);
     }
 
