@@ -29,6 +29,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
+        // 预检请求直接放行，避免被拦截导致跨域失败
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         // 登录接口放行、创建用户放行、公开的健康检查
         if (path.startsWith("/api/auth/login") || path.startsWith("/api/user/create") || path.equals("/actuator/health")) {
             filterChain.doFilter(request, response);
