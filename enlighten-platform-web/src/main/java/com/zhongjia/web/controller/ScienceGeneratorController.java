@@ -32,7 +32,7 @@ public class ScienceGeneratorController {
 
     // 上游交互已下沉到 Service
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "流式生成科学文章(SSE)", description = "返回 text/event-stream", security = {@SecurityRequirement(name = "bearer-jwt")})
     public void streamGenerate(@Valid @RequestBody GenerateReq req, HttpServletResponse response) throws IOException {
 		UserContext.UserInfo user = requireUser();

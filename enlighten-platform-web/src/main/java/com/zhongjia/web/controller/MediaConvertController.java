@@ -99,6 +99,19 @@ public class MediaConvertController {
         return Result.success(list);
     }
 
+    // 2.1) 查询：通过 userId，限制在当前租户内，倒序（按时间）
+    @GetMapping("/records/by-user")
+    @Operation(summary = "按用户ID查询转换记录", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<List<MediaConvertRecord>> listByUserId(@Parameter(description = "用户ID") @RequestParam("userId") Long userId) {
+        UserContext.UserInfo user = requireUser();
+        List<MediaConvertRecord> list = recordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
+                .eq(MediaConvertRecord::getTenantId, user.tenantId())
+                .eq(MediaConvertRecord::getUserId, userId)
+                .eq(MediaConvertRecord::getDeleted, 0)
+                .orderByDesc(MediaConvertRecord::getCreateTime));
+        return Result.success(list);
+    }
+
     // 3) 删除：软删除
     @DeleteMapping("/{id}")
     @Operation(summary = "删除转换记录(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})

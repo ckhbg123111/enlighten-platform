@@ -42,16 +42,35 @@ public class FillInController {
         response.setHeader("Cache-Control", "no-cache");
         response.flushBuffer();
 
-        recordService.streamFillIn(user.userId(), user.tenantId(), req.getContent(), line -> {
-            try {
-                writeSseLine(response, line);
-            } catch (Exception ignored) {}
-        });
+        try {
+            recordService.streamFillIn(user.userId(), user.tenantId(), req.getContent(), line -> {
+                try {
+                    writeSseLine(response, line);
+                } catch (Exception ignored) {}
+            });
+        } catch (BizException be) {
+            writeSseLine(response, buildSseError(be.getCode(), be.getMessage()));
+        } catch (Exception e) {
+            writeSseLine(response, buildSseError(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage()));
+        }
     }
 
     private static void writeSseLine(HttpServletResponse response, String s) throws IOException {
         response.getOutputStream().write(s.getBytes(StandardCharsets.UTF_8));
         response.flushBuffer();
+    }
+
+    private static String buildSseError(int code, String msg) {
+        String safeMsg = msg == null ? "" : msg.replace("\\", "\\\\").replace("\"", "\\\"");
+        StringBuilder sb = new StringBuilder();
+        sb.append("event: error\n");
+        sb.append("data: {");
+        sb.append("\"code\":").append(code).append(",");
+        sb.append("\"success\":false,");
+        sb.append("\"msg\":\"").append(safeMsg).append("\",");
+        sb.append("\"data\":null");
+        sb.append("}\n\n");
+        return sb.toString();
     }
 
     private UserContext.UserInfo requireUser() {

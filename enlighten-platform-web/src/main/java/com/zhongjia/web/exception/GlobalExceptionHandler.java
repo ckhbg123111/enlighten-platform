@@ -3,6 +3,9 @@ package com.zhongjia.web.exception;
 import com.zhongjia.web.vo.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -16,6 +19,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BizException.class)
     public Object handleBiz(BizException e, HttpServletRequest request) {
+        if (isSse(request)) {
+            return sseError(e.getCode(), e.getMessage());
+        }
         if (isConvert2Media(request)) {
             return convert2MediaError(e.getCode(), e.getMessage());
         }
@@ -26,6 +32,9 @@ public class GlobalExceptionHandler {
             MissingServletRequestParameterException.class, HttpMessageNotReadableException.class})
     public Object handleBadRequest(Exception e, HttpServletRequest request) {
         String msg = firstMsg(e);
+        if (isSse(request)) {
+            return sseError(ErrorCode.BAD_REQUEST.getCode(), msg);
+        }
         if (isConvert2Media(request)) {
             return convert2MediaError(ErrorCode.BAD_REQUEST.getCode(), msg);
         }
@@ -34,6 +43,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Object handleMethodNotAllowed(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        if (isSse(request)) {
+            return sseError(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
+        }
         if (isConvert2Media(request)) {
             return convert2MediaError(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
         }
@@ -42,6 +54,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleOther(Exception e, HttpServletRequest request) {
+        if (isSse(request)) {
+            return sseError(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
+        }
         if (isConvert2Media(request)) {
             return convert2MediaError(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
         }
@@ -80,6 +95,28 @@ public class GlobalExceptionHandler {
         m.put("msg", msg);
         m.put("data", null);
         return m;
+    }
+
+    private boolean isSse(HttpServletRequest request) {
+        if (request == null) return false;
+        String accept = request.getHeader("Accept");
+        String uri = request.getRequestURI();
+        boolean acceptSse = accept != null && accept.contains(MediaType.TEXT_EVENT_STREAM_VALUE);
+        boolean uriIsSseEndpoint = uri != null && uri.startsWith("/api/science-generator");
+        return acceptSse || uriIsSseEndpoint;
+    }
+
+    private ResponseEntity<String> sseError(int code, String msg) {
+        String json = "{\"code\":" + code + ",\"success\":false,\"msg\":\"" + safe(msg) + "\",\"data\":null}";
+        String body = "event: error\n" + "data: " + json + "\n\n";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_EVENT_STREAM);
+        return ResponseEntity.status(200).headers(headers).body(body);
+    }
+
+    private String safe(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", " ");
     }
 }
 
