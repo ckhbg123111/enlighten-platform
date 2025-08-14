@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: enlighten-mysql
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - TZ=Asia/Shanghai
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: enlighten-platform-web/Dockerfile
+    image: enlighten-platform-web:${APP_VERSION}
+    container_name: enlighten-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=${JAVA_OPTS}
+      - LOGGING_FILE_PATH=/app/logs
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${DB_NAME}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_ROOT_PASSWORD}
+      - APP_JWT_SECRET=${APP_JWT_SECRET}
+      - APP_UPSTREAM_FILL_IN_URL=${APP_UPSTREAM_FILL_IN_URL}
+      - APP_UPSTREAM_SCIENCE_GENERATOR_URL=${APP_UPSTREAM_SCIENCE_GENERATOR_URL}
+      - APP_UPSTREAM_CONVERT2MEDIA_URL=${APP_UPSTREAM_CONVERT2MEDIA_URL}
+      - APP_UPSTREAM_CONVERT2GZH_RE_URL=${APP_UPSTREAM_CONVERT2GZH_RE_URL}
+      - APP_UPSTREAM_CONVERT2GZH_URL=${APP_UPSTREAM_CONVERT2GZH_URL}
+    ports:
+      - "${APP_PORT}:8080"
+    volumes:
+      - ./logs/app:/app/logs
+    restart: unless-stopped
+
+networks:
+  default:
+    name: enlighten-net
+
+
