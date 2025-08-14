@@ -28,6 +28,9 @@ public class DraftPO {
 
 	private String mediaIdListString;
 
+	/** 标签（单字段字符串） */
+	private String tags;
+
 	/** 逻辑删除标记：0-未删除，1-已删除 */
 	private Integer deleted;
 

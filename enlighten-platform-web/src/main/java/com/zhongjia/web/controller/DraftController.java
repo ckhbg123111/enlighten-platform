@@ -15,7 +15,6 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,7 +35,16 @@ public class DraftController {
     @Operation(summary = "保存或更新草稿", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<Long> save(@Valid @RequestBody SaveReq req) {
         UserContext.UserInfo user = requireUser();
-        Long id = draftService.saveOrUpdateByEssayCode(user.userId(), user.tenantId(), req.getEssayCode(), req.getTitle(), req.getContent(), req.getMediaCodeList());
+        // fixme 增加mediaCode 有效性，检查media_convert_record表中是否存在
+        Long id = draftService.saveOrUpdateByEssayCode(
+            user.userId(),
+            user.tenantId(),
+            req.getEssayCode(),
+            req.getTitle(),
+            req.getContent(),
+            req.getMediaCodeList(),
+            req.getTag()
+        );
         return Result.success(id);
     }
 
@@ -55,6 +63,7 @@ public class DraftController {
             vo.setEssayCode(d.getEssayCode());
             vo.setTitle(d.getTitle());
             vo.setContent(d.getContent());
+            vo.setTags(d.getTags());
             vo.setDeleted(d.getDeleted());
 			if (d.getMediaIdListString() != null) {
 				// 将字符串转换为列表
@@ -119,6 +128,9 @@ public class DraftController {
         private String essayCode;
         @ArraySchema(schema = @Schema(description = "媒体素材编码列表", implementation = String.class))
         private List<String> mediaCodeList;
+        @Schema(description = "标签", example = "科普,AI")
+        private String tag;
+
     }
 
     @Data

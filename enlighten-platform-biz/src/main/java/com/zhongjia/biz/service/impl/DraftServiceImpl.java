@@ -18,43 +18,31 @@ public class DraftServiceImpl implements DraftService {
     public DraftServiceImpl(DraftRepository draftRepository) {
         this.draftRepository = draftRepository;
     }
+
     @Override
-    public Long saveOrUpdateByEssayCode(Long userId, Long tenantId, String essayCode, String title, String content, List<String> mediaCodeList) {
-        DraftPO exist = draftRepository.getOne(new LambdaQueryWrapper<DraftPO>()
-            .eq(DraftPO::getUserId, userId)
-            .eq(DraftPO::getEssayCode, essayCode)
-            .last("limit 1"));
-        if (exist == null) {
-            DraftPO draftPO = new DraftPO()
+    public Long saveOrUpdateByEssayCode(Long userId, Long tenantId, String essayCode, String title, String content, List<String> mediaCodeList, String tags) {
+        DraftPO draftPO = new DraftPO()
                 .setUserId(userId)
                 .setTenantId(tenantId)
                 .setEssayCode(essayCode)
                 .setTitle(title)
                 .setContent(content)
                 .setMediaIdListString(mediaCodeList == null ? null : String.join(",", mediaCodeList))
+                .setTags(tags)
                 .setDeleted(0)
                 .setCreateTime(LocalDateTime.now())
                 .setUpdateTime(LocalDateTime.now());
-            draftRepository.save(draftPO);
-            return draftPO.getId();
-        } else {
-            exist.setTitle(title);
-            exist.setContent(content);
-            exist.setMediaIdListString(mediaCodeList == null ? null : String.join(",", mediaCodeList));
-            exist.setDeleted(0);
-            exist.setUpdateTime(LocalDateTime.now());
-            draftRepository.updateById(exist);
-            return exist.getId();
-        }
+        draftRepository.save(draftPO);
+        return draftPO.getId();
     }
 
     @Override
     public Page<DraftPO> pageByUser(Long userId, int page, int pageSize) {
         Page<DraftPO> p = new Page<>(page, pageSize);
         LambdaQueryWrapper<DraftPO> w = new LambdaQueryWrapper<DraftPO>()
-            .eq(DraftPO::getUserId, userId)
-            .eq(DraftPO::getDeleted, 0)
-            .orderByDesc(DraftPO::getUpdateTime);
+                .eq(DraftPO::getUserId, userId)
+                .eq(DraftPO::getDeleted, 0)
+                .orderByDesc(DraftPO::getUpdateTime);
         return draftRepository.page(p, w);
     }
 

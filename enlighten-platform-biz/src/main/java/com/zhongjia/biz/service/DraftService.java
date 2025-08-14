@@ -8,7 +8,7 @@ public interface DraftService {
     /**
      * 新建或按 essayCode 更新当前用户的草稿，返回草稿ID。
      */
-    Long saveOrUpdateByEssayCode(Long userId, Long tenantId, String essayCode, String title, String content, List<String> mediaCodeList);
+    Long saveOrUpdateByEssayCode(Long userId, Long tenantId, String essayCode, String title, String content, List<String> mediaCodeList, String tags);
 
     /**
      * 分页查询当前用户未删除的草稿，按更新时间倒序。

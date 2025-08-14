@@ -18,6 +18,8 @@ public class DraftVO {
     private String title;
     @Schema(description = "正文")
     private String content;
+    @Schema(description = "标签")
+    private String tags;
     @Schema(description = "是否删除：0否/1是")
     private Integer deleted;
 
