@@ -155,6 +155,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             .uri(URI.create(upstreamUrl))
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json")
+            .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
         HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
@@ -173,6 +174,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             .uri(URI.create(upstreamGzhReUrl))
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json")
+            .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
         HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
@@ -189,6 +191,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             .uri(URI.create(upstreamGzhUrl))
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json")
+            .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
         HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));

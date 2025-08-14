@@ -44,6 +44,7 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
                 .uri(URI.create(upstreamUrl))
                 .timeout(Duration.ofMinutes(10))
                 .header("Content-Type", "application/json")
+                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .POST(HttpRequest.BodyPublishers.ofString(upstreamBody, StandardCharsets.UTF_8))
                 .build();
             HttpResponse<java.io.InputStream> upstream = client.send(request, HttpResponse.BodyHandlers.ofInputStream());

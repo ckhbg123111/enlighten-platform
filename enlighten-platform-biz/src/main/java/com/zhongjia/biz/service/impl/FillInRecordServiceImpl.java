@@ -43,6 +43,7 @@ public class FillInRecordServiceImpl implements FillInRecordService {
                 .uri(URI.create(upstreamUrl))
                 .timeout(Duration.ofMinutes(10))
                 .header("Content-Type", "application/json")
+                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
 

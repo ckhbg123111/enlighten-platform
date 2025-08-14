@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,11 +40,14 @@ public class ContentLibraryController {
     public Result<List<ItemVO>> query(
             @Parameter(description = "标签", example = "科普") @RequestParam(required = false) String tag) {
         UserContext.UserInfo user = requireUser();
+        if(StringUtils.isBlank(tag)){
+            return Result.error(ErrorCode.BAD_REQUEST.getCode(), "标签不能为空");
+        }
 
         LambdaQueryWrapper<DraftMediaMap> w = new LambdaQueryWrapper<DraftMediaMap>()
                 .eq(DraftMediaMap::getUserId, user.userId())
                 .eq(DraftMediaMap::getDeleted, 0);
-        if (tag != null && !tag.isEmpty()) {
+        if (!tag.isEmpty()) {
             w.eq(DraftMediaMap::getTag, tag);
         }
         List<DraftMediaMap> maps = draftMediaMapRepository.list(w);
@@ -99,6 +103,12 @@ public class ContentLibraryController {
         private String platform;
         @Schema(description = "内容")
         private String content;
+
+        @Schema(description = "草稿箱标题")
+        private String title;
+
+        @Schema(description = "草稿箱正文")
+        private String draftBody;
     }
 }
 
