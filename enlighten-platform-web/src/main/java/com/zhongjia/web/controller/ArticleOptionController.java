@@ -10,6 +10,11 @@ import com.zhongjia.web.vo.ArticleOptionVO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@Tag(name = "文章选项")
 @RequestMapping("/api/article/options")
 public class ArticleOptionController {
 
@@ -28,6 +34,7 @@ public class ArticleOptionController {
 
     // 接口一：选项列表，GET，无参，通过 jwt 获取用户ID
     @GetMapping
+    @Operation(summary = "获取用户文章选项列表", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<Map<String, List<ArticleOptionVO>>> listAll() {
         Long userId = requireUserId();
         Map<String, List<UserArticleConfig>> grouped = configService.loadOrInitByUser(userId);
@@ -53,6 +60,7 @@ public class ArticleOptionController {
 
     // 接口二：选项更新，POST，按 option_code 修改名称/排序
     @PostMapping("/update")
+    @Operation(summary = "更新选项", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<Boolean> update(@Valid @RequestBody UpdateReq req) {
         Long userId = requireUserId();
         UserArticleConfig exist = configService.getByUserIdAndOptionCode(userId, req.getOptionCode());
@@ -64,6 +72,7 @@ public class ArticleOptionController {
 
     // 接口三：选项新增，POST，为大类新增选项
     @PostMapping("/add")
+    @Operation(summary = "新增选项", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<ArticleOptionVO> add(@Valid @RequestBody AddReq req) {
         Long userId = requireUserId();
         if (!CATEGORIES.contains(req.getCategory())) {
@@ -88,7 +97,8 @@ public class ArticleOptionController {
 
     // 接口四：选项删除，DELETE，通过选项 code 删除
     @DeleteMapping("/{optionCode}")
-    public Result<Boolean> delete(@PathVariable String optionCode) {
+    @Operation(summary = "删除选项", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Boolean> delete(@Parameter(description = "选项编码") @PathVariable String optionCode) {
         Long userId = requireUserId();
         boolean ok = configService.removeByUserIdAndOptionCode(userId, optionCode);
         return ok ? Result.success(true) : Result.error(404, "选项不存在");
@@ -103,19 +113,27 @@ public class ArticleOptionController {
     // 默认选项初始化逻辑已移动至 Service 层
 
     @Data
+    @Schema(name = "ArticleOptionUpdateReq", description = "更新选项请求")
     public static class UpdateReq {
+        @Schema(description = "选项编码")
         @NotBlank
         private String optionCode;
+        @Schema(description = "选项名称")
         private String optionName;
+        @Schema(description = "排序值，越大越靠后")
         private Integer sort;
     }
 
     @Data
+    @Schema(name = "ArticleOptionAddReq", description = "新增选项请求")
     public static class AddReq {
+        @Schema(description = "分类，可选：style/length/mode/scene")
         @NotBlank
         private String category;
+        @Schema(description = "选项名称")
         @NotBlank
         private String optionName;
+        @Schema(description = "排序值，越大越靠后")
         private Integer sort;
     }
 }

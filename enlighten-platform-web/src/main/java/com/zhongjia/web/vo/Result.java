@@ -2,15 +2,20 @@ package com.zhongjia.web.vo;
 
 import lombok.Data;
 import com.zhongjia.web.exception.ErrorCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 统一响应结果类
  */
 @Data
+@Schema(name = "Result", description = "统一响应包装")
 public class Result<T> {
     
+    @Schema(description = "业务状态码", example = "200")
     private Integer code;
+    @Schema(description = "提示信息", example = "操作成功")
     private String message;
+    @Schema(description = "业务数据")
     private T data;
     
     public static <T> Result<T> success() {

@@ -5,6 +5,9 @@ import com.zhongjia.biz.service.UserService;
 import com.zhongjia.web.security.JwtUtil;
 import com.zhongjia.web.vo.Result;
 import lombok.Data;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @RestController
+@Tag(name = "认证与登录")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -24,6 +28,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
+    @Operation(summary = "用户登录", description = "根据用户名与密码登录，返回 JWT Token")
     public Result<Map<String, String>> login(@Validated @RequestBody LoginReq req) {
         User user = userService.getByUsername(req.getUsername());
         if (user == null) {
@@ -48,8 +53,11 @@ public class AuthController {
     }
 
     @Data
+    @Schema(name = "LoginReq", description = "登录请求")
     public static class LoginReq {
+        @Schema(description = "用户名", example = "admin")
         private String username;
+        @Schema(description = "密码(明文)", example = "123456")
         private String password;
     }
 }

@@ -23,8 +23,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+@Tag(name = "媒体内容转换")
 @RequestMapping("/api/convert2media")
 public class MediaConvertController {
 
@@ -38,6 +44,7 @@ public class MediaConvertController {
 
     // 1) 转换：解析上游，并记录
     @PostMapping(path = "common", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "通用媒体转换", security = {@SecurityRequirement(name = "bearer-jwt")})
     public void convert(@Valid @RequestBody ConvertReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
@@ -53,6 +60,7 @@ public class MediaConvertController {
 
     // 1.1) 转公众号：重新生成
     @PostMapping(path = "convert2gzh_re", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "转公众号-重新生成", security = {@SecurityRequirement(name = "bearer-jwt")})
     public void convertToGzhRe(@Valid @RequestBody ConvertGzhReReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
@@ -63,6 +71,7 @@ public class MediaConvertController {
 
     // 1.2) 转公众号：按结构化内容
     @PostMapping(path = "convert2gzh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "转公众号-结构化内容", security = {@SecurityRequirement(name = "bearer-jwt")})
     public void convertToGzh(@Valid @RequestBody ConvertGzhReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
@@ -79,7 +88,8 @@ public class MediaConvertController {
 
     // 2) 查询：通过 essayCode，倒序（按时间）
     @GetMapping("/records")
-    public Result<List<MediaConvertRecord>> listByEssayCode(@RequestParam("essayCode") String essayCode) {
+    @Operation(summary = "按文章编码查询转换记录", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<List<MediaConvertRecord>> listByEssayCode(@Parameter(description = "文章编码") @RequestParam("essayCode") String essayCode) {
         UserContext.UserInfo user = requireUser();
         List<MediaConvertRecord> list = recordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
                 .eq(MediaConvertRecord::getUserId, user.userId())
@@ -91,7 +101,8 @@ public class MediaConvertController {
 
     // 3) 删除：软删除
     @DeleteMapping("/{id}")
-    public Result<Boolean> softDelete(@PathVariable("id") Long id) {
+    @Operation(summary = "删除转换记录(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Boolean> softDelete(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
         UserContext.UserInfo user = requireUser();
         MediaConvertRecord exist = recordRepository.getById(id);
         if (exist == null || exist.getDeleted() != null && exist.getDeleted() == 1) {
@@ -134,33 +145,46 @@ public class MediaConvertController {
     }
 
     @Data
+    @Schema(name = "ConvertCommonReq", description = "通用媒体转换请求")
     public static class ConvertReq {
+        @Schema(description = "输入内容")
         @NotBlank
         private String content;
+        @Schema(description = "目标平台：xiaohongshu/douyin")
         @NotBlank
         private String platform; // xiaohongshu / douyin
+        @Schema(description = "文章编码")
         @NotBlank
         private String essayCode; // 额外字段
+        @Schema(description = "媒体唯一编码 uuid")
         @NotBlank
         private String mediaCode; // 媒体唯一编码 uuid
     }
 
     @Data
+    @Schema(name = "ConvertGzhReReq", description = "转公众号-重新生成 请求")
     public static class ConvertGzhReReq {
+        @Schema(description = "输入内容")
         @NotBlank
         private String content;
+        @Schema(description = "文章编码")
         @NotBlank
         private String essayCode; // 额外字段
+        @Schema(description = "媒体唯一编码 uuid")
         @NotBlank
         private String mediaCode; // 媒体唯一编码 uuid
     }
 
     @Data
+    @Schema(name = "ConvertGzhReq", description = "转公众号-结构化内容 请求")
     public static class ConvertGzhReq {
         @jakarta.validation.constraints.NotNull
+        @Schema(description = "结构化内容(数组/对象)")
         private Object content; // 前端解析后的结构化内容 list[dict]
+        @Schema(description = "文章编码")
         @NotBlank
         private String essayCode; // 额外字段
+        @Schema(description = "媒体唯一编码 uuid")
         @NotBlank
         private String mediaCode; // 媒体唯一编码 uuid
     }

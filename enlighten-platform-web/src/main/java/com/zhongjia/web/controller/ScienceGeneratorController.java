@@ -8,6 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
+@Tag(name = "科学文章生成")
 @RequestMapping("/api/science-generator")
 public class ScienceGeneratorController {
 
@@ -27,8 +32,9 @@ public class ScienceGeneratorController {
 
     // 上游交互已下沉到 Service
 
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void streamGenerate(@Valid @RequestBody GenerateReq req, HttpServletResponse response) throws IOException {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "流式生成科学文章(SSE)", description = "返回 text/event-stream", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public void streamGenerate(@Valid @RequestBody GenerateReq req, HttpServletResponse response) throws IOException {
 		UserContext.UserInfo user = requireUser();
 
 		response.setStatus(200);
@@ -54,8 +60,9 @@ public class ScienceGeneratorController {
     }
 
 
-	@Data
-	public static class GenerateReq {
+    @Data
+    @Schema(name = "ScienceGenerateReq", description = "科学文章生成请求")
+    public static class GenerateReq {
 		private String document_id;
 		private Boolean contains_image;
 		@NotBlank
@@ -74,7 +81,8 @@ public class ScienceGeneratorController {
 		@NotBlank
 		private String scene;
 		@NotBlank
-		private String code; // 额外字段：唯一编码
+        @Schema(description = "额外字段：唯一编码")
+        private String code; // 额外字段：唯一编码
 
 		public String buildUpstreamBody() {
 			StringBuilder sb = new StringBuilder(256);

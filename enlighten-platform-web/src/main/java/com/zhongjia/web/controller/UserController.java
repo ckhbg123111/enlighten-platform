@@ -9,6 +9,13 @@ import com.zhongjia.web.req.UserUpdateReq;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.UserVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +28,7 @@ import java.util.stream.Collectors;
  * 用户控制器
  */
 @RestController
+@Tag(name = "用户管理")
 @RequestMapping("/api/user")
 public class UserController {
     
@@ -31,6 +39,7 @@ public class UserController {
      * 创建用户
      */
     @PostMapping("/create")
+    @Operation(summary = "创建用户", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<UserVO> createUser(@Validated @RequestBody UserCreateReq req) {
         // 检查用户名是否已存在
         User existingUser = userService.getByUsername(req.getUsername());
@@ -60,6 +69,7 @@ public class UserController {
      * 更新用户
      */
     @PutMapping("/update")
+    @Operation(summary = "更新用户", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<UserVO> updateUser(@Validated @RequestBody UserUpdateReq req) {
         User user = userService.getById(req.getId());
         if (user == null) {
@@ -82,7 +92,8 @@ public class UserController {
      * 删除用户
      */
     @DeleteMapping("/{id}")
-    public Result<Void> deleteUser(@PathVariable Long id) {
+    @Operation(summary = "删除用户", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Void> deleteUser(@Parameter(description = "用户ID") @PathVariable Long id) {
         boolean success = userService.removeById(id);
         if (success) {
             return Result.success();
@@ -95,7 +106,8 @@ public class UserController {
      * 根据ID查询用户
      */
     @GetMapping("/{id}")
-    public Result<UserVO> getUserById(@PathVariable Long id) {
+    @Operation(summary = "根据ID查询用户", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<UserVO> getUserById(@Parameter(description = "用户ID") @PathVariable Long id) {
         User user = userService.getById(id);
         if (user == null) {
             return Result.error("用户不存在");
@@ -109,11 +121,12 @@ public class UserController {
      * 分页查询用户列表
      */
     @GetMapping("/page")
+    @Operation(summary = "分页查询用户列表", security = {@SecurityRequirement(name = "bearer-jwt")} )
     public Result<Page<UserVO>> getUserPage(
-            @RequestParam(defaultValue = "1") Integer current,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) Integer status) {
+            @Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") Integer current,
+            @Parameter(description = "每页数量", example = "10") @RequestParam(defaultValue = "10") Integer size,
+            @Parameter(description = "用户名关键字") @RequestParam(required = false) String username,
+            @Parameter(description = "状态：1启用/0禁用") @RequestParam(required = false) Integer status) {
         
         Page<User> page = new Page<>(current, size);
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
@@ -147,6 +160,7 @@ public class UserController {
      * 查询所有用户
      */
     @GetMapping("/list")
+    @Operation(summary = "查询所有用户", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<List<UserVO>> getAllUsers() {
         List<User> users = userService.list();
         List<UserVO> userVOList = users.stream()
@@ -160,7 +174,8 @@ public class UserController {
      * 根据状态查询用户
      */
     @GetMapping("/status/{status}")
-    public Result<List<UserVO>> getUsersByStatus(@PathVariable Integer status) {
+    @Operation(summary = "根据状态查询用户", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<List<UserVO>> getUsersByStatus(@Parameter(description = "状态：1启用/0禁用") @PathVariable Integer status) {
         List<User> users = userService.getByStatus(status);
         List<UserVO> userVOList = users.stream()
                 .map(this::convertToVO)
@@ -173,7 +188,9 @@ public class UserController {
      * 批量更新用户状态
      */
     @PutMapping("/batch-status")
-    public Result<Void> batchUpdateStatus(@RequestParam List<Long> ids, @RequestParam Integer status) {
+    @Operation(summary = "批量更新用户状态", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Void> batchUpdateStatus(@Parameter(description = "用户ID列表") @RequestParam List<Long> ids,
+                                          @Parameter(description = "状态：1启用/0禁用") @RequestParam Integer status) {
         boolean success = userService.updateStatusByIds(ids, status);
         if (success) {
             return Result.success();
@@ -186,6 +203,7 @@ public class UserController {
      * 测试数据库连接
      */
     @GetMapping("/test-connection")
+    @Operation(summary = "测试数据库连接")
     public Result<String> testConnection() {
         try {
             // 尝试查询用户总数
