@@ -1,5 +1,5 @@
 # Multi-stage build for Enlighten Platform (Spring Boot 3 / Java 17)
-FROM m.daocloud.io/library/maven:3.9.6-eclipse-temurin-17 AS build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN mvn -q -B -DskipTests dependency:go-offline
 COPY . .
 RUN mvn -q -B -DskipTests clean package
 
-FROM m.daocloud.io/library/eclipse-temurin:17-jre
+FROM eclipse-temurin:17-jre
 
 ENV TZ=Asia/Shanghai
 WORKDIR /app
