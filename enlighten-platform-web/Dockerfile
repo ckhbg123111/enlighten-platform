@@ -1,5 +1,5 @@
 # Multi-stage build for Enlighten Platform (Spring Boot 3 / Java 17)
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM m.daocloud.io/library/maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
@@ -9,6 +9,10 @@ COPY enlighten-platform-api/pom.xml enlighten-platform-api/pom.xml
 COPY enlighten-platform-biz/pom.xml enlighten-platform-biz/pom.xml
 COPY enlighten-platform-web/pom.xml enlighten-platform-web/pom.xml
 
+# Prepare Maven settings for China mirrors
+RUN mkdir -p /root/.m2
+COPY enlighten-platform-web/maven-settings.xml /root/.m2/settings.xml
+
 # Pre-fetch dependencies for offline build speed
 RUN mvn -q -B -DskipTests dependency:go-offline
 
@@ -16,7 +20,7 @@ RUN mvn -q -B -DskipTests dependency:go-offline
 COPY . .
 RUN mvn -q -B -DskipTests clean package
 
-FROM eclipse-temurin:17-jre
+FROM m.daocloud.io/library/eclipse-temurin:17-jre
 
 ENV TZ=Asia/Shanghai
 WORKDIR /app
