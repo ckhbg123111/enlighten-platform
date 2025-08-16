@@ -23,6 +23,12 @@ services:
     build:
       context: .
       dockerfile: enlighten-platform-web/Dockerfile
+      network: host
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
     image: enlighten-platform-web:${APP_VERSION}
     container_name: enlighten-app
     depends_on:

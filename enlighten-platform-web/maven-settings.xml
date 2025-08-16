@@ -4,12 +4,12 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
 	<mirrors>
-		<!-- 国内稳定镜像：腾讯云 -->
+		<!-- 将 central 映射到阿里云，避免 * 覆盖影响其他自定义仓库 -->
 		<mirror>
-			<id>tencent</id>
-			<name>Tencent Cloud Maven Mirror</name>
-			<url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
-			<mirrorOf>*</mirrorOf>
+			<id>aliyun-central</id>
+			<name>Aliyun Maven Mirror (central)</name>
+			<url>https://maven.aliyun.com/repository/public</url>
+			<mirrorOf>central</mirrorOf>
 		</mirror>
 	</mirrors>
 
@@ -17,6 +17,42 @@
 		<profile>
 			<id>china</id>
 			<repositories>
+				<!-- 多镜像兜底：按顺序尝试 -->
+				<repository>
+					<id>aliyun</id>
+					<name>Aliyun Maven</name>
+					<url>https://maven.aliyun.com/repository/public</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</repository>
+				<repository>
+					<id>tencent</id>
+					<name>Tencent Cloud Maven</name>
+					<url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</repository>
+				<repository>
+					<id>huawei</id>
+					<name>Huawei Cloud Maven</name>
+					<url>https://repo.huaweicloud.com/repository/maven/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</repository>
+				<repository>
+					<id>tuna</id>
+					<name>Tsinghua Tuna Maven</name>
+					<url>https://mirrors.tuna.tsinghua.edu.cn/maven/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</repository>
+				<repository>
+					<id>ustc</id>
+					<name>USTC Maven</name>
+					<url>https://mirrors.ustc.edu.cn/maven/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</repository>
 				<repository>
 					<id>central</id>
 					<name>Maven Central</name>
@@ -27,8 +63,43 @@
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
-					<id>central</id>
-					<name>Maven Central</name>
+					<id>aliyun-plugins</id>
+					<name>Aliyun Maven Plugins</name>
+					<url>https://maven.aliyun.com/repository/public</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>tencent-plugins</id>
+					<name>Tencent Cloud Maven Plugins</name>
+					<url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>huawei-plugins</id>
+					<name>Huawei Cloud Maven Plugins</name>
+					<url>https://repo.huaweicloud.com/repository/maven/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>tuna-plugins</id>
+					<name>Tsinghua Tuna Maven Plugins</name>
+					<url>https://mirrors.tuna.tsinghua.edu.cn/maven/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>ustc-plugins</id>
+					<name>USTC Maven Plugins</name>
+					<url>https://mirrors.ustc.edu.cn/maven/</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>false</enabled></snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>central-plugins</id>
+					<name>Maven Central Plugins</name>
 					<url>https://repo1.maven.org/maven2/</url>
 					<releases><enabled>true</enabled></releases>
 					<snapshots><enabled>false</enabled></snapshots>

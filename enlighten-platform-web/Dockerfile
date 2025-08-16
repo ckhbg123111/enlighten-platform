@@ -1,6 +1,16 @@
 # Multi-stage build for Enlighten Platform (Spring Boot 3 / Java 17)
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
+# Optional: pass through proxies when building (if your environment uses them)
+ARG http_proxy
+ARG https_proxy
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ENV http_proxy=${http_proxy} \
+    https_proxy=${https_proxy} \
+    HTTP_PROXY=${HTTP_PROXY} \
+    HTTPS_PROXY=${HTTPS_PROXY}
+
 WORKDIR /app
 
 # Copy POMs first for dependency caching
@@ -14,7 +24,8 @@ RUN mkdir -p /root/.m2
 COPY enlighten-platform-web/maven-settings.xml /root/.m2/settings.xml
 
 # Pre-fetch dependencies for offline build speed
-RUN mvn -q -B -DskipTests dependency:go-offline
+ENV MAVEN_OPTS="-Dmaven.wagon.http.pool=false -Dhttp.keepAlive=false -Dmaven.wagon.http.connectionTimeout=60000 -Dmaven.wagon.http.readTimeout=600000 -Dmaven.wagon.http.retryHandler.count=3"
+RUN mvn -B -ntp -U -DskipTests dependency:go-offline
 
 # Copy the rest of the source and build
 COPY . .
