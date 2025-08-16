@@ -1,16 +1,6 @@
 # Multi-stage build for Enlighten Platform (Spring Boot 3 / Java 17)
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Optional: pass through proxies when building (if your environment uses them)
-ARG http_proxy
-ARG https_proxy
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ENV http_proxy=${http_proxy} \
-    https_proxy=${https_proxy} \
-    HTTP_PROXY=${HTTP_PROXY} \
-    HTTPS_PROXY=${HTTPS_PROXY}
-
 WORKDIR /app
 
 # Copy POMs first for dependency caching
