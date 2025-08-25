@@ -67,6 +67,10 @@ if [[ ! -f "${COMPOSE_FILE}" ]]; then
   exit 1
 fi
 
+# Ensure required data directories exist (MinIO)
+echo "Ensuring data directories exist..."
+mkdir -p ./data/minio/data ./data/minio/config
+
 # Detect docker compose command (v2: docker compose, v1: docker-compose)
 compose_cmd=(docker compose)
 if ! command -v docker >/dev/null 2>&1; then
