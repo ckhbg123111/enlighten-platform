@@ -267,7 +267,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 .uri(URI.create(dhGenerateUrl))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "application/json")
-                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
         
