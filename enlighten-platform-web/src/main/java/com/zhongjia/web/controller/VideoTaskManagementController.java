@@ -1,6 +1,6 @@
 package com.zhongjia.web.controller;
 
-import com.zhongjia.biz.service.VideoTaskWorkerService;
+import com.zhongjia.biz.service.VideoGenerationMQService;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.security.UserContext;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class VideoTaskManagementController {
     
     @Autowired
-    private VideoTaskWorkerService videoTaskWorkerService;
+    private VideoGenerationMQService videoGenerationMQService;
     
     /**
      * 手动触发任务处理 (管理员功能)
@@ -34,9 +34,10 @@ public class VideoTaskManagementController {
         UserContext.UserInfo user = requireAdmin();
         
         try {
-            videoTaskWorkerService.manualProcessTask(taskId);
-            log.info("管理员手动触发任务处理 - 操作者: {}, 任务ID: {}", user.userId(), taskId);
-            return Result.success("任务处理已触发");
+            // 使用MQ版本的重试功能
+            videoGenerationMQService.retryTask(taskId);
+            log.info("管理员手动触发任务处理(MQ版本) - 操作者: {}, 任务ID: {}", user.userId(), taskId);
+            return Result.success("任务重试消息已发送到MQ");
             
         } catch (Exception e) {
             log.error("管理员手动触发任务处理失败 - 操作者: {}, 任务ID: {}", user.userId(), taskId, e);
@@ -53,18 +54,44 @@ public class VideoTaskManagementController {
         UserContext.UserInfo user = requireAdmin();
         
         try {
-            // 这里可以添加任务统计逻辑
-            // 比如各状态的任务数量等
+            // 使用MQ版本的统计功能
+            VideoGenerationMQService.TaskStatistics stats = videoGenerationMQService.getTaskStatistics();
             
-            java.util.Map<String, Object> stats = new java.util.HashMap<>();
-            stats.put("message", "任务统计功能待实现");
-            stats.put("timestamp", java.time.LocalDateTime.now());
+            java.util.Map<String, Object> result = new java.util.HashMap<>();
+            result.put("createdCount", stats.createdCount);
+            result.put("dhProcessingCount", stats.dhProcessingCount);
+            result.put("dhDoneCount", stats.dhDoneCount);
+            result.put("burnProcessingCount", stats.burnProcessingCount);
+            result.put("completedCount", stats.completedCount);
+            result.put("failedCount", stats.failedCount);
+            result.put("totalCount", stats.getTotalCount());
+            result.put("successRate", String.format("%.2f%%", stats.getSuccessRate()));
+            result.put("timestamp", stats.timestamp);
             
-            return Result.success(stats);
+            return Result.success(result);
             
         } catch (Exception e) {
             log.error("获取任务统计信息失败 - 操作者: {}", user.userId(), e);
             return Result.error(500, "获取统计信息失败: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * 批量重试失败的任务 (管理员功能)
+     */
+    @PostMapping("/retry-failed")
+    @Operation(summary = "批量重试失败的任务", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<String> retryFailedTasks(@RequestParam(defaultValue = "10") int maxCount) {
+        UserContext.UserInfo user = requireAdmin();
+        
+        try {
+            videoGenerationMQService.retryFailedTasks(maxCount);
+            log.info("管理员批量重试失败任务 - 操作者: {}, 最大数量: {}", user.userId(), maxCount);
+            return Result.success("批量重试任务已发送到MQ");
+            
+        } catch (Exception e) {
+            log.error("管理员批量重试失败任务失败 - 操作者: {}, 最大数量: {}", user.userId(), maxCount, e);
+            return Result.error(500, "批量重试失败: " + e.getMessage());
         }
     }
     

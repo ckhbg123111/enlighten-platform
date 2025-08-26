@@ -12,12 +12,15 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * 视频任务异步处理器
+ * 视频任务异步处理器 (已弃用，保留用于MQ故障时的备用方案)
  * 负责轮询和处理各个阶段的视频生成任务
+ * 
+ * 注意：此类已被MQ方案替代，默认禁用
+ * 如需启用，请在配置中设置 app.video.fallback.scheduler.enabled=true
  */
 @Slf4j
-@Service
-public class VideoTaskWorkerService {
+// @Service // 注释掉，默认不启动
+public class VideoTaskWorkerServiceLegacy {
     
     @Autowired
     private VideoGenerationTaskRepository taskRepository;

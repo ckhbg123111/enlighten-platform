@@ -2,6 +2,7 @@ package com.zhongjia.web.controller;
 
 import com.zhongjia.biz.entity.VideoGenerationTask;
 import com.zhongjia.biz.service.VideoGenerationService;
+import com.zhongjia.biz.service.VideoGenerationMQService;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.req.VideoGenerateRequest;
@@ -35,6 +36,9 @@ public class VideoGenerationController {
     @Autowired
     private VideoGenerationService videoGenerationService;
     
+    @Autowired
+    private VideoGenerationMQService videoGenerationMQService;
+    
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
     /**
@@ -46,9 +50,9 @@ public class VideoGenerationController {
         UserContext.UserInfo user = requireUser();
         
         try {
-            String taskId = videoGenerationService.createTask(
+            // 使用MQ版本的服务
+            String taskId = videoGenerationMQService.createTaskWithMQ(
                     user.userId(),
-                    user.tenantId(),
                     request.getText(),
                     request.getModelName(),
                     request.getVoice()
@@ -77,7 +81,7 @@ public class VideoGenerationController {
         UserContext.UserInfo user = requireUser();
         
         try {
-            VideoGenerationTask task = videoGenerationService.getTaskStatus(taskId, user.userId(), user.tenantId());
+            VideoGenerationTask task = videoGenerationService.getTaskStatus(taskId, user.userId());
             
             VideoStatusResponse response = new VideoStatusResponse()
                     .setStatus(task.getStatus())
@@ -110,7 +114,7 @@ public class VideoGenerationController {
         UserContext.UserInfo user = requireUser();
         
         try {
-            VideoGenerationTask task = videoGenerationService.getTaskStatus(taskId, user.userId(), user.tenantId());
+            VideoGenerationTask task = videoGenerationService.getTaskStatus(taskId, user.userId());
             
             if (!"COMPLETED".equals(task.getStatus())) {
                 response.setStatus(400);

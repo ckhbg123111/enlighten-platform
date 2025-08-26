@@ -16,7 +16,7 @@ public interface VideoGenerationService {
      * @param voice 语音类型
      * @return 任务ID
      */
-    String createTask(Long userId, Long tenantId, String inputText, String modelName, String voice);
+    String createTask(Long userId, String inputText, String modelName, String voice);
     
     /**
      * 查询任务状态
@@ -25,7 +25,7 @@ public interface VideoGenerationService {
      * @param tenantId 租户ID (用于权限校验)
      * @return 任务对象
      */
-    VideoGenerationTask getTaskStatus(String taskId, Long userId, Long tenantId);
+    VideoGenerationTask getTaskStatus(String taskId, Long userId);
     
     /**
      * 处理数字人阶段任务

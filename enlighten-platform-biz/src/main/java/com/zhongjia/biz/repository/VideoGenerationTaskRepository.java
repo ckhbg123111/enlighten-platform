@@ -35,8 +35,7 @@ public interface VideoGenerationTaskRepository extends IService<VideoGenerationT
     /**
      * 查询用户的任务列表
      * @param userId 用户ID
-     * @param tenantId 租户ID
      * @return 任务列表
      */
-    List<VideoGenerationTask> findByUserAndTenant(Long userId, Long tenantId);
+    List<VideoGenerationTask> findByUser(Long userId);
 }

@@ -7,6 +7,7 @@ import com.zhongjia.biz.service.VideoGenerationService;
 import com.zhongjia.biz.service.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -38,25 +39,25 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     @Value("${app.upstream.dh-status-url:http://frp5.mmszxc.xin:57599/dh/status}")
     private String dhStatusUrl;
     
-    @Value("${app.upstream.subtitle-burn-url:http://localhost:8080/api/subtitles/burn-url-srt/async}")
+    @Value("${app.upstream.subtitle-burn-url:http://localhost:8081/api/subtitles/burn-url-srt/async}")
     private String subtitleBurnUrl;
     
-    @Value("${app.upstream.subtitle-status-url:http://localhost:8080/api/subtitles/task}")
+    @Value("${app.upstream.subtitle-status-url:http://localhost:8081/api/subtitles/task}")
     private String subtitleStatusUrl;
     
-    public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository) {
+    @Autowired
+    public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
     
     @Override
-    public String createTask(Long userId, Long tenantId, String inputText, String modelName, String voice) {
-        log.info("创建视频生成任务 - 用户: {}, 租户: {}, 文本长度: {}", userId, tenantId, inputText.length());
+    public String createTask(Long userId, String inputText, String modelName, String voice) {
+        log.info("创建视频生成任务 - 用户: {}, 文本长度: {}", userId, inputText.length());
         
         // 创建任务记录
         VideoGenerationTask task = new VideoGenerationTask()
                 .setUserId(userId)
-                .setTenantId(tenantId)
                 .setInputText(inputText)
                 .setModelName(modelName)
                 .setVoice(voice != null ? voice : "Female_Voice_1")
@@ -72,14 +73,14 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     }
     
     @Override
-    public VideoGenerationTask getTaskStatus(String taskId, Long userId, Long tenantId) {
+    public VideoGenerationTask getTaskStatus(String taskId, Long userId) {
         VideoGenerationTask task = taskRepository.getById(taskId);
         if (task == null) {
             throw new IllegalArgumentException("任务不存在: " + taskId);
         }
         
         // 权限校验
-        if (!task.getUserId().equals(userId) || !task.getTenantId().equals(tenantId)) {
+        if (!task.getUserId().equals(userId)) {
             throw new IllegalArgumentException("无权访问该任务");
         }
         

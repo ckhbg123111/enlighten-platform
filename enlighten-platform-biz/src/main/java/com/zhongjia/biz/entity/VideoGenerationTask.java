@@ -25,10 +25,6 @@ public class VideoGenerationTask {
      */
     private Long userId;
     
-    /**
-     * 租户ID
-     */
-    private Long tenantId;
     
     /**
      * 输入文本

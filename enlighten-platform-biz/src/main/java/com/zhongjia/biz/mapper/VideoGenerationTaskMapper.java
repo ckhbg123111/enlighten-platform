@@ -42,9 +42,8 @@ public interface VideoGenerationTaskMapper extends BaseMapper<VideoGenerationTas
     /**
      * 查询用户的任务列表
      * @param userId 用户ID
-     * @param tenantId 租户ID
      * @return 任务列表
      */
-    @Select("SELECT * FROM video_generation_task WHERE user_id = #{userId} AND tenant_id = #{tenantId} AND deleted = 0 ORDER BY created_at DESC")
-    List<VideoGenerationTask> selectByUserAndTenant(@Param("userId") Long userId, @Param("tenantId") Long tenantId);
+    @Select("SELECT * FROM video_generation_task WHERE user_id = #{userId} AND deleted = 0 ORDER BY created_at DESC")
+    List<VideoGenerationTask> selectByUser(@Param("userId") Long userId);
 }
