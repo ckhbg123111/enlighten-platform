@@ -103,8 +103,8 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             
             if (response.getSuccess() && response.getData() != null) {
                 // 更新任务信息
-                task.setDhTaskId(response.getData().getTaskId())
-                    .setAudioData(objectMapper.writeValueAsString(response.getData().getAudioData()))
+                task.setDhTaskId(response.getData().getTask_id())
+                    .setAudioData(objectMapper.writeValueAsString(response.getData().getAudio_data()))
                     .setStatus("DH_PROCESSING")
                     .setProgress(5);
                 

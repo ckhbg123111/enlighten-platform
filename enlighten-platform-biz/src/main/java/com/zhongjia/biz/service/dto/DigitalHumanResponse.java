@@ -37,12 +37,12 @@ public class DigitalHumanResponse {
         /**
          * 任务ID
          */
-        private String taskId;
+        private String task_id;
         
         /**
          * 音频数据列表
          */
-        private List<AudioData> audioData;
+        private List<AudioData> audio_data;
     }
     
     @Data
