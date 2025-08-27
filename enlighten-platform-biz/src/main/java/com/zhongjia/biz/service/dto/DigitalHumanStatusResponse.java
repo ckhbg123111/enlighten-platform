@@ -45,11 +45,11 @@ public class DigitalHumanStatusResponse {
         /**
          * 结果URL (完成后)
          */
-        private String resultUrl;
+        private String result_url;
         
         /**
          * 错误信息 (失败时)
          */
-        private String errorMessage;
+        private String error_message;
     }
 }

@@ -161,36 +161,36 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     public boolean pollDhStatus(VideoGenerationTask task) {
         try {
             DigitalHumanStatusResponse response = callDhStatus(task.getDhTaskId());
-            
+
             if (response.getSuccess() && response.getData() != null) {
                 DigitalHumanStatusResponse.DhStatusData data = response.getData();
-                
+
                 // 更新进度 (5-60)
                 int progress = Math.min(60, 5 + (data.getProgress() != null ? data.getProgress() * 55 / 100 : 0));
-                
-                if ("COMPLETED".equals(data.getStatus()) && data.getResultUrl() != null) {
+
+                if ("COMPLETED".equalsIgnoreCase(data.getStatus()) && data.getResult_url() != null) {
                     // 数字人阶段完成
-                    task.setDhResultUrl(data.getResultUrl())
-                        .setDhStatus("COMPLETED")
-                        .setStatus("DH_DONE")
-                        .setProgress(60);
-                    
+                    task.setDhResultUrl(data.getResult_url())
+                            .setDhStatus("COMPLETED")
+                            .setStatus("DH_DONE")
+                            .setProgress(60);
+
                     updateTaskStatus(task, "DH_DONE", 60, null);
-                    log.info("数字人任务完成 - 任务ID: {}, 视频URL: {}", task.getId(), data.getResultUrl());
+                    log.info("数字人任务完成 - 任务ID: {}, 视频URL: {}", task.getId(), data.getResult_url());
                     return true;
-                    
-                } else if ("FAILED".equals(data.getStatus())) {
-                    // 数字人阶段失败
-                    updateTaskStatus(task, "FAILED", progress, "数字人生成失败: " + data.getErrorMessage());
-                    log.error("数字人任务失败 - 任务ID: {}, 错误: {}", task.getId(), data.getErrorMessage());
-                    return true;
-                    
+
                 } else {
                     // 仍在处理中
+                    log.info("数字人任务处理中 - 任务ID: {}, 状态: {}, 进度: {}", task.getId(), data.getStatus(), progress);
                     task.setDhStatus(data.getStatus()).setProgress(progress);
                     updateTaskStatus(task, "DH_PROCESSING", progress, null);
                     return false;
                 }
+            } else if (!response.getSuccess()) {
+                // 数字人阶段失败
+                updateTaskStatus(task, "FAILED", null, "数字人生成失败: " + response.getMsg());
+                log.error("数字人任务失败 - 任务ID: {}, 错误: {}", task.getId(), response.getMsg());
+                return true;
             } else {
                 log.warn("数字人状态查询失败 - 任务ID: {}, 响应: {}", task.getId(), response.getMsg());
                 return false;
@@ -330,7 +330,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 .uri(URI.create(subtitleBurnUrl))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .POST(HttpRequest.BodyPublishers.ofString(bodyBuilder.toString(), StandardCharsets.UTF_8))
                 .build();
         
@@ -349,7 +348,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(subtitleStatusUrl + "/" + taskId))
                 .timeout(Duration.ofSeconds(30))
-                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .GET()
                 .build();
         
