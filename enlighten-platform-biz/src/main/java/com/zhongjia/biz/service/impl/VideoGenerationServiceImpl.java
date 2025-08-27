@@ -45,6 +45,9 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     @Value("${app.upstream.subtitle-status-url:http://localhost:8081/api/subtitles/task}")
     private String subtitleStatusUrl;
     
+    @Value("${app.upstream.subtitle-token:}")
+    private String subtitleToken;
+    
     @Autowired
     public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
@@ -326,12 +329,15 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         
         bodyBuilder.append("--").append(boundary).append("--\r\n");
         
-        HttpRequest httpRequest = HttpRequest.newBuilder()
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(subtitleBurnUrl))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                .POST(HttpRequest.BodyPublishers.ofString(bodyBuilder.toString(), StandardCharsets.UTF_8))
-                .build();
+                .POST(HttpRequest.BodyPublishers.ofString(bodyBuilder.toString(), StandardCharsets.UTF_8));
+        if (subtitleToken != null && !subtitleToken.isBlank()) {
+            requestBuilder.header("Authorization", "Bearer " + subtitleToken);
+        }
+        HttpRequest httpRequest = requestBuilder.build();
         
         HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
@@ -345,11 +351,14 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     private SubtitleBurnStatusResponse callSubtitleStatus(String taskId) throws Exception {
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         
-        HttpRequest httpRequest = HttpRequest.newBuilder()
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(subtitleStatusUrl + "/" + taskId))
                 .timeout(Duration.ofSeconds(30))
-                .GET()
-                .build();
+                .GET();
+        if (subtitleToken != null && !subtitleToken.isBlank()) {
+            requestBuilder.header("Authorization", "Bearer " + subtitleToken);
+        }
+        HttpRequest httpRequest = requestBuilder.build();
         
         HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
