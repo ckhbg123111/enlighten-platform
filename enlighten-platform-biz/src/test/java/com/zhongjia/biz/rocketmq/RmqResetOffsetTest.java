@@ -25,8 +25,8 @@ public class RmqResetOffsetTest {
 
     @Test
     public void resetOffsets() throws Exception {
-        String namesrvAddr = System.getProperty("namesrvAddr", "127.0.0.1:9876");
-        String topic = System.getProperty("topic");
+        String namesrvAddr = System.getProperty("namesrvAddr", "192.168.3.10:9876");
+        String topic = "video_task_topic";
         String group = System.getProperty("group", "video_task_consumer_group");
         String time = System.getProperty("time", "now");
         boolean includeRetry = Boolean.parseBoolean(System.getProperty("includeRetry", "true"));

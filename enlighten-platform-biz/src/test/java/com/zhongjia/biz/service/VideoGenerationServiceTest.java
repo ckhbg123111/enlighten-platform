@@ -42,7 +42,7 @@ public class VideoGenerationServiceTest {
         });
         
         // 执行测试
-        String taskId = videoGenerationService.createTask(userId, tenantId, inputText, modelName, voice);
+        String taskId = videoGenerationService.createTask(userId,  inputText, modelName, voice);
         
         // 验证结果
         assertEquals("test-task-id", taskId);
@@ -59,7 +59,6 @@ public class VideoGenerationServiceTest {
         VideoGenerationTask task = new VideoGenerationTask()
                 .setId(taskId)
                 .setUserId(userId)
-                .setTenantId(tenantId)
                 .setStatus("DH_PROCESSING")
                 .setProgress(30);
         
@@ -67,7 +66,7 @@ public class VideoGenerationServiceTest {
         when(taskRepository.getById(taskId)).thenReturn(task);
         
         // 执行测试
-        VideoGenerationTask result = videoGenerationService.getTaskStatus(taskId, userId, tenantId);
+        VideoGenerationTask result = videoGenerationService.getTaskStatus(taskId, userId);
         
         // 验证结果
         assertNotNull(result);
@@ -86,15 +85,14 @@ public class VideoGenerationServiceTest {
         
         VideoGenerationTask task = new VideoGenerationTask()
                 .setId(taskId)
-                .setUserId(userId)
-                .setTenantId(tenantId);
+                .setUserId(userId);
         
         // Mock 仓库查询操作
         when(taskRepository.getById(taskId)).thenReturn(task);
         
         // 执行测试并验证异常
         assertThrows(IllegalArgumentException.class, () -> {
-            videoGenerationService.getTaskStatus(taskId, wrongUserId, tenantId);
+            videoGenerationService.getTaskStatus(taskId, wrongUserId);
         });
     }
     
