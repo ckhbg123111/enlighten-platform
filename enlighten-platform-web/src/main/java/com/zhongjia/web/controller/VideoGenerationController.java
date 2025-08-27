@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,9 @@ import java.time.format.DateTimeFormatter;
 @Tag(name = "视频生成")
 @RequestMapping("/api/video")
 public class VideoGenerationController {
+
+    @Value("${app.upstream.subtitle-download-url}")
+    private String subtitleVideoDownloadBaseUrl;
     
     @Autowired
     private VideoGenerationService videoGenerationService;
@@ -131,7 +135,7 @@ public class VideoGenerationController {
             }
             
             // 重定向到实际的视频URL
-            response.sendRedirect(task.getOutputUrl());
+            response.sendRedirect(subtitleVideoDownloadBaseUrl + "?path=" + task.getOutputUrl());
             log.info("视频下载重定向 - 用户: {}, 任务ID: {}, URL: {}", user.userId(), taskId, task.getOutputUrl());
             
         } catch (IllegalArgumentException e) {
