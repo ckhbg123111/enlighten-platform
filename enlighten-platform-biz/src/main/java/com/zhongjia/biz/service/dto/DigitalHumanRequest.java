@@ -13,7 +13,7 @@ public class DigitalHumanRequest {
     /**
      * 数字人模型名称
      */
-    private String modelName;
+    private String model_name;
     
     /**
      * 输入文本
@@ -28,10 +28,10 @@ public class DigitalHumanRequest {
     /**
      * 是否进行文本切分 (可选)
      */
-    private Boolean enableSplit;
+    private Integer text_split_len;
     
     /**
      * 切分参数 (可选)
      */
-    private String splitParams;
+    private Integer speech_pause_split_ms;
 }

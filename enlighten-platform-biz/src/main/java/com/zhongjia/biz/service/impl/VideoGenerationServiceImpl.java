@@ -94,7 +94,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             
             // 调用数字人生成接口
             DigitalHumanRequest request = new DigitalHumanRequest()
-                    .setModelName(task.getModelName())
+                    .setModel_name(task.getModelName())
                     .setText(task.getInputText())
                     .setVoice(task.getVoice());
             
@@ -269,7 +269,8 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
-        
+        // 打印请求日志
+        log.info("调用数字人生成接口 - URL: {}, Body: {}", dhGenerateUrl, body);
         HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
@@ -278,17 +279,17 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         
         return objectMapper.readValue(response.body(), DigitalHumanResponse.class);
     }
-    
+
     private DigitalHumanStatusResponse callDhStatus(String taskId) throws Exception {
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(dhStatusUrl + "/" + taskId))
                 .timeout(Duration.ofSeconds(30))
-                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .GET()
                 .build();
-        
+        // 打印请求日志
+        log.info("调用数字人状态查询接口 - URL: {}", dhStatusUrl + "/" + taskId);
         HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
