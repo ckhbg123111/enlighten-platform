@@ -53,8 +53,8 @@ public class DigitalHumanResponse {
         private String text;
         
         /**
-         * 时间信息 (格式: "00:00:00,170 --> 00:00:01,670")
+         * 时间信息，兼容数组形式 [start, end]
          */
-        private String time;
+        private List<String> time;
     }
 }
