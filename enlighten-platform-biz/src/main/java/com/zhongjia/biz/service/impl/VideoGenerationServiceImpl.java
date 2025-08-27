@@ -378,7 +378,10 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             // 文本行
             // 空行
             srtBuilder.append(i + 1).append("\n");
-            srtBuilder.append(audioData.getTime().replace(" --> ", " --> ")).append("\n");
+            List<String> timeList = audioData.getTime();
+            String startTime = (timeList != null && timeList.size() > 0) ? timeList.get(0) : "00:00:00,000";
+            String endTime = (timeList != null && timeList.size() > 1) ? timeList.get(1) : startTime;
+            srtBuilder.append(startTime).append(" --> ").append(endTime).append("\n");
             srtBuilder.append(audioData.getText()).append("\n");
             srtBuilder.append("\n");
         }
