@@ -47,6 +47,9 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     
     @Value("${app.upstream.subtitle-token:}")
     private String subtitleToken;
+
+    @Value("${app.upstream.video-download-url}")
+    private String videoDownloadUrl;
     
     @Autowired
     public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository, ObjectMapper objectMapper) {
@@ -136,7 +139,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             // 调用字幕烧录接口
             SubtitleBurnResponse response = callSubtitleBurn(task.getDhResultUrl(), srtFile);
             
-            if (response.getSuccess() && response.getTaskId() != null) {
+            if (!"FAILED".equalsIgnoreCase(response.getState()) && response.getTaskId() != null) {
                 // 更新任务信息
                 task.setBurnTaskId(response.getTaskId())
                     .setStatus("BURN_PROCESSING")
@@ -208,34 +211,32 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     @Override
     public boolean pollBurnStatus(VideoGenerationTask task) {
         try {
-            SubtitleBurnStatusResponse response = callSubtitleStatus(task.getBurnTaskId());
-            
-            if (response.getSuccess() && response.getData() != null) {
-                SubtitleBurnStatusResponse.BurnStatusData data = response.getData();
-                
+            SubtitleBurnResponse response = callSubtitleStatus(task.getBurnTaskId());
+
+            if (response != null) {
                 // 更新进度 (65-100)
-                int progress = Math.min(100, 65 + (data.getProgress() != null ? data.getProgress() * 35 / 100 : 0));
-                
-                if ("COMPLETED".equals(data.getState()) && data.getOutputUrl() != null) {
+                int progress = Math.min(100, 65 + (response.getProgress() != null ? response.getProgress() * 35 / 100 : 0));
+
+                if ("COMPLETED".equals(response.getState()) && response.getOutputUrl() != null) {
                     // 字幕烧录完成
-                    task.setOutputUrl(data.getOutputUrl())
-                        .setBurnStatus("COMPLETED")
-                        .setStatus("COMPLETED")
-                        .setProgress(100);
-                    
+                    task.setOutputUrl(response.getOutputUrl())
+                            .setBurnStatus("COMPLETED")
+                            .setStatus("COMPLETED")
+                            .setProgress(100);
+
                     updateTaskStatus(task, "COMPLETED", 100, null);
-                    log.info("字幕烧录任务完成 - 任务ID: {}, 输出URL: {}", task.getId(), data.getOutputUrl());
+                    log.info("字幕烧录任务完成 - 任务ID: {}, 输出URL: {}", task.getId(), response.getOutputUrl());
                     return true;
-                    
-                } else if ("FAILED".equals(data.getState())) {
+
+                } else if ("FAILED".equals(response.getState())) {
                     // 字幕烧录失败
-                    updateTaskStatus(task, "FAILED", progress, "字幕烧录失败: " + data.getErrorMessage());
-                    log.error("字幕烧录任务失败 - 任务ID: {}, 错误: {}", task.getId(), data.getErrorMessage());
+                    updateTaskStatus(task, "FAILED", progress, "字幕烧录失败: " + response.getErrorMessage());
+                    log.error("字幕烧录任务失败 - 任务ID: {}, 错误: {}", task.getId(), response.getErrorMessage());
                     return true;
-                    
+
                 } else {
                     // 仍在处理中
-                    task.setBurnStatus(data.getState()).setProgress(progress);
+                    task.setBurnStatus(response.getState()).setProgress(progress);
                     updateTaskStatus(task, "BURN_PROCESSING", progress, null);
                     return false;
                 }
@@ -243,7 +244,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 log.warn("字幕烧录状态查询失败 - 任务ID: {}, 响应: {}", task.getId(), response.getMessage());
                 return false;
             }
-            
+
         } catch (Exception e) {
             log.error("轮询字幕烧录状态异常 - 任务ID: {}", task.getId(), e);
             return false;
@@ -306,27 +307,28 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     private SubtitleBurnResponse callSubtitleBurn(String videoUrl, File srtFile) throws Exception {
         // 这里简化实现，实际项目中可能需要使用 Spring 的 RestTemplate 或 WebClient
         // 来处理 multipart/form-data 请求
+        videoUrl = videoDownloadUrl + videoUrl;
         
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         
         // 构建 multipart 请求体 (简化版)
         String boundary = "----WebKitFormBoundary" + UUID.randomUUID().toString().replace("-", "");
         String srtContent = Files.readString(srtFile.toPath());
-        
+
         StringBuilder bodyBuilder = new StringBuilder();
         bodyBuilder.append("--").append(boundary).append("\r\n");
         bodyBuilder.append("Content-Disposition: form-data; name=\"taskId\"\r\n\r\n");
         bodyBuilder.append(UUID.randomUUID().toString()).append("\r\n");
-        
+
         bodyBuilder.append("--").append(boundary).append("\r\n");
         bodyBuilder.append("Content-Disposition: form-data; name=\"videoUrl\"\r\n\r\n");
         bodyBuilder.append(videoUrl).append("\r\n");
-        
+
         bodyBuilder.append("--").append(boundary).append("\r\n");
         bodyBuilder.append("Content-Disposition: form-data; name=\"subtitleFile\"; filename=\"subtitle.srt\"\r\n");
         bodyBuilder.append("Content-Type: text/plain\r\n\r\n");
         bodyBuilder.append(srtContent).append("\r\n");
-        
+
         bodyBuilder.append("--").append(boundary).append("--\r\n");
         
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -348,7 +350,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         return objectMapper.readValue(response.body(), SubtitleBurnResponse.class);
     }
     
-    private SubtitleBurnStatusResponse callSubtitleStatus(String taskId) throws Exception {
+    private SubtitleBurnResponse callSubtitleStatus(String taskId) throws Exception {
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -366,7 +368,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             throw new IllegalStateException("字幕状态查询接口返回非200状态码: " + response.statusCode());
         }
         
-        return objectMapper.readValue(response.body(), SubtitleBurnStatusResponse.class);
+        return objectMapper.readValue(response.body(), SubtitleBurnResponse.class);
     }
     
     private String generateSrtContent(String audioDataJson) throws Exception {
