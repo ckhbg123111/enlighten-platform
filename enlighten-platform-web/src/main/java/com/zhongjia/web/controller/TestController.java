@@ -38,12 +38,29 @@ public class TestController {
         }
 
         VideoGenerationTask task = list.get(0);
+        task.setStatus("DH_DONE");
         try {
             videoGenerationService.processBurnPhase(task);
             return Result.success("已触发字幕烧录，任务ID=" + task.getId());
         } catch (Exception e) {
             return Result.error(500, "触发失败: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/tasks-status")
+    public Result<String> getTasksStatus() {
+        List<VideoGenerationTask> list = taskRepository.list(
+                new QueryWrapper<VideoGenerationTask>()
+                        .orderByAsc("created_at")
+                        .last("limit 1")
+        );
+        if (list == null || list.isEmpty()) {
+            return Result.error(404, "未找到任何视频任务记录");
+        }
+        boolean b = videoGenerationService.pollBurnStatus(list.get(0));
+        return Result.success("任务状态轮询结果: " + b);
+
+
     }
 }
 
