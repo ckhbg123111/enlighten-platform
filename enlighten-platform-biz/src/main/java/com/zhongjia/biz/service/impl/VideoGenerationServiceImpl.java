@@ -61,6 +61,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 .setInputText(inputText)
                 .setModelName(modelName)
                 .setVoice(voice != null ? voice : "Female_Voice_1")
+                .setVersion(0)
                 .setStatus("CREATED")
                 .setProgress(0)
                 .setCreatedAt(LocalDateTime.now())
