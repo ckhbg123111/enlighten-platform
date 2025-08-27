@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ScienceGenRecordRepositoryImpl extends ServiceImpl<ScienceGenRecordMapper, ScienceGenRecord> implements ScienceGenRecordRepository {
+    @Override
+    public ScienceGenRecord getByCode(String code) {
+        return lambdaQuery().eq(ScienceGenRecord::getCode, code).one();
+    }
 }
 
 

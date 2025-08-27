@@ -1,5 +1,6 @@
 package com.zhongjia.web.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.zhongjia.biz.service.ScienceGenRecordService;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.exception.BizException;
@@ -48,6 +49,21 @@ public class ScienceGeneratorController {
         });
 	}
 
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, path = "/regenerate")
+	@Operation(summary = "文章重新生成(SSE)", description = "返回 text/event-stream", security = {@SecurityRequirement(name = "bearer-jwt")})
+	public void regenerate(@Valid @RequestBody RegenerateReq req, HttpServletResponse response) throws IOException {
+		UserContext.UserInfo user = requireUser();
+
+		response.setStatus(200);
+		response.setContentType("text/event-stream;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.flushBuffer();
+
+		recordService.streamReGenerate(req.getCode(),line -> {
+			try { writeSseLine(response, line); } catch (Exception ignored) {}
+		});
+	}
+
 	private static void writeSseLine(HttpServletResponse response, String s) throws IOException {
 		response.getOutputStream().write(s.getBytes(StandardCharsets.UTF_8));
 		response.flushBuffer();
@@ -59,6 +75,12 @@ public class ScienceGeneratorController {
         return info;
     }
 
+	@Data
+	@Schema(name = "ScienceRegenerateReq", description = "科学文章重生成请求")
+	private static class RegenerateReq {
+		@NotBlank
+		private String code; // 额外字段：唯一编码
+	}
 
     @Data
     @Schema(name = "ScienceGenerateReq", description = "科学文章生成请求")

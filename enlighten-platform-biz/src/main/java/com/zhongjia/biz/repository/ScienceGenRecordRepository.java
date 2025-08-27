@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhongjia.biz.entity.ScienceGenRecord;
 
 public interface ScienceGenRecordRepository extends IService<ScienceGenRecord> {
+    ScienceGenRecord getByCode(String code);
 }
 
 
