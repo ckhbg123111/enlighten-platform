@@ -4,15 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ChatReq {
     /** UUID 作为本次会话唯一标识 */
     @NotBlank
     private String sessionId;
 
-    /** messages 原样 JSON 字符串，前端直接传数组字符串以支持图片结构 */
-    @NotBlank
-    private String messages;
+    /** 结构化的消息列表，兼容字符串与携带图片的多模态结构 */
+    @NotNull
+    private List<Message> messages;
 
     private Boolean needRecommend = Boolean.TRUE;
 
@@ -20,6 +22,15 @@ public class ChatReq {
 
     /** 携带历史条数（可选），不传则用全局默认 */
     private Integer historyLimit;
+
+    @Data
+    public static class Message {
+        @NotBlank
+        private String role; // user | assistant
+
+        /** content 可为字符串或多模态列表（按上游协议） */
+        private Object content;
+    }
 }
 
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
@@ -25,6 +26,8 @@ public class ChatController {
 
     @Autowired
     private ScienceChatService chatService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "流式聊天(SSE)", description = "返回 text/event-stream")
@@ -37,10 +40,17 @@ public class ChatController {
         response.flushBuffer();
 
         int limit = req.getHistoryLimit() == null ? 0 : Math.max(0, req.getHistoryLimit());
+        String messagesJson;
+        try {
+            messagesJson = objectMapper.writeValueAsString(req.getMessages());
+        } catch (Exception e) {
+            throw new RuntimeException("请求参数序列化失败", e);
+        }
+
         chatService.streamChat(
                 user.userId(),
                 req.getSessionId(),
-                req.getMessages(),
+                messagesJson,
                 req.getNeedRecommend(),
                 req.getPrompt(),
                 limit,
