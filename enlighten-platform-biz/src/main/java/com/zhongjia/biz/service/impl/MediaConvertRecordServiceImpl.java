@@ -149,7 +149,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
 
     private String callUpstreamConvert(String content, String platform) throws Exception {
         String body = "{" +
-            "\"content\":\"" + escapeJson(content) + "\""," +
+            "\"content\":\"" + escapeJson(content) + "\"" + "," +
             "\"platform\":\"" + escapeJson(platform) + "\"" +
             "}";
         HttpRequest request = HttpRequest.newBuilder()
