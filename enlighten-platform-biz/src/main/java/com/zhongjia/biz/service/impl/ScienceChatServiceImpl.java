@@ -1,0 +1,207 @@
+package com.zhongjia.biz.service.impl;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhongjia.biz.entity.ScienceChatRecord;
+import com.zhongjia.biz.repository.ScienceChatRecordRepository;
+import com.zhongjia.biz.service.ScienceChatService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+
+@Service
+public class ScienceChatServiceImpl implements ScienceChatService {
+
+    private final ScienceChatRecordRepository chatRecordRepository;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public ScienceChatServiceImpl(ScienceChatRecordRepository chatRecordRepository,
+                                  StringRedisTemplate stringRedisTemplate) {
+        this.chatRecordRepository = chatRecordRepository;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
+    @Value("${app.upstream.science-chat-url:http://192.168.1.65:8000/science-chat}")
+    private String upstreamUrl;
+
+    @Value("${app.chat.history-limit:10}")
+    private int defaultHistoryLimit;
+
+    @Value("${app.chat.redis-ttl-seconds:86400}")
+    private long redisTtlSeconds;
+
+    @Override
+    public String streamChat(Long userId,
+                             String sessionId,
+                             String messagesJson,
+                             Boolean needRecommend,
+                             String prompt,
+                             int historyLimit,
+                             Consumer<String> sseWriter) {
+        int limit = historyLimit > 0 ? historyLimit : defaultHistoryLimit;
+        // 缓存 Key
+        String redisKey = buildRedisKey(userId, sessionId);
+
+        // 合并历史
+        String mergedMessages = mergeHistory(redisKey, messagesJson, limit);
+
+        // 先落库请求
+        ScienceChatRecord record = new ScienceChatRecord()
+                .setUserId(userId)
+                .setSessionId(sessionId)
+                .setReqMessages(mergedMessages)
+                .setNeedRecommend(needRecommend)
+                .setPrompt(prompt)
+                .setCreateTime(LocalDateTime.now());
+        chatRecordRepository.save(record);
+
+        StringBuilder respBuf = new StringBuilder(256);
+        try {
+            String body = buildUpstreamBody(mergedMessages, needRecommend, prompt);
+            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(upstreamUrl))
+                    .timeout(Duration.ofMinutes(10))
+                    .header("Content-Type", "application/json")
+                    .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
+                    .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<java.io.InputStream> upstream = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            if (upstream.statusCode() != 200) {
+                throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
+            }
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(upstream.body(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith("data:")) {
+                        // 直接透传
+                        sseWriter.accept(line + "\n\n");
+                        // 解析 type=llm_token 的 delta.content 做拼接
+                        String piece = extractContentDelta(line);
+                        if (!piece.isEmpty()) {
+                            respBuf.append(piece);
+                        }
+                    }
+                }
+            }
+            record.setSuccess(true).setRespContent(respBuf.toString());
+        } catch (Exception ex) {
+            record.setSuccess(false).setErrorMessage(ex.getMessage());
+            sseWriter.accept("data: {\"type\":\"llm_token\",\"choices\":[{\"finish_reason\":\"null\",\"delta\":{\"role\":\"assistant\",\"content\":\"\"}}]}\n\n");
+            sseWriter.accept("data: {\"type\":\"llm_token\",\"choices\":[{\"finish_reason\":\"stop\",\"delta\":{\"role\":\"assistant\",\"content\":\"\"}}]}\n\n");
+        } finally {
+            chatRecordRepository.updateById(record);
+        }
+
+        // 写入会话历史缓存（仅保留 user/assistant 对话消息，限制长度）
+        tryAppendHistory(redisKey, messagesJson, respBuf.toString(), limit);
+        return respBuf.toString();
+    }
+
+    private String buildRedisKey(Long userId, String sessionId) {
+        return "chat:" + userId + ":" + sessionId;
+    }
+
+    private String mergeHistory(String redisKey, String latestMessagesJson, int limit) {
+        try {
+            List<JsonNode> history = new ArrayList<>();
+            String cached = stringRedisTemplate.opsForValue().get(redisKey);
+            if (cached != null && !cached.isEmpty()) {
+                JsonNode arr = objectMapper.readTree(cached);
+                if (arr.isArray()) {
+                    for (JsonNode n : arr) history.add(n);
+                }
+            }
+            JsonNode latestArr = objectMapper.readTree(latestMessagesJson);
+            if (latestArr.isArray()) {
+                for (JsonNode n : latestArr) history.add(n);
+            }
+            // 截断到 limit 条
+            int from = Math.max(0, history.size() - limit);
+            List<JsonNode> sliced = history.subList(from, history.size());
+            return objectMapper.writeValueAsString(sliced);
+        } catch (Exception e) {
+            return latestMessagesJson;
+        }
+    }
+
+    private void tryAppendHistory(String redisKey, String reqMessagesJson, String assistantText, int limit) {
+        try {
+            // 将本次用户消息与AI回复转为两条标准消息追加
+            List<JsonNode> newItems = new ArrayList<>();
+            JsonNode reqArr = objectMapper.readTree(reqMessagesJson);
+            if (reqArr.isArray() && reqArr.size() > 0) {
+                // 取最后一条作为最新用户输入
+                newItems.add(reqArr.get(reqArr.size() - 1));
+            }
+            // AI 回复
+            JsonNode assistant = objectMapper.readTree("{\"role\":\"assistant\",\"content\":" + objectMapper.writeValueAsString(assistantText) + "}");
+
+            String cached = stringRedisTemplate.opsForValue().get(redisKey);
+            List<JsonNode> merged = new ArrayList<>();
+            if (cached != null && !cached.isEmpty()) {
+                JsonNode arr = objectMapper.readTree(cached);
+                if (arr.isArray()) for (JsonNode n : arr) merged.add(n);
+            }
+            merged.addAll(newItems);
+            merged.add(assistant);
+
+            int from = Math.max(0, merged.size() - limit);
+            List<JsonNode> sliced = merged.subList(from, merged.size());
+            stringRedisTemplate.opsForValue().set(redisKey, objectMapper.writeValueAsString(sliced), redisTtlSeconds, TimeUnit.SECONDS);
+        } catch (Exception ignored) {}
+    }
+
+    private String buildUpstreamBody(String messagesJson, Boolean needRecommend, String prompt) {
+        StringBuilder sb = new StringBuilder(256);
+        sb.append('{');
+        sb.append("\"messages\":").append(messagesJson == null ? "[]" : messagesJson);
+        if (needRecommend != null) {
+            sb.append(",\"need_recommend\":").append(needRecommend ? "true" : "false");
+        }
+        if (prompt != null && !prompt.isEmpty()) {
+            sb.append(",\"prompt\":").append('"').append(escapeJson(prompt)).append('"');
+        }
+        sb.append('}');
+        return sb.toString();
+    }
+
+    private static String extractContentDelta(String dataLine) {
+        // 仅在 type=llm_token 时解析 content
+        if (!dataLine.contains("\"type\":\"llm_token\"")) return "";
+        int idx = dataLine.indexOf("\"content\":");
+        if (idx < 0) return "";
+        int start = dataLine.indexOf('"', idx + 10);
+        if (start < 0) return "";
+        int end = dataLine.indexOf('"', start + 1);
+        if (end < 0) return "";
+        String piece = dataLine.substring(start + 1, end);
+        return piece.replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"").replace("\\\\", "\\");
+    }
+
+    private static String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+    }
+}
+
+

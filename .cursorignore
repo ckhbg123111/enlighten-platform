@@ -1,0 +1,101 @@
+# Cursor codebase indexing ignore rules
+# 目标：减少无关/大体积文件的嵌入，加速与稳定索引
+
+# --- VCS ---
+.git/
+
+# --- Build & tooling outputs (Java/Maven/Gradle) ---
+**/target/
+**/build/
+**/out/
+**/bin/
+.mvn/
+.gradle/
+
+# --- IDE / Editor ---
+.idea/
+.vscode/
+.settings/
+.history/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+
+# --- Package managers & caches ---
+node_modules/
+.npm/
+.yarn/
+.pnp.cjs
+.pnp.loader.mjs
+.parcel-cache/
+.cache/
+.turbo/
+.nyc_output/
+coverage/
+
+# --- Logs & temp ---
+logs/
+log/
+**/logs/
+*.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+
+# --- Runtime/data ---
+data/
+pids
+*.pid
+
+# --- Artifacts & binaries ---
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.dll
+*.exe
+*.so
+*.dylib
+*.bin
+*.tgz
+*.zip
+*.7z
+*.tar
+*.gz
+
+# --- Large media/assets (globally ignore重资源，不影响代码检索) ---
+**/*.{png,jpg,jpeg,gif,bmp,ico,svg,psd,ai,sketch}
+**/*.{mp4,mov,avi,mkv,webm}
+**/*.{mp3,wav,flac}
+
+# --- Docs: 忽略大型二进制/媒体，保留 Markdown 文本 ---
+docs/**/*.{png,jpg,jpeg,gif,svg,pdf,mp4,zip,7z}
+
+# --- Front-end framework outputs (若存在) ---
+.next/
+.nuxt/
+.svelte-kit/
+.storybook-out/
+.out/
+public/
+dist/
+
+# --- Envs & secrets ---
+.env
+.env.*
+*.p12
+*.jks
+*.keystore
+*.truststore
+*.pem
+*.key
+*.crt
+*.cert
+
+
