@@ -91,7 +91,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/event-stream")) return true;
         String uri = request.getRequestURI();
-        return uri.startsWith("/api/fill_in") || uri.startsWith("/api/science-generator");
+        return uri.startsWith("/api/fill_in") || uri.startsWith("/api/science-generator") || uri.startsWith("/api/science-chat");
     }
 
     private String buildRequestLog(ContentCachingRequestWrapper request) {

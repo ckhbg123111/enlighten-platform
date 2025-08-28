@@ -29,7 +29,7 @@ public class ChatController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "流式聊天(SSE)", description = "返回 text/event-stream")
     public void chat(@Valid @RequestBody ChatReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
