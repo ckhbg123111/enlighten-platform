@@ -6,8 +6,13 @@ import com.zhongjia.biz.entity.ScienceChatRecord;
 import com.zhongjia.biz.repository.ScienceChatRecordRepository;
 import com.zhongjia.biz.service.ScienceChatService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -30,13 +35,16 @@ public class ScienceChatServiceImpl implements ScienceChatService {
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient;
+    private final WebClient webClient;
 
     public ScienceChatServiceImpl(ScienceChatRecordRepository chatRecordRepository,
                                   StringRedisTemplate stringRedisTemplate,
-                                  HttpClient httpClient) {
+                                  HttpClient httpClient,
+                                  WebClient webClient) {
         this.chatRecordRepository = chatRecordRepository;
         this.stringRedisTemplate = stringRedisTemplate;
         this.httpClient = httpClient;
+        this.webClient = webClient;
     }
 
     @Value("${app.upstream.science-chat-url:http://192.168.1.65:8000/science-chat}")
@@ -76,32 +84,49 @@ public class ScienceChatServiceImpl implements ScienceChatService {
         StringBuilder respBuf = new StringBuilder(256);
         try {
             String body = buildUpstreamBody(mergedMessages, needRecommend, prompt);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(upstreamUrl))
-                    .timeout(Duration.ofMinutes(10))
-                    .header("Content-Type", "application/json")
-                    .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
-                    .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
-                    .build();
+            final String traceId = org.slf4j.MDC.get("traceId");
+            final StringBuilder carry = new StringBuilder();
 
-            HttpResponse<java.io.InputStream> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            if (upstream.statusCode() != 200) {
-                throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
-            }
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(upstream.body(), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = br.readLine()) != null) {
+            webClient.post()
+                .uri(upstreamUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header("X-Trace-Id", traceId == null ? "" : traceId)
+                .bodyValue(body)
+                .exchangeToFlux(resp -> {
+                    if (resp.statusCode().is2xxSuccessful()) {
+                        return resp.bodyToFlux(DataBuffer.class);
+                    }
+                    return Flux.error(new IllegalStateException("上游返回非200:" + resp.statusCode().value()));
+                })
+                .map(db -> {
+                    byte[] bytes = new byte[db.readableByteCount()];
+                    db.read(bytes);
+                    DataBufferUtils.release(db);
+                    return new String(bytes, StandardCharsets.UTF_8);
+                })
+                .concatMap(chunk -> {
+                    carry.append(chunk);
+                    java.util.List<String> lines = new java.util.ArrayList<>();
+                    int idx;
+                    while ((idx = carry.indexOf("\n")) >= 0) {
+                        String line = carry.substring(0, idx);
+                        if (line.endsWith("\r")) line = line.substring(0, line.length() - 1);
+                        lines.add(line);
+                        carry.delete(0, idx + 1);
+                    }
+                    return Flux.fromIterable(lines);
+                })
+                .doOnNext(line -> {
                     if (line.startsWith("data:")) {
-                        // 直接透传
                         sseWriter.accept(line + "\n\n");
-                        // 解析 type=llm_token 的 delta.content 做拼接
                         String piece = extractContentDelta(line);
                         if (!piece.isEmpty()) {
                             respBuf.append(piece);
                         }
                     }
-                }
-            }
+                })
+                .blockLast();
             record.setSuccess(true).setRespContent(respBuf.toString());
         } catch (Exception ex) {
             record.setSuccess(false).setErrorMessage(ex.getMessage());
