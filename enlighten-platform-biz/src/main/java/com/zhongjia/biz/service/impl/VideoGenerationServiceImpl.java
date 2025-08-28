@@ -32,6 +32,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     
     private final VideoGenerationTaskRepository taskRepository;
     private final ObjectMapper objectMapper;
+    private final HttpClient httpClient;
     
     @Value("${app.upstream.dh-generate-url:http://frp5.mmszxc.xin:57599/dh/generate}")
     private String dhGenerateUrl;
@@ -52,9 +53,10 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     private String videoDownloadUrl;
     
     @Autowired
-    public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository, ObjectMapper objectMapper) {
+    public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository, ObjectMapper objectMapper, HttpClient httpClient) {
         this.taskRepository = taskRepository;
         this.objectMapper = objectMapper;
+        this.httpClient = httpClient;
     }
     
     @Override
@@ -264,8 +266,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     // 私有方法
     
     private DigitalHumanResponse callDhGenerate(DigitalHumanRequest request) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-        
         String body = objectMapper.writeValueAsString(request);
         
         HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -276,7 +276,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 .build();
         // 打印请求日志
         log.info("调用数字人生成接口 - URL: {}, Body: {}", dhGenerateUrl, body);
-        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
             throw new IllegalStateException("数字人接口返回非200状态码: " + response.statusCode());
@@ -286,8 +286,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     }
 
     private DigitalHumanStatusResponse callDhStatus(String taskId) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-        
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(dhStatusUrl + "/" + taskId))
                 .timeout(Duration.ofSeconds(30))
@@ -295,7 +293,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 .build();
         // 打印请求日志
         log.info("调用数字人状态查询接口 - URL: {}", dhStatusUrl + "/" + taskId);
-        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
             throw new IllegalStateException("数字人状态查询接口返回非200状态码: " + response.statusCode());
@@ -308,8 +306,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         // 这里简化实现，实际项目中可能需要使用 Spring 的 RestTemplate 或 WebClient
         // 来处理 multipart/form-data 请求
         videoUrl = videoDownloadUrl + videoUrl;
-        
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         
         // 构建 multipart 请求体 (简化版)
         String boundary = "----WebKitFormBoundary" + UUID.randomUUID().toString().replace("-", "");
@@ -341,7 +337,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         }
         HttpRequest httpRequest = requestBuilder.build();
         
-        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
             throw new IllegalStateException("字幕烧录接口返回非200状态码: " + response.statusCode());
@@ -351,8 +347,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     }
     
     private SubtitleBurnResponse callSubtitleStatus(String taskId) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-        
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(subtitleStatusUrl + "/" + taskId))
                 .timeout(Duration.ofSeconds(30))
@@ -362,7 +356,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         }
         HttpRequest httpRequest = requestBuilder.build();
         
-        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
             throw new IllegalStateException("字幕状态查询接口返回非200状态码: " + response.statusCode());

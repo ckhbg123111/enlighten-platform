@@ -29,11 +29,14 @@ public class ScienceChatServiceImpl implements ScienceChatService {
     private final ScienceChatRecordRepository chatRecordRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final HttpClient httpClient;
 
     public ScienceChatServiceImpl(ScienceChatRecordRepository chatRecordRepository,
-                                  StringRedisTemplate stringRedisTemplate) {
+                                  StringRedisTemplate stringRedisTemplate,
+                                  HttpClient httpClient) {
         this.chatRecordRepository = chatRecordRepository;
         this.stringRedisTemplate = stringRedisTemplate;
+        this.httpClient = httpClient;
     }
 
     @Value("${app.upstream.science-chat-url:http://192.168.1.65:8000/science-chat}")
@@ -73,7 +76,6 @@ public class ScienceChatServiceImpl implements ScienceChatService {
         StringBuilder respBuf = new StringBuilder(256);
         try {
             String body = buildUpstreamBody(mergedMessages, needRecommend, prompt);
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(upstreamUrl))
                     .timeout(Duration.ofMinutes(10))
@@ -82,7 +84,7 @@ public class ScienceChatServiceImpl implements ScienceChatService {
                     .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                     .build();
 
-            HttpResponse<java.io.InputStream> upstream = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<java.io.InputStream> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
             if (upstream.statusCode() != 200) {
                 throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
             }

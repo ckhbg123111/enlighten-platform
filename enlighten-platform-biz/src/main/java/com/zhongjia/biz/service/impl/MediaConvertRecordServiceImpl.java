@@ -18,9 +18,11 @@ import java.time.LocalDateTime;
 @Service
 public class MediaConvertRecordServiceImpl implements MediaConvertRecordService {
     private final MediaConvertRecordRepository mediaConvertRecordRepository;
+    private final HttpClient httpClient;
 
-    public MediaConvertRecordServiceImpl(MediaConvertRecordRepository mediaConvertRecordRepository) {
+    public MediaConvertRecordServiceImpl(MediaConvertRecordRepository mediaConvertRecordRepository, HttpClient httpClient) {
         this.mediaConvertRecordRepository = mediaConvertRecordRepository;
+        this.httpClient = httpClient;
     }
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -146,9 +148,8 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
     }
 
     private String callUpstreamConvert(String content, String platform) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         String body = "{" +
-            "\"content\":\"" + escapeJson(content) + "\"," +
+            "\"content\":\"" + escapeJson(content) + "\""," +
             "\"platform\":\"" + escapeJson(platform) + "\"" +
             "}";
         HttpRequest request = HttpRequest.newBuilder()
@@ -158,7 +159,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
-        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         if (upstream.statusCode() != 200) {
             throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
         }
@@ -166,7 +167,6 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
     }
 
     private String callUpstreamGzhRe(String content) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         String body = "{" +
             "\"content\":\"" + escapeJson(content) + "\"" +
             "}";
@@ -177,7 +177,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
-        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         if (upstream.statusCode() != 200) {
             throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
         }
@@ -185,7 +185,6 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
     }
 
     private String callUpstreamGzh(String contentJson) throws Exception {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         String body = contentJson;
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(upstreamGzhUrl))
@@ -194,7 +193,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
-        HttpResponse<String> upstream = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         if (upstream.statusCode() != 200) {
             throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
         }

@@ -24,8 +24,11 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
 
     private final ScienceGenRecordRepository scienceGenRecordRepository;
 
-    public ScienceGenRecordServiceImpl(ScienceGenRecordRepository scienceGenRecordRepository) {
+    private final HttpClient httpClient;
+
+    public ScienceGenRecordServiceImpl(ScienceGenRecordRepository scienceGenRecordRepository, HttpClient httpClient) {
         this.scienceGenRecordRepository = scienceGenRecordRepository;
+        this.httpClient = httpClient;
     }
     @org.springframework.beans.factory.annotation.Value("${app.upstream.science-generator-url:http://192.168.1.65:8000/science-generator}")
     private String upstreamUrl;
@@ -45,7 +48,6 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
 
         StringBuilder respBuf = new StringBuilder(256);
         try {
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(upstreamUrl))
                 .timeout(Duration.ofMinutes(10))
@@ -53,7 +55,7 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
                 .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                 .POST(HttpRequest.BodyPublishers.ofString(upstreamBody, StandardCharsets.UTF_8))
                 .build();
-            HttpResponse<java.io.InputStream> upstream = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<java.io.InputStream> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
             if (upstream.statusCode() != 200) {
                 throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
             }
@@ -93,7 +95,6 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
         String upstreamBody = sb.toString();
         StringBuilder respBuf = new StringBuilder(256);
         try {
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(regenerateUrl))
                     .timeout(Duration.ofMinutes(10))
@@ -101,7 +102,7 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
                     .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
                     .POST(HttpRequest.BodyPublishers.ofString(upstreamBody, StandardCharsets.UTF_8))
                     .build();
-            HttpResponse<java.io.InputStream> upstream = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<java.io.InputStream> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
             if (upstream.statusCode() != 200) {
                 throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
             }

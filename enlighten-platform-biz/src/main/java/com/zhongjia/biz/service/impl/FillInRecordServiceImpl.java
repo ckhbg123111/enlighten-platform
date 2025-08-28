@@ -19,9 +19,11 @@ import java.time.LocalDateTime;
 public class FillInRecordServiceImpl implements FillInRecordService {
 
     private final FillInRecordRepository fillInRecordRepository;
+    private final HttpClient httpClient;
 
-    public FillInRecordServiceImpl(FillInRecordRepository fillInRecordRepository) {
+    public FillInRecordServiceImpl(FillInRecordRepository fillInRecordRepository, HttpClient httpClient) {
         this.fillInRecordRepository = fillInRecordRepository;
+        this.httpClient = httpClient;
     }
     @org.springframework.beans.factory.annotation.Value("${app.upstream.fill-in-url:http://192.168.1.65:8000/fill_in}")
     private String upstreamUrl;
@@ -37,7 +39,6 @@ public class FillInRecordServiceImpl implements FillInRecordService {
 
         StringBuilder respBuf = new StringBuilder(256);
         try {
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             String body = "{" + "\"content\":\"" + escapeJson(content) + "\"}";
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(upstreamUrl))
@@ -47,7 +48,7 @@ public class FillInRecordServiceImpl implements FillInRecordService {
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
 
-            HttpResponse<java.io.InputStream> upstream = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<java.io.InputStream> upstream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
             if (upstream.statusCode() != 200) {
                 throw new IllegalStateException("上游返回非200:" + upstream.statusCode());
             }
