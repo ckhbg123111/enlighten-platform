@@ -112,7 +112,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             if (response.getSuccess() && response.getData() != null) {
                 // 更新任务信息
                 task.setDhTaskId(response.getData().getTask_id())
-                    .setAudioData(objectMapper.writeValueAsString(response.getData().getAudio_data()))
                     .setStatus("DH_PROCESSING")
                     .setProgress(5);
                 
@@ -179,6 +178,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                 if ("COMPLETED".equalsIgnoreCase(data.getStatus()) && data.getResult_url() != null) {
                     // 数字人阶段完成
                     task.setDhResultUrl(data.getResult_url())
+                            .setAudioData(objectMapper.writeValueAsString(response.getData().getAudio_data()))
                             .setDhStatus("COMPLETED")
                             .setStatus("DH_DONE")
                             .setProgress(60);
@@ -279,6 +279,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
+            log.error("数字人接口调用失败 - 状态码: {}, 响应体: {}", response.statusCode(), response.body());
             throw new IllegalStateException("数字人接口返回非200状态码: " + response.statusCode());
         }
         

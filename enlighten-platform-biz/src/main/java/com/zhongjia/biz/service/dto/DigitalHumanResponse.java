@@ -42,6 +42,7 @@ public class DigitalHumanResponse {
         /**
          * 音频数据列表
          */
+        @Deprecated
         private List<AudioData> audio_data;
     }
     
