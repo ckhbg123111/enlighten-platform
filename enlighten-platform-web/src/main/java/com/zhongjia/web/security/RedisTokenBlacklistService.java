@@ -2,7 +2,7 @@ package com.zhongjia.web.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ public class RedisTokenBlacklistService implements TokenBlacklistService {
     private static final String BLACKLIST_KEY_PREFIX = "token:blacklist:";
     
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 将token添加到黑名单
@@ -32,7 +32,7 @@ public class RedisTokenBlacklistService implements TokenBlacklistService {
         
         if (ttl > 0) {
             // 设置Redis键值，TTL为token的剩余有效时间
-            redisTemplate.opsForValue().set(key, expireTime, ttl, TimeUnit.MILLISECONDS);
+            stringRedisTemplate.opsForValue().set(key, String.valueOf(expireTime), ttl, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -44,7 +44,7 @@ public class RedisTokenBlacklistService implements TokenBlacklistService {
     @Override
     public boolean isBlacklisted(String token) {
         String key = BLACKLIST_KEY_PREFIX + token;
-        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+        return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
     }
 
     /**
@@ -54,6 +54,6 @@ public class RedisTokenBlacklistService implements TokenBlacklistService {
     @Override
     public int getBlacklistSize() {
         // Redis中统计所有黑名单键的数量
-        return Math.toIntExact(redisTemplate.keys(BLACKLIST_KEY_PREFIX + "*").size());
+        return Math.toIntExact(stringRedisTemplate.keys(BLACKLIST_KEY_PREFIX + "*").size());
     }
 }
