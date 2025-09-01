@@ -47,6 +47,20 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    /**
+     * 获取token的过期时间
+     * @param token JWT token
+     * @return 过期时间戳，如果解析失败返回0
+     */
+    public long getExpirationTime(String token) {
+        try {
+            Claims claims = parse(token);
+            return claims.getExpiration().getTime();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }
 
 

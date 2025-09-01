@@ -18,11 +18,13 @@ import java.nio.charset.StandardCharsets;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final TokenBlacklistService tokenBlacklistService;
 
     private static final String FIXED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0Iiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTUxMzczODUsImV4cCI6MTc1NTc0MjE4NX0.3dUWxRk7ze0kcixoi79OAzZaXi9A6jDNbXOsalyFeZU";
 
-    public JwtAuthFilter(JwtUtil jwtUtil) {
+    public JwtAuthFilter(JwtUtil jwtUtil, TokenBlacklistService tokenBlacklistService) {
         this.jwtUtil = jwtUtil;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
@@ -52,6 +54,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
                 return;
             }
+            // 检查token是否在黑名单中
+            if (tokenBlacklistService.isBlacklisted(token)) {
+                writeJson(response, 401, Result.error(401, "令牌已失效"), path);
+                return;
+            }
+            
             try {
                 Claims claims = jwtUtil.parse(token);
                 Long userId = Long.valueOf(claims.getSubject());
