@@ -74,7 +74,7 @@ public class ScienceChatServiceImpl implements ScienceChatService {
         ScienceChatRecord record = new ScienceChatRecord()
                 .setUserId(userId)
                 .setSessionId(sessionId)
-                .setReqMessages(mergedMessages)
+                .setReqMessages(messagesJson)
                 .setNeedRecommend(needRecommend)
                 .setPrompt(prompt)
                 .setCreateTime(LocalDateTime.now());

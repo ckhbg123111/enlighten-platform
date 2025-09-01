@@ -77,6 +77,7 @@ public class MediaConvertController {
     // 1.2) 转公众号：按结构化内容
     @PostMapping(path = "convert2gzh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "转公众号-结构化内容", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Deprecated
     public void convertToGzh(@Valid @RequestBody ConvertGzhReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
