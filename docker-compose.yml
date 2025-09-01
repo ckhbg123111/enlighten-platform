@@ -27,8 +27,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      minio:
-        condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       - TZ=Asia/Shanghai
       - JAVA_OPTS=${JAVA_OPTS}
@@ -49,31 +49,16 @@ services:
       - "${APP_PORT}:8080"
     restart: unless-stopped
 
-  minio:
-    image: quay.io/minio/minio:latest
   redis:
     image: redis:7
     container_name: enlighten-redis
+    environment:
+      - TZ=Asia/Shanghai
     ports:
       - "6379:6379"
-    command: ["redis-server", "--appendonly", "yes"]
-    container_name: enlighten-minio
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - TZ=Asia/Shanghai
     volumes:
-      - ./data/minio/data:/data
-      - ./data/minio/config:/root/.minio
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    command: server /data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - ./data/redis:/data
+    command: ["redis-server", "--appendonly", "yes"]
     restart: unless-stopped
 
 networks:
