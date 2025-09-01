@@ -81,7 +81,7 @@ fi
 echo "[6/6] 信息"
 echo "- RocketMQ NameServer: 127.0.0.1:9876"
 echo "- RocketMQ Broker: 127.0.0.1:10911"
-echo "- RocketMQ Dashboard: http://127.0.0.1:8080 (登录页加载后左上角即可看到集群)"
+echo "- RocketMQ Dashboard: http://127.0.0.1:8090 (登录页加载后左上角即可看到集群)"
 echo "- 数据目录: $PROJECT_DIR/data"
 echo "- 配置目录: $PROJECT_DIR/conf"
 

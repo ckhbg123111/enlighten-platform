@@ -86,9 +86,18 @@ else
   exit 1
 fi
 
-# Build
+# Build / Pull
 if [[ "${DO_BUILD}" == "true" ]]; then
+  # 显式拉取第三方基础镜像，避免隐式行为
+  "${compose_cmd[@]}" --env-file "${ENV_FILE}" pull mysql redis | cat
   "${compose_cmd[@]}" --env-file "${ENV_FILE}" build
+else
+  # no-build 场景需确保 app 镜像可用
+  if [[ -z "${APP_IMAGE:-}" ]]; then
+    echo "APP_IMAGE 未设置，并且使用了 --no-build，无法拉取应用镜像。" >&2
+    exit 1
+  fi
+  "${compose_cmd[@]}" --env-file "${ENV_FILE}" pull app mysql redis | cat
 fi
 
 # Up

@@ -21,8 +21,7 @@ services:
     build:
       context: .
       dockerfile: enlighten-platform-web/Dockerfile
-      network: host
-    image: enlighten-platform-web:${APP_VERSION}
+    image: ${APP_IMAGE:-enlighten-platform-web:${APP_VERSION}}
     container_name: enlighten-app
     depends_on:
       mysql:
@@ -41,11 +40,13 @@ services:
       - APP_UPSTREAM_CONVERT2MEDIA_URL=${APP_UPSTREAM_CONVERT2MEDIA_URL}
       - APP_UPSTREAM_CONVERT2GZH_RE_URL=${APP_UPSTREAM_CONVERT2GZH_RE_URL}
       - APP_UPSTREAM_CONVERT2GZH_URL=${APP_UPSTREAM_CONVERT2GZH_URL}
+      - APP_UPSTREAM_SCIENCE_CHAT_URL=${APP_UPSTREAM_SCIENCE_CHAT_URL}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=
       - REDIS_DB=0
       - TOKEN_BLACKLIST_TYPE=${TOKEN_BLACKLIST_TYPE}
+      - ROCKETMQ_NAME_SERVER=${ROCKETMQ_NAME_SERVER}
     ports:
       - "${APP_PORT}:8080"
     restart: unless-stopped
