@@ -1,8 +1,10 @@
 package com.zhongjia.biz.service.impl;
 
 import com.zhongjia.biz.entity.MediaConvertRecord;
+import com.zhongjia.biz.entity.User;
 import com.zhongjia.biz.repository.MediaConvertRecordRepository;
 import com.zhongjia.biz.service.MediaConvertRecordService;
+import com.zhongjia.biz.service.UserService;
 import com.zhongjia.biz.service.dto.UpstreamResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,12 @@ import java.time.LocalDateTime;
 public class MediaConvertRecordServiceImpl implements MediaConvertRecordService {
     private final MediaConvertRecordRepository mediaConvertRecordRepository;
     private final HttpClient httpClient;
+    private final UserService userService;
 
-    public MediaConvertRecordServiceImpl(MediaConvertRecordRepository mediaConvertRecordRepository, HttpClient httpClient) {
+    public MediaConvertRecordServiceImpl(MediaConvertRecordRepository mediaConvertRecordRepository, HttpClient httpClient, UserService userService) {
         this.mediaConvertRecordRepository = mediaConvertRecordRepository;
         this.httpClient = httpClient;
+        this.userService = userService;
     }
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -87,7 +91,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
 
         UpstreamResult result = new UpstreamResult();
         try {
-            String upstreamResp = callUpstreamGzhRe(content);
+            String upstreamResp = callUpstreamGzhRe(content, userId);
             UpstreamResp parsed = parseUpstreamJson(upstreamResp);
             String dataRaw = toDataRaw(parsed);
 
@@ -166,9 +170,16 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
         return upstream.body();
     }
 
-    private String callUpstreamGzhRe(String content) throws Exception {
+    private String callUpstreamGzhRe(String content, Long userId) throws Exception {
+        // 查询用户信息获取医院和科室
+        User user = userService.getById(userId);
+        String hospital = user != null && user.getHospital() != null ? user.getHospital() : "";
+        String department = user != null && user.getDepartment() != null ? user.getDepartment() : "";
+        
         String body = "{" +
-            "\"content\":\"" + escapeJson(content) + "\"" +
+            "\"content\":\"" + escapeJson(content) + "\"," +
+            "\"hospital\":\"" + escapeJson(hospital) + "\"," +
+            "\"department\":\"" + escapeJson(department) + "\"" +
             "}";
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(upstreamGzhReUrl))
