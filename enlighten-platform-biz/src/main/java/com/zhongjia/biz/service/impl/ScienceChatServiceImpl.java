@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -68,7 +69,7 @@ public class ScienceChatServiceImpl implements ScienceChatService {
         String redisKey = buildRedisKey(userId, sessionId);
 
         // 合并历史
-        String mergedMessages = mergeHistory(redisKey, messagesJson, limit);
+        String mergedMessages = mergeHistory(redisKey, userId, sessionId, messagesJson, limit);
 
         // 先落库请求
         ScienceChatRecord record = new ScienceChatRecord()
@@ -144,7 +145,7 @@ public class ScienceChatServiceImpl implements ScienceChatService {
         return "chat:" + userId + ":" + sessionId;
     }
 
-    private String mergeHistory(String redisKey, String latestMessagesJson, int limit) {
+    private String mergeHistory(String redisKey, Long userId, String sessionId, String latestMessagesJson, int limit) {
         try {
             List<JsonNode> history = new ArrayList<>();
             String cached = stringRedisTemplate.opsForValue().get(redisKey);
@@ -153,18 +154,52 @@ public class ScienceChatServiceImpl implements ScienceChatService {
                 if (arr.isArray()) {
                     for (JsonNode n : arr) history.add(n);
                 }
+            } else {
+                // Redis 未命中时从 DB 回退
+                List<JsonNode> dbHistory = loadHistoryFromDb(userId, sessionId, Math.max(1, limit));
+                history.addAll(dbHistory);
             }
             JsonNode latestArr = objectMapper.readTree(latestMessagesJson);
             if (latestArr.isArray()) {
                 for (JsonNode n : latestArr) history.add(n);
             }
-            // 截断到 limit 条
             int from = Math.max(0, history.size() - limit);
             List<JsonNode> sliced = history.subList(from, history.size());
             return objectMapper.writeValueAsString(sliced);
         } catch (Exception e) {
             return latestMessagesJson;
         }
+    }
+
+    private List<JsonNode> loadHistoryFromDb(Long userId, String sessionId, int recordLimit) {
+        List<JsonNode> result = new ArrayList<>();
+        try {
+            List<ScienceChatRecord> recent = chatRecordRepository.lambdaQuery()
+                    .eq(ScienceChatRecord::getUserId, userId)
+                    .eq(ScienceChatRecord::getSessionId, sessionId)
+                    .eq(ScienceChatRecord::getSuccess, true)
+                    .orderByDesc(ScienceChatRecord::getCreateTime)
+                    .last("limit " + Math.max(1, recordLimit))
+                    .list();
+
+            Collections.reverse(recent);
+
+            for (ScienceChatRecord r : recent) {
+                String req = r.getReqMessages();
+                if (req != null && !req.isEmpty()) {
+                    JsonNode arr = objectMapper.readTree(req);
+                    if (arr.isArray() && arr.size() > 0) {
+                        result.add(arr.get(arr.size() - 1));
+                    }
+                }
+                String resp = r.getRespContent();
+                if (resp != null) {
+                    JsonNode assistant = objectMapper.readTree("{\"role\":\"assistant\",\"content\":" + objectMapper.writeValueAsString(resp) + "}");
+                    result.add(assistant);
+                }
+            }
+        } catch (Exception ignored) {}
+        return result;
     }
 
     private void tryAppendHistory(String redisKey, String reqMessagesJson, String assistantText, int limit) {
