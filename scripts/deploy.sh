@@ -60,6 +60,12 @@ fi
 
 echo "Using env file: ${ENV_FILE}"
 
+# Load env vars for local checks (e.g., APP_IMAGE in --no-build mode)
+set -a
+# shellcheck source=/dev/null
+. "${ENV_FILE}"
+set +a
+
 # Verify compose file exists
 COMPOSE_FILE="docker-compose.yml"
 if [[ ! -f "${COMPOSE_FILE}" ]]; then
