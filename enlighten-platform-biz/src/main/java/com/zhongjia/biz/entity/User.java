@@ -61,12 +61,12 @@ public class User {
     private Long tenantId;
 
     /**
-     * 医院名称（Beta测试版）
+     * 医院名称（Beta）
      */
     private String hospital;
 
     /**
-     * 科室名称（Beta测试版）
+     * 科室名称（Beta）
      */
     private String department;
     

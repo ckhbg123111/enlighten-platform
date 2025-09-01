@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * 用户控制器
- * 注意：医院、科室字段为Beta测试版功能
+ * 注意：医院、科室字段为Beta功能
  */
 @RestController
 @Tag(name = "用户管理")

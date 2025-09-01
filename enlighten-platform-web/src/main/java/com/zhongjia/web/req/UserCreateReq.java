@@ -39,14 +39,14 @@ public class UserCreateReq {
     private Long tenantId;
 
     /**
-     * 医院名称（Beta测试版）
+     * 医院名称（Beta）
      */
-    @Schema(description = "医院名称（Beta测试版）", example = "北京协和医院")
+    @Schema(description = "医院名称（Beta）", example = "北京协和医院")
     private String hospital;
 
     /**
-     * 科室名称（Beta测试版）
+     * 科室名称（Beta）
      */
-    @Schema(description = "科室名称（Beta测试版）", example = "心内科")
+    @Schema(description = "科室名称（Beta）", example = "心内科")
     private String department;
 }
