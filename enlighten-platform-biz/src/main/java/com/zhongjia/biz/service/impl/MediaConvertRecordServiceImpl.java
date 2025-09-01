@@ -7,6 +7,7 @@ import com.zhongjia.biz.service.MediaConvertRecordService;
 import com.zhongjia.biz.service.UserService;
 import com.zhongjia.biz.service.dto.UpstreamResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -19,15 +20,15 @@ import java.time.LocalDateTime;
 
 @Service
 public class MediaConvertRecordServiceImpl implements MediaConvertRecordService {
-    private final MediaConvertRecordRepository mediaConvertRecordRepository;
-    private final HttpClient httpClient;
-    private final UserService userService;
-
-    public MediaConvertRecordServiceImpl(MediaConvertRecordRepository mediaConvertRecordRepository, HttpClient httpClient, UserService userService) {
-        this.mediaConvertRecordRepository = mediaConvertRecordRepository;
-        this.httpClient = httpClient;
-        this.userService = userService;
-    }
+    
+    @Autowired
+    private MediaConvertRecordRepository mediaConvertRecordRepository;
+    
+    @Autowired
+    private HttpClient httpClient;
+    
+    @Autowired
+    private UserService userService;
     private static final ObjectMapper JSON = new ObjectMapper();
 
     @org.springframework.beans.factory.annotation.Value("${app.upstream.convert2media-url:http://192.168.1.65:8000/convert2media}")

@@ -3,6 +3,7 @@ package com.zhongjia.biz.service.impl;
 import com.zhongjia.biz.entity.FillInRecord;
 import com.zhongjia.biz.repository.FillInRecordRepository;
 import com.zhongjia.biz.service.FillInRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,15 +24,14 @@ import java.time.LocalDateTime;
 @Service
 public class FillInRecordServiceImpl implements FillInRecordService {
 
-    private final FillInRecordRepository fillInRecordRepository;
-    private final HttpClient httpClient;
-    private final WebClient webClient;
-
-    public FillInRecordServiceImpl(FillInRecordRepository fillInRecordRepository, HttpClient httpClient, WebClient webClient) {
-        this.fillInRecordRepository = fillInRecordRepository;
-        this.httpClient = httpClient;
-        this.webClient = webClient;
-    }
+    @Autowired
+    private FillInRecordRepository fillInRecordRepository;
+    
+    @Autowired
+    private HttpClient httpClient;
+    
+    @Autowired
+    private WebClient webClient;
     @org.springframework.beans.factory.annotation.Value("${app.upstream.fill-in-url:http://192.168.1.65:8000/fill_in}")
     private String upstreamUrl;
 

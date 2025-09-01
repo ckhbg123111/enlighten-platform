@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhongjia.biz.entity.ScienceChatRecord;
 import com.zhongjia.biz.repository.ScienceChatRecordRepository;
 import com.zhongjia.biz.service.ScienceChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,21 +32,19 @@ import java.util.function.Consumer;
 @Service
 public class ScienceChatServiceImpl implements ScienceChatService {
 
-    private final ScienceChatRecordRepository chatRecordRepository;
-    private final StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private ScienceChatRecordRepository chatRecordRepository;
+    
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final HttpClient httpClient;
-    private final WebClient webClient;
-
-    public ScienceChatServiceImpl(ScienceChatRecordRepository chatRecordRepository,
-                                  StringRedisTemplate stringRedisTemplate,
-                                  HttpClient httpClient,
-                                  WebClient webClient) {
-        this.chatRecordRepository = chatRecordRepository;
-        this.stringRedisTemplate = stringRedisTemplate;
-        this.httpClient = httpClient;
-        this.webClient = webClient;
-    }
+    
+    @Autowired
+    private HttpClient httpClient;
+    
+    @Autowired
+    private WebClient webClient;
 
     @Value("${app.upstream.science-chat-url:http://192.168.1.65:8000/science-chat}")
     private String upstreamUrl;

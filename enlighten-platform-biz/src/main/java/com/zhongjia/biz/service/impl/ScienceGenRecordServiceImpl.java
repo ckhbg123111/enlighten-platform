@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.zhongjia.biz.entity.ScienceGenRecord;
 import com.zhongjia.biz.repository.ScienceGenRecordRepository;
 import com.zhongjia.biz.service.ScienceGenRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -27,16 +28,14 @@ import java.util.function.Consumer;
 @Service
 public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
 
-    private final ScienceGenRecordRepository scienceGenRecordRepository;
+    @Autowired
+    private ScienceGenRecordRepository scienceGenRecordRepository;
 
-    private final HttpClient httpClient;
-    private final WebClient webClient;
-
-    public ScienceGenRecordServiceImpl(ScienceGenRecordRepository scienceGenRecordRepository, HttpClient httpClient, WebClient webClient) {
-        this.scienceGenRecordRepository = scienceGenRecordRepository;
-        this.httpClient = httpClient;
-        this.webClient = webClient;
-    }
+    @Autowired
+    private HttpClient httpClient;
+    
+    @Autowired
+    private WebClient webClient;
     @org.springframework.beans.factory.annotation.Value("${app.upstream.science-generator-url:http://192.168.1.65:8000/science-generator}")
     private String upstreamUrl;
 

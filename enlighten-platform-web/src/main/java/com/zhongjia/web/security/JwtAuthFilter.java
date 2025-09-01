@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,13 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-    private final TokenBlacklistService tokenBlacklistService;
+    @Autowired
+    private JwtUtil jwtUtil;
+    
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
     private static final String FIXED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0Iiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTUxMzczODUsImV4cCI6MTc1NTc0MjE4NX0.3dUWxRk7ze0kcixoi79OAzZaXi9A6jDNbXOsalyFeZU";
-
-    public JwtAuthFilter(JwtUtil jwtUtil, TokenBlacklistService tokenBlacklistService) {
-        this.jwtUtil = jwtUtil;
-        this.tokenBlacklistService = tokenBlacklistService;
-    }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)

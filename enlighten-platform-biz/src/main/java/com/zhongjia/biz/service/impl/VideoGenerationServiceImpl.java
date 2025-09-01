@@ -30,9 +30,14 @@ import java.util.UUID;
 @Service
 public class VideoGenerationServiceImpl implements VideoGenerationService {
     
-    private final VideoGenerationTaskRepository taskRepository;
-    private final ObjectMapper objectMapper;
-    private final HttpClient httpClient;
+    @Autowired
+    private VideoGenerationTaskRepository taskRepository;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
+    
+    @Autowired
+    private HttpClient httpClient;
     
     @Value("${app.upstream.dh-generate-url:http://frp5.mmszxc.xin:57599/dh/generate}")
     private String dhGenerateUrl;
@@ -51,13 +56,6 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
 
     @Value("${app.upstream.video-download-url}")
     private String videoDownloadUrl;
-    
-    @Autowired
-    public VideoGenerationServiceImpl(VideoGenerationTaskRepository taskRepository, ObjectMapper objectMapper, HttpClient httpClient) {
-        this.taskRepository = taskRepository;
-        this.objectMapper = objectMapper;
-        this.httpClient = httpClient;
-    }
     
     @Override
     public String createTask(Long userId, String inputText, String modelName, String voice) {
