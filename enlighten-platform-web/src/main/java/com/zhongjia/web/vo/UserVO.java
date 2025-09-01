@@ -28,6 +28,10 @@ public class UserVO {
     private LocalDateTime lastLoginTime;
     @Schema(description = "租户ID")
     private Long tenantId;
+    @Schema(description = "医院名称（Beta测试版）")
+    private String hospital;
+    @Schema(description = "科室名称（Beta测试版）")
+    private String department;
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
     @Schema(description = "更新时间")

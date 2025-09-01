@@ -59,6 +59,16 @@ public class User {
      * 租户ID（ToB 多租户）
      */
     private Long tenantId;
+
+    /**
+     * 医院名称（Beta测试版）
+     */
+    private String hospital;
+
+    /**
+     * 科室名称（Beta测试版）
+     */
+    private String department;
     
     /**
      * 创建时间
