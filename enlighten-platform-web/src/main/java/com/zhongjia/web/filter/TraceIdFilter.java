@@ -39,6 +39,16 @@ public class TraceIdFilter extends OncePerRequestFilter {
         String ua = request.getHeader("User-Agent");
         String remote = request.getRemoteAddr();
 
+        // 对健康检查路径禁用详细日志
+        if ("/actuator/health".equals(uri) || uri.startsWith("/actuator/health/")) {
+            try {
+                filterChain.doFilter(request, response);
+            } finally {
+                MDC.remove(TRACE_ID_MDC_KEY);
+            }
+            return;
+        }
+
         // 包装请求与响应，便于读取body（SSE场景仅包装请求，避免影响流式返回）
         ContentCachingRequestWrapper cachingRequest = new ContentCachingRequestWrapper(request);
         boolean sse = isSseRequest(request);
