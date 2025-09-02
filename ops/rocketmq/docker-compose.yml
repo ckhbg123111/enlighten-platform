@@ -10,7 +10,7 @@ services:
     volumes:
       - ./data/namesrv/logs:/home/rocketmq/logs
     networks:
-      - rocketmq
+      - default
     command: sh runserver.sh org.apache.rocketmq.namesrv.NamesrvStartup
 
   broker:
@@ -29,7 +29,7 @@ services:
       - ./data/broker/logs:/home/rocketmq/logs
       - ./data/broker/store:/home/rocketmq/store
     networks:
-      - rocketmq
+      - default
     command: sh runbroker.sh org.apache.rocketmq.broker.BrokerStartup -n namesrv:9876 -c /home/rocketmq/conf/broker.conf
 
   dashboard:
@@ -43,9 +43,11 @@ services:
     environment:
       - JAVA_OPTS=-Drocketmq.namesrv.addr=namesrv:9876
     networks:
-      - rocketmq
+      - default
 
 networks:
-  rocketmq: {}
+  default:
+    name: enlighten-net
+    external: true
 
 
