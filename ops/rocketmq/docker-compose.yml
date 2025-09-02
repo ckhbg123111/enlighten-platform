@@ -11,7 +11,7 @@ services:
       - ./data/namesrv/logs:/home/rocketmq/logs
     networks:
       - rocketmq
-    command: sh -c "mqnamesrv"
+    command: sh runserver.sh org.apache.rocketmq.namesrv.NamesrvStartup
 
   broker:
     image: apache/rocketmq:5.3.0
@@ -30,7 +30,7 @@ services:
       - ./data/broker/store:/home/rocketmq/store
     networks:
       - rocketmq
-    command: sh -c "mqbroker -n namesrv:9876 -c /home/rocketmq/conf/broker.conf"
+    command: sh runbroker.sh org.apache.rocketmq.broker.BrokerStartup -n namesrv:9876 -c /home/rocketmq/conf/broker.conf
 
   dashboard:
     image: apacherocketmq/rocketmq-dashboard:1.0.0
