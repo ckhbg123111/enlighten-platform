@@ -87,7 +87,6 @@ public class ScienceGeneratorController {
     public static class GenerateReq {
 		private String document_id;
 		private Boolean contains_image;
-		@NotBlank
 		private String topic;
 		@NotBlank
 		private String content;
