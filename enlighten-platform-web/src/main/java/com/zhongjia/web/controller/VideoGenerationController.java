@@ -76,6 +76,39 @@ public class VideoGenerationController {
     }
     
     /**
+     * 下载视频结果（返回直链，不重定向）
+     */
+    @GetMapping("/download2/{taskId}")
+    @Operation(summary = "下载视频结果(返回直链)", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<java.util.Map<String, String>> downloadVideoLink(
+            @Parameter(description = "任务ID") @PathVariable("taskId") String taskId) {
+        UserContext.UserInfo user = requireUser();
+        
+        try {
+            VideoGenerationTask task = videoGenerationService.getTaskStatus(taskId, user.userId());
+            
+            if (!"COMPLETED".equals(task.getStatus())) {
+                return Result.error(400, "任务尚未完成");
+            }
+            
+            if (task.getOutputUrl() == null || task.getOutputUrl().isEmpty()) {
+                return Result.error(404, "视频文件不存在");
+            }
+            
+            String directUrl = subtitleVideoDownloadBaseUrl + "?path=" + task.getOutputUrl();
+            log.info("视频直链返回 - 用户: {}, 任务ID: {}, URL: {}", user.userId(), taskId, directUrl);
+            return Result.success(java.util.Map.of("url", directUrl));
+            
+        } catch (IllegalArgumentException e) {
+            log.warn("下载视频直链失败 - 用户: {}, 任务ID: {}, 错误: {}", user.userId(), taskId, e.getMessage());
+            return Result.error(404, e.getMessage());
+        } catch (Exception e) {
+            log.error("下载视频直链异常 - 用户: {}, 任务ID: {}", user.userId(), taskId, e);
+            return Result.error(500, "下载失败");
+        }
+    }
+    
+    /**
      * 查询视频生成任务状态
      */
     @GetMapping("/status/{taskId}")
