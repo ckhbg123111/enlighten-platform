@@ -54,24 +54,7 @@ public class DhModelServiceImpl implements DhModelService {
     public List<String> listModelsForUser(Long userId) {
         Set<String> models = new LinkedHashSet<>();
 
-        // 1) 上游模型列表
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(dhModelsUrl))
-                    .timeout(Duration.ofSeconds(30))
-                    .GET()
-                    .build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            if (response.statusCode() == 200 && response.body() != null) {
-                models.addAll(extractModelNames(response.body()));
-            } else {
-                log.warn("获取上游模型列表失败: status={}, body={}", response.statusCode(), response.body());
-            }
-        } catch (Exception e) {
-            log.error("调用上游模型列表异常", e);
-        }
-
-        // 2) 默认模型（配置）
+        // 1) 默认模型（配置）
         if (defaultModels != null && !defaultModels.isBlank()) {
             for (String m : defaultModels.split(",")) {
                 String name = m.trim();
@@ -79,7 +62,7 @@ public class DhModelServiceImpl implements DhModelService {
             }
         }
 
-        // 3) 用户自训练模型（DB）
+        // 2) 用户自训练模型（DB）
         try {
             List<UserDhModel> userModels = userDhModelRepository.lambdaQuery()
                     .eq(UserDhModel::getUserId, userId)
@@ -98,43 +81,17 @@ public class DhModelServiceImpl implements DhModelService {
 
     @Override
     public List<java.util.Map<String, Object>> listModelDetailsForUser(Long userId) {
-        // 目标：保持与字符串列表相同的合并顺序与筛选逻辑：上游 -> 默认 -> 用户
-        // 返回详情对象；若某模型仅存在于默认/用户集合而不在上游列表中，则返回最小对象，仅包含 name。
+        // 目标：仅返回“默认模型 + 用户自有模型”的集合；上游仅用于补全详情
+        // 顺序：默认 -> 用户；若上游没有该模型的详情，则返回最小对象，仅包含 name。
         try {
-            // 1) 拉取上游详情列表
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(dhModelsUrl))
-                    .timeout(Duration.ofSeconds(30))
-                    .GET()
-                    .build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            if (response.statusCode() != 200 || response.body() == null) {
-                log.warn("获取上游模型详细列表失败: status={}, body={}", response.statusCode(), response.body());
-                return java.util.Collections.emptyList();
-            }
-
-            List<JsonNode> upstreamNodes = extractModelObjects(response.body());
-            // name -> node 映射，便于根据名称取详情
-            Map<String, JsonNode> nameToNode = new LinkedHashMap<>();
-            for (JsonNode n : upstreamNodes) {
-                String name = pickModelName(n);
-                if (name != null && !name.isEmpty() && !nameToNode.containsKey(name)) {
-                    nameToNode.put(name, n);
-                }
-            }
-
-            // 2) 组装最终名称集合（顺序：上游 -> 默认 -> 用户），保持与原字符串接口一致
+            // 1) 构造最终名称集合：默认 -> 用户
             LinkedHashSet<String> finalNames = new LinkedHashSet<>();
-            // 上游名称
-            finalNames.addAll(nameToNode.keySet());
-            // 默认模型
             if (defaultModels != null && !defaultModels.isBlank()) {
                 for (String m : defaultModels.split(",")) {
                     String name = m.trim();
                     if (!name.isEmpty()) finalNames.add(name);
                 }
             }
-            // 用户自训练模型
             try {
                 List<UserDhModel> userModels = userDhModelRepository.lambdaQuery()
                         .eq(UserDhModel::getUserId, userId)
@@ -148,7 +105,31 @@ public class DhModelServiceImpl implements DhModelService {
                 log.error("查询用户自训练模型失败", e);
             }
 
-            // 3) 根据名称集合生成详情列表：优先使用上游详情，不存在则返回最小对象
+            // 2) 拉取上游详情列表，用于补全
+            Map<String, JsonNode> nameToNode = new LinkedHashMap<>();
+            try {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(dhModelsUrl))
+                        .timeout(Duration.ofSeconds(30))
+                        .GET()
+                        .build();
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                if (response.statusCode() == 200 && response.body() != null) {
+                    List<JsonNode> upstreamNodes = extractModelObjects(response.body());
+                    for (JsonNode n : upstreamNodes) {
+                        String name = pickModelName(n);
+                        if (name != null && !name.isEmpty() && !nameToNode.containsKey(name)) {
+                            nameToNode.put(name, n);
+                        }
+                    }
+                } else {
+                    log.warn("获取上游模型详细列表失败: status={}, body={}", response.statusCode(), response.body());
+                }
+            } catch (Exception e) {
+                log.error("调用上游模型详细列表异常", e);
+            }
+
+            // 3) 根据名称集合生成详情列表
             List<java.util.Map<String, Object>> result = new ArrayList<>(finalNames.size());
             for (String name : finalNames) {
                 JsonNode n = nameToNode.get(name);
@@ -162,7 +143,7 @@ public class DhModelServiceImpl implements DhModelService {
             }
             return result;
         } catch (Exception e) {
-            log.error("调用上游模型详细列表异常", e);
+            log.error("组装模型详细列表异常", e);
             return java.util.Collections.emptyList();
         }
     }
