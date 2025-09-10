@@ -3,6 +3,7 @@ package com.zhongjia.web.exception;
 import com.zhongjia.web.vo.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +14,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.slf4j.MDC;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BizException.class)
     public Object handleBiz(BizException e, HttpServletRequest request) {
+        try {
+            log.warn("BizException uri={} code={} msg={} traceId={}",
+                    request != null ? request.getRequestURI() : "-",
+                    e.getCode(), e.getMessage(), MDC.get("traceId"));
+        } catch (Throwable ignore) { }
         if (isSse(request)) {
             return sseError(e.getCode(), e.getMessage());
         }
@@ -32,6 +40,12 @@ public class GlobalExceptionHandler {
             MissingServletRequestParameterException.class, HttpMessageNotReadableException.class})
     public Object handleBadRequest(Exception e, HttpServletRequest request) {
         String msg = firstMsg(e);
+        try {
+            log.warn("BadRequest {} msg={} uri={} traceId={}",
+                    e.getClass().getSimpleName(), msg,
+                    request != null ? request.getRequestURI() : "-",
+                    MDC.get("traceId"));
+        } catch (Throwable ignore) { }
         if (isSse(request)) {
             return sseError(ErrorCode.BAD_REQUEST.getCode(), msg);
         }
@@ -43,6 +57,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Object handleMethodNotAllowed(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        try {
+            log.warn("MethodNotAllowed method={} uri={} traceId={}",
+                    e.getMethod(),
+                    request != null ? request.getRequestURI() : "-",
+                    MDC.get("traceId"));
+        } catch (Throwable ignore) { }
         if (isSse(request)) {
             return sseError(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
         }
@@ -54,6 +74,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleOther(Exception e, HttpServletRequest request) {
+        try {
+            log.error("Unhandled exception uri={} traceId={}",
+                    request != null ? request.getRequestURI() : "-",
+                    MDC.get("traceId"), e);
+        } catch (Throwable ignore) { }
         if (isSse(request)) {
             return sseError(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
         }
