@@ -10,6 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -19,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,6 +37,9 @@ public class DhModelServiceImpl implements DhModelService {
 
     @Autowired
     private UserDhModelRepository userDhModelRepository;
+
+    @Autowired
+    private WebClient webClient;
 
     @Value("${app.upstream.dh-models-url:http://127.0.0.1:57599/dh/models}")
     private String dhModelsUrl;
@@ -92,7 +99,7 @@ public class DhModelServiceImpl implements DhModelService {
     @Override
     public List<java.util.Map<String, Object>> listModelDetailsForUser(Long userId) {
         // 目标：保持与字符串列表相同的合并顺序与筛选逻辑：上游 -> 默认 -> 用户
-        // 返回详情对象；若某模型仅存在于默认/用户集合而不在上游列表中，则返回最小对象，仅包含 model_name。
+        // 返回详情对象；若某模型仅存在于默认/用户集合而不在上游列表中，则返回最小对象，仅包含 name。
         try {
             // 1) 拉取上游详情列表
             HttpRequest request = HttpRequest.newBuilder()
@@ -160,51 +167,61 @@ public class DhModelServiceImpl implements DhModelService {
         }
     }
 
+
     @Override
-    public UpstreamResult trainAndRecord(Long userId, String requestJson) {
-        String modelName = extractModelNameFromRequest(requestJson);
+    public UpstreamResult trainWithFile(Long userId, String modelName, MultipartFile file) {
         UpstreamResult result = new UpstreamResult();
+        if (modelName == null || modelName.isBlank()) {
+            return result.setCode(400).setSuccess(false).setMsg("model_name 不能为空");
+        }
+        if (file == null || file.isEmpty()) {
+            return result.setCode(400).setSuccess(false).setMsg("file 不能为空");
+        }
 
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(dhTrainUrl))
-                    .timeout(Duration.ofMinutes(5))
-                    .header("Content-Type", "application/json")
-                    .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
-                    .POST(HttpRequest.BodyPublishers.ofString(requestJson, StandardCharsets.UTF_8))
-                    .build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : (modelName + ".mp4");
+            MediaType partContentType = file.getContentType() != null ? MediaType.parseMediaType(file.getContentType()) : MediaType.APPLICATION_OCTET_STREAM;
 
-            if (response.statusCode() != 200) {
-                return result.setCode(response.statusCode()).setSuccess(false).setMsg("上游返回非200").setDataRaw(null);
+            MultipartBodyBuilder mb = new MultipartBodyBuilder();
+            mb.part("model_name", modelName);
+            mb.part("file", file.getResource())
+                    .filename(filename)
+                    .contentType(partContentType);
+
+            String traceId = org.slf4j.MDC.get("traceId");
+
+            String body = webClient.post()
+                    .uri(dhTrainUrl)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .headers(h -> { if (traceId != null) h.add("X-Trace-Id", traceId); })
+                    .body(BodyInserters.fromMultipartData(mb.build()))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            if (body == null) {
+                return result.setCode(502).setSuccess(false).setMsg("上游无响应");
             }
 
-            // 解析上游通用结构 { code, success, msg, data }
             try {
-                JsonNode root = objectMapper.readTree(response.body());
+                JsonNode root = objectMapper.readTree(body);
                 Integer code = root.has("code") && root.get("code").isInt() ? root.get("code").asInt() : 200;
                 Boolean success = root.has("success") && root.get("success").isBoolean() ? root.get("success").asBoolean() : true;
                 String msg = root.has("msg") ? root.get("msg").asText() : "ok";
                 String dataRaw = root.has("data") && !root.get("data").isNull() ? objectMapper.writeValueAsString(root.get("data")) : null;
 
                 result.setCode(code).setSuccess(success).setMsg(msg).setDataRaw(dataRaw);
-                if (Boolean.TRUE.equals(success) && modelName != null && !modelName.isEmpty()) {
-                    // 训练提交成功，写入用户-模型映射（幂等）
+                if (Boolean.TRUE.equals(success)) {
                     saveUserModelIfAbsent(userId, modelName);
                 }
-            } catch (Exception ignore) {
-                // 如果上游不符合通用结构，则按成功处理并仍尝试写入映射
-                result.setCode(200).setSuccess(true).setMsg("ok").setDataRaw(response.body());
-                if (modelName != null && !modelName.isEmpty()) {
-                    saveUserModelIfAbsent(userId, modelName);
-                }
+            } catch (Exception parseEx) {
+                result.setCode(200).setSuccess(true).setMsg("ok").setDataRaw(body);
+                saveUserModelIfAbsent(userId, modelName);
             }
-
         } catch (Exception e) {
-            log.error("转发训练请求异常", e);
-            result.setCode(500).setSuccess(false).setMsg(e.getMessage()).setDataRaw(null);
+            log.error("训练(文件)请求异常", e);
+            result.setCode(500).setSuccess(false).setMsg(e.getMessage());
         }
-
         return result;
     }
 
@@ -300,13 +317,7 @@ public class DhModelServiceImpl implements DhModelService {
         return null;
     }
 
-    private String extractModelNameFromRequest(String requestJson) {
-        try {
-            JsonNode root = objectMapper.readTree(requestJson);
-            if (root.has("model_name")) return root.get("model_name").asText();
-        } catch (Exception ignored) {}
-        return null;
-    }
+    
 }
 
 

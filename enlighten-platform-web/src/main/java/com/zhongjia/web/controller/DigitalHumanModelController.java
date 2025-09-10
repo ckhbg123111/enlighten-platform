@@ -13,6 +13,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -36,11 +38,14 @@ public class DigitalHumanModelController {
         return Result.success(resp);
     }
 
-    @PostMapping("/train")
-    @Operation(summary = "上传视频训练数字人（请求直接转发到上游）", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Map<String, Object>> train(@RequestBody String rawJson) {
+    @PostMapping(value = "/train", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "上传视频训练数字人（multipart/form-data: file + model_name）", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Map<String, Object>> trainMultipart(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("model_name") String modelName
+    ) {
         UserContext.UserInfo user = requireUser();
-        UpstreamResult upstream = dhModelService.trainAndRecord(user.userId(), rawJson);
+        UpstreamResult upstream = dhModelService.trainWithFile(user.userId(), modelName, file);
         return Result.success(Map.of(
                 "code", upstream.getCode(),
                 "success", upstream.getSuccess(),
@@ -48,6 +53,7 @@ public class DigitalHumanModelController {
                 "data", upstream.getDataRaw()
         ));
     }
+
 
     private UserContext.UserInfo requireUser() {
         UserContext.UserInfo info = UserContext.get();

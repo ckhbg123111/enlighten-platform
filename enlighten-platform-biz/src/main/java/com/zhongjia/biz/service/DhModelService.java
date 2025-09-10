@@ -18,12 +18,9 @@ public interface DhModelService {
     List<java.util.Map<String, Object>> listModelDetailsForUser(Long userId);
 
     /**
-     * 转发训练请求到上游，成功后记录用户-模型映射。
-     * @param userId 用户ID
-     * @param requestJson 原始请求JSON（字段需与上游严格一致）
-     * @return 上游通用结果
+     * 以 multipart/form-data 方式训练（上游规范）：file + model_name
      */
-    UpstreamResult trainAndRecord(Long userId, String requestJson);
+    UpstreamResult trainWithFile(Long userId, String modelName, org.springframework.web.multipart.MultipartFile file);
 }
 
 

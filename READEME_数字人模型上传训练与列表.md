@@ -33,9 +33,11 @@ AI 科普平台 API 文档 v1.10（0828）的 第二章的第2节 2. 获取数�
     "models": [
       {
         "name": "模特A",
-        "video": "/media/bhnw/模特A.mp4",
-        "thumbnail": "/media/bhnw/模特A_thumbnail_s.jpg",
-        "preview": "/media/bhnw/模特A_thumbnail.jpg"
+        "video": "/file/media/bhnw/模特A.mp4",
+        "thumbnail": "/file/media/bhnw/模特A_thumbnail_s.jpg",
+        "preview": "/file/media/bhnw/模特A_thumbnail.jpg",
+        "created_time": 1757406047.63,
+        "size": 7845079
       },
       {
         "name": "YourTrainedModel"
@@ -51,20 +53,25 @@ AI 科普平台 API 文档 v1.10（0828）的 第二章的第2节 2. 获取数�
     2. 配置项 `app.dh.default-models` 中维护的默认模型；
     3. 当前用户训练成功后在本地保存的模型；
   - 若某模型存在于默认/用户集合但不在上游列表中，则以最小对象形式返回，仅包含 `name` 字段；
+  - 字段说明（以上游为准，可能包含）：`name`、`video`、`thumbnail`、`preview`、`created_time`、`size`；其中路径字段通常需与上游服务域名拼接为可访问的完整 URL；
 
-### 2）上传视频训练数字人
+### 2）上传视频训练数字人（仅支持 multipart/form-data，严格对齐上游 /dh/train）
 - 路由：`POST /api/dh/train`
 - 鉴权：Bearer JWT（同其他受保护接口）
-- Content-Type：`application/json`
-- 请求体：原样按照上游 API（AI 科普平台 `/dh/train`）的字段发送，字段名需与上游严格一致（snake_case）。
-  - 注意：请求体中需包含 `model_name`，用于本地记录“用户-模型名”映射。
-  - 示例仅供参考，请以上游文档为准：
+- Content-Type：`multipart/form-data`
 
-```json
-{
-  "model_name": "YourTrainedModel",
-  "video_url": "https://example.com/train.mp4"
-}
+- 入参说明（multipart/form-data）：
+  - `file`：视频文件（必填），建议 `video/mp4`；
+  - `model_name`：字符串（必填）；
+
+- cURL 示例（multipart/form-data 推荐）：
+
+```bash
+curl -X POST "<BASE_URL>/api/dh/train" \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: multipart/form-data" \
+  -F "model_name=YourTrainedModel" \
+  -F "file=@/path/to/train.mp4;type=video/mp4"
 ```
 
 - 响应：
@@ -83,7 +90,7 @@ AI 科普平台 API 文档 v1.10（0828）的 第二章的第2节 2. 获取数�
 ```
 
 - 说明：
-  - 本接口将请求体原样转发到上游 `/dh/train`；
+  - 本接口将以对应的 Content-Type 转发到上游 `/dh/train`；
   - 若上游返回成功，系统会将 `model_name` 写入本地表，建立“用户-模型名”的幂等映射；
   - 返回体 `data.data` 中为“上游 data 字段的原始 JSON 字符串”。前端如需进一步解析，可再做一次 JSON 解析；
 
