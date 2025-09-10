@@ -15,6 +15,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.slf4j.MDC;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 @Slf4j
@@ -70,6 +71,23 @@ public class GlobalExceptionHandler {
             return convert2MediaError(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
         }
         return Result.error(ErrorCode.METHOD_NOT_ALLOWED.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Object handleMaxUpload(MaxUploadSizeExceededException e, HttpServletRequest request) {
+        long max = e.getMaxUploadSize();
+        String msg = "上传文件过大，超过限制" + (max > 0 ? "（" + humanReadable(max) + "）" : "");
+        try {
+            log.warn("MaxUploadSizeExceeded uri={} max={} traceId={}",
+                    request != null ? request.getRequestURI() : "-", max, MDC.get("traceId"));
+        } catch (Throwable ignore) { }
+        if (isSse(request)) {
+            return sseError(ErrorCode.BAD_REQUEST.getCode(), msg);
+        }
+        if (isConvert2Media(request)) {
+            return convert2MediaError(ErrorCode.BAD_REQUEST.getCode(), msg);
+        }
+        return Result.error(ErrorCode.BAD_REQUEST.getCode(), msg);
     }
 
     @ExceptionHandler(Exception.class)
@@ -142,6 +160,17 @@ public class GlobalExceptionHandler {
     private String safe(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", " ");
+    }
+
+    private String humanReadable(long bytes) {
+        if (bytes <= 0) return "0B";
+        long kb = 1024L;
+        long mb = kb * 1024L;
+        long gb = mb * 1024L;
+        if (bytes >= gb) return String.format(java.util.Locale.ROOT, "%.1fGB", bytes * 1.0 / gb);
+        if (bytes >= mb) return String.format(java.util.Locale.ROOT, "%.0fMB", bytes * 1.0 / mb);
+        if (bytes >= kb) return String.format(java.util.Locale.ROOT, "%.0fKB", bytes * 1.0 / kb);
+        return bytes + "B";
     }
 }
 
