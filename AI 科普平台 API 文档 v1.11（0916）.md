@@ -1,4 +1,4 @@
-# AI 科普平台 API 文档 v1.8
+# AI 科普平台 API 文档 v1.11（0916）
 
 ### DEMO
 
@@ -715,6 +715,141 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
 
 **响应格式**： 同科普内容生成接口（/science-generator）
 
+### 9. 患者端对话 /science-chat 携带上下文对话接口。支持流式输出。
+
+*   路由：`/science-chat`
+    
+*   请求方式：POST
+    
+*   Content-Type: `application/json`
+    
+*   字段说明:
+    
+
+| 字段名 | 类型 | 必填 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| `messages` | List\[Dict\] | 是 | \- | 聊天对话历史（**需要控制携带对话记录条数，比如10条**） |
+| `need_recommend` | `boolean` | 否 | `true` | 是否需要返回推荐问题 |
+| `prompt` | `string` | 否 | `null` | 自定义用于调整AI对话风格的系统提示词，留空则使用代码预置提示词。 |
+
+> `**messages**`**字段说明：**
+
+*   role: 对话角色，user：用户消息； assistant：AI回答
+    
+*   content：对话内容
+    
+    *   纯文字对话，该值类型为字符串
+        
+    *   **携带图片对话**，该值类型为 List 列表，可以携带多张图片或者文字内容，格式如下：
+        
+
+```json
+[
+  {
+    "type": "image_url",
+    "image_url": {
+      "url": "图片url或者base64编码"
+    }
+  },
+  {
+    "type": "text",
+    "text": "用户消息内容"
+  }
+]
+
+```
+
+*   请求示例:
+    
+
+```json
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "你是谁。"
+    },
+    {
+      "role": "assistant",
+      "content": "您好，我是赣州人民医院的科普助手，可以为您提供专业的医学健康知识解答。有什么健康问题我可以帮您吗？"
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAeCAIAAABVOSykAAABfUlEQVR42u2ZUQqDMAyG8zrYBXZPD7DT7gLCnicIRdI2Jn9TG53Ql4FZ/3z9E2tL8+d7D+WgluD3NC3jT2FZk3eHFZb+KoxCaY0DiykpwOo6d6eHj1w2OmbWNLHSO/IzowxIQ/zc6K/LwoLLKmCn94H1fD2W4Z5zV16APcmLFAZLju3KC+ieHWHtqklRo3hZ3U1eBWiFxQDJvISFUQa69AFPWCbRcM6MV/ppRbaGsJ3NxWFh5lLyVcFSNr/tqpoU5w8HhJVDcIAFKIZh5UaGSRX7rPxiIXj3wVQuUVZ35LiPh2V6CxO8SWsppVraXWGl7DSxRRSE7WXzPgW3LQyWdVJGarfPlmE5frhhvExRGKytWk2frbmHDvikspq0dsiT2mJuE0FejZTAq7b5ojnqScCWkUBHhsUEa2DlkyKwTnc3USS122eF0qEhpRfnEI3xWqNwWGe87II1y7agCKR8ndtCSg6nIEaI419PWNe+hZZTu2H1hHWW2nRZVPYnP2wlBq4PIuulAAAAAElFTkSuQmCC"
+          }
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+          }
+        },
+        {
+          "type": "text",
+          "text": "图片上面是什么"
+        }
+      ]
+    }
+  ],
+  "need_recommend": true
+}
+
+```
+
+**响应格式**
+
+*   Content-Type: `text/event-stream`
+    
+
+> 接口采用 **Server-Sent Events (SSE)** 流式输出。客户端将持续接收 `data:` 前缀的文本行，每行包含一个 JSON 片段。客户端需要解析每个 data: 行后面的 JSON 数据，并将其中的 `choices[0].delta.content` 字段内容进行拼接，以构建完整的生成结果。通过判断  
+`choices[0].finish_reason === "stop"` 判断响应是否结束
+
+> **响应字段**`**type**`**说明**：
+
+> **当前接口目前有两种可选值：**`**llm_token**` **和** `**recommend_question**`
+
+`llm_token`：正常的内容输出
+
+`recommend_question`：推荐的问题。可能有多条，每个 Chunk 是一条。
+
+*   响应示例:
+    
+
+```plaintext
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":""}}]}
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":"\u60a8\u597d"}}]}
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":"\uff0c"}}]}
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":"\u5173\u4e8e"}}]}
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":"\u7cd6\u5c3f\u75c5"}}]}
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":"\u7684\u6cbb\u7597\uff0c\u6211"}}]}
+
+...
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":"\u5efa\u8bae\u54e6\u3002"}}]}
+
+data: {"model":"zj-llm","type":"llm_token","id":"chatcmpl-4ae1ac12-2283-9305-a477-c1aff97e5174","created":1756197366,"choices":[{"index":0,"finish_reason":"null","delta":{"role":"assistant","content":""}}]}
+
+data: {"model":"zj-preset","type":"recommend_question","choices":[{"finish_reason":"null","delta":{"role":"assistant","content":"\u7cd6\u5c3f\u75c5\u7684\u996e\u98df\u63a7\u5236\u5177\u4f53\u6709\u54ea\u4e9b\u6ce8\u610f\u4e8b\u9879\uff1f"}}]}
+
+data: {"model":"zj-preset","type":"recommend_question","choices":[{"finish_reason":"null","delta":{"role":"assistant","content":"\u7cd6\u5c3f\u75c5\u60a3\u8005\u5982\u4f55\u901a\u8fc7\u8fd0\u52a8\u6765\u8f85\u52a9\u6cbb\u7597\uff1f"}}]}
+
+data: {"model":"zj-preset","type":"recommend_question","choices":[{"finish_reason":"null","delta":{"role":"assistant","content":"\u7cd6\u5c3f\u75c5\u5e38\u89c1\u7684\u5e76\u53d1\u75c7\u6709\u54ea\u4e9b\uff0c\u5982\u4f55\u9884\u9632\uff1f"}}]}
+
+data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"null","delta":{"role":"assistant","content":""}}]}
+
+data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop","delta":{"role":"assistant","content":""}}]}
+
+```
+
 ### 二、数字人接口 
 
 ### 用于管理数字人模特、训练模型以及根据文本生成视频。
@@ -736,8 +871,13 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
     
 *   **请求方式**: GET
     
-*   **请求参数**: 无
+*   **请求参数**:  `form-data`
     
+
+| 参数名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
+
 *   **响应格式**
     
     *   Content-Type: `application/json`
@@ -821,6 +961,7 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
 | --- | --- | --- | --- |
 | `file` | `file` | 是 | 要上传的视频文件。 |
 | `model_name` | `string` | 是 | 为训练的数字人模特指定的名称。 |
+| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
 
 *   **响应格式**
     
@@ -901,6 +1042,7 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
 | `model_name` | `string` | 是 | 要使用的数字人模特名称。 |
 | `text` | `string` | 是 | 要合成为语音并驱动数字人的文本内容。 |
 | `voice` | `string` | 是 | 语音音色。目前可选：男性音色：Male\_Voice\_1、Male\_Voice\_2<br>女性音色：Female\_Voice\_1、Female\_Voice\_2 |
+| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
 | `text_split_len` | `int` | 否 | 提取音频字幕 -> 文本超过长度后自动进行切分。默认值：10，单位：字符 |
 | `speech_pauses_split_ms` | `int` | 否 | 提取音频字幕 -> 说话停顿一定时间后切分文本。默认值：100，单位：ms |
 
@@ -910,7 +1052,8 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
 ```json
 {
   "model_name": "女医生",
-  "text": "大家好，我是你的数字人助手。今天天气真不错！"
+  "text": "大家好，我是你的数字人助手。今天天气真不错！",
+  "user_id": "123"
 }
 
 ```
@@ -998,6 +1141,7 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
 | --- | --- | --- | --- |
 | `file` | `file` | 是 | 要上传的音频文件。 |
 | `model_name` | `string` | 是 | 为训练的数字人模特指定的名称。 |
+| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
 
 *   **响应格式**
     
@@ -1052,8 +1196,13 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
     
     *   `task_id` (`string`, 必填): 视频生成任务的唯一标识符。
         
-*   **查询参数**: 无
+*   **查询参数**:  `form-data`
     
+
+| 参数名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
+
 *   **响应格式**
     
     *   Content-Type: `application/json`
@@ -1110,9 +1259,64 @@ content数据根据生成的科普内容前端解析而来，type为元素class�
 
 ```json
 {
-  "code": 200,
+  "code": 500,
   "success": false,
   "msg": "视频合成过程中发生内部错误",
+  "data": null
+}
+
+```
+
+#### 7. 语音转文字 /dh/asr
+
+*   **路由**: `POST /dh/asr`
+    
+*   **请求方式**: POST
+    
+*   **Content-Type**: `multipart/form-data`
+    
+*   **请求参数**:
+    
+
+| 参数名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `file` | `file` | 是 | 要上传的音频文件。 |
+
+*   **响应格式**
+    
+    *   Content-Type: `application/json`
+        
+    *   字段说明:
+        
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `code` | `integer` | 状态码。 |
+| `success` | `boolean` | 操作是否成功。 |
+| `msg` | `string` | 描述信息。 |
+| `data` | `string` | 转换后的文本内容。 |
+
+*   **成功响应示例**:
+    
+
+```json
+{
+    "code": 200,
+    "success": true,
+    "msg": "ok",
+    "data": "大家好，我是中嘉舒科构建的数字人一号，我的名字叫鸡哥，这只是个测试demo哈哈哈哈哈哈。😊"
+}
+
+```
+
+*   **错误响应示例**:
+    
+
+```json
+{
+  "code": 500,
+  "success": false,
+  "msg": "服务异常",
   "data": null
 }
 
