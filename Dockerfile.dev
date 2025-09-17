@@ -1,0 +1,17 @@
+FROM maven:3.9.6-eclipse-temurin-17
+
+ENV TZ=Asia/Shanghai
+WORKDIR /workspace
+
+RUN mkdir -p /root/.m2
+COPY enlighten-platform-web/maven-settings.xml /root/.m2/settings.xml
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git curl zip unzip ca-certificates tzdata \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV MAVEN_OPTS="-Dmaven.wagon.http.pool=false -Dhttp.keepAlive=false -Dmaven.wagon.http.connectionTimeout=60000 -Dmaven.wagon.http.readTimeout=600000 -Dmaven.wagon.http.retryHandler.count=3"
+
+EXPOSE 8080 5005
+
+
