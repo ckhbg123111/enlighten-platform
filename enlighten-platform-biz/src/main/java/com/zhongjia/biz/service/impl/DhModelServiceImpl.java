@@ -105,24 +105,22 @@ public class DhModelServiceImpl implements DhModelService {
                 log.error("查询用户自训练模型失败", e);
             }
 
-            // 2) 拉取上游详情列表，用于补全
+            // 2) 拉取上游详情列表，用于补全（0916变更：改为 multipart/form-data，参数 user_id）
             Map<String, JsonNode> nameToNode = new LinkedHashMap<>();
             try {
-                String modelsUrlWithUser = dhModelsUrl;
-                if (modelsUrlWithUser.contains("?")) {
-                    modelsUrlWithUser = modelsUrlWithUser + "&user_id=" + userId;
-                } else {
-                    modelsUrlWithUser = modelsUrlWithUser + "?user_id=" + userId;
-                }
+                MultipartBodyBuilder mb = new MultipartBodyBuilder();
+                mb.part("user_id", String.valueOf(userId));
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(modelsUrlWithUser))
-                        .timeout(Duration.ofSeconds(30))
-                        .GET()
-                        .build();
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-                if (response.statusCode() == 200 && response.body() != null) {
-                    List<JsonNode> upstreamNodes = extractModelObjects(response.body());
+                String upstreamBody = webClient.post()
+                        .uri(dhModelsUrl)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .body(BodyInserters.fromMultipartData(mb.build()))
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+
+                if (upstreamBody != null) {
+                    List<JsonNode> upstreamNodes = extractModelObjects(upstreamBody);
                     for (JsonNode n : upstreamNodes) {
                         String name = pickModelName(n);
                         if (name != null && !name.isEmpty() && !nameToNode.containsKey(name)) {
@@ -130,7 +128,7 @@ public class DhModelServiceImpl implements DhModelService {
                         }
                     }
                 } else {
-                    log.warn("获取上游模型详细列表失败: status={}, body={}", response.statusCode(), response.body());
+                    log.warn("获取上游模型详细列表失败: 上游无响应");
                 }
             } catch (Exception e) {
                 log.error("调用上游模型详细列表异常", e);
