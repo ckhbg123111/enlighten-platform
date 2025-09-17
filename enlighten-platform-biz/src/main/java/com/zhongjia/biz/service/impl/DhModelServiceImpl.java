@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -105,13 +106,13 @@ public class DhModelServiceImpl implements DhModelService {
                 log.error("查询用户自训练模型失败", e);
             }
 
-            // 2) 拉取上游详情列表，用于补全（0916变更：改为 multipart/form-data，参数 user_id）
+            // 2) 拉取上游详情列表，用于补全（GET + multipart/form-data，字段 user_id）
             Map<String, JsonNode> nameToNode = new LinkedHashMap<>();
             try {
                 MultipartBodyBuilder mb = new MultipartBodyBuilder();
                 mb.part("user_id", String.valueOf(userId));
 
-                String upstreamBody = webClient.post()
+                String upstreamBody = webClient.method(HttpMethod.GET)
                         .uri(dhModelsUrl)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .body(BodyInserters.fromMultipartData(mb.build()))
