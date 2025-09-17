@@ -36,4 +36,9 @@ public class DigitalHumanRequest {
      * 切分参数 (可选)
      */
     private Integer speech_pause_split_ms;
+
+    /**
+     * 用户ID（上游0916新增，必填）
+     */
+    private String user_id;
 }

@@ -105,6 +105,9 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                     .setText(task.getInputText())
                     .setVoice(task.getVoice());
             
+            // 上游 0916 新增 user_id
+            request.setUser_id(String.valueOf(task.getUserId()));
+
             DigitalHumanResponse response = callDhGenerate(request);
             
             if (response.getSuccess() && response.getData() != null) {
@@ -165,7 +168,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     @Override
     public boolean pollDhStatus(VideoGenerationTask task) {
         try {
-            DigitalHumanStatusResponse response = callDhStatus(task.getDhTaskId());
+            DigitalHumanStatusResponse response = callDhStatus(task.getDhTaskId(), task.getUserId());
 
             if (response.getSuccess() && response.getData() != null) {
                 DigitalHumanStatusResponse.DhStatusData data = response.getData();
@@ -284,14 +287,15 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         return objectMapper.readValue(response.body(), DigitalHumanResponse.class);
     }
 
-    private DigitalHumanStatusResponse callDhStatus(String taskId) throws Exception {
+    private DigitalHumanStatusResponse callDhStatus(String taskId, Long userId) throws Exception {
+        String statusUrlWithUser = dhStatusUrl + "/" + taskId + "?user_id=" + userId;
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(dhStatusUrl + "/" + taskId))
+                .uri(URI.create(statusUrlWithUser))
                 .timeout(Duration.ofSeconds(30))
                 .GET()
                 .build();
         // 打印请求日志
-        log.info("调用数字人状态查询接口 - URL: {}", dhStatusUrl + "/" + taskId);
+        log.info("调用数字人状态查询接口 - URL: {}", statusUrlWithUser);
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {

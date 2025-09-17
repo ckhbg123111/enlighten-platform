@@ -108,8 +108,15 @@ public class DhModelServiceImpl implements DhModelService {
             // 2) 拉取上游详情列表，用于补全
             Map<String, JsonNode> nameToNode = new LinkedHashMap<>();
             try {
+                String modelsUrlWithUser = dhModelsUrl;
+                if (modelsUrlWithUser.contains("?")) {
+                    modelsUrlWithUser = modelsUrlWithUser + "&user_id=" + userId;
+                } else {
+                    modelsUrlWithUser = modelsUrlWithUser + "?user_id=" + userId;
+                }
+
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(dhModelsUrl))
+                        .uri(URI.create(modelsUrlWithUser))
                         .timeout(Duration.ofSeconds(30))
                         .GET()
                         .build();
@@ -165,6 +172,7 @@ public class DhModelServiceImpl implements DhModelService {
 
             MultipartBodyBuilder mb = new MultipartBodyBuilder();
             mb.part("model_name", modelName);
+            mb.part("user_id", String.valueOf(userId));
             mb.part("file", file.getResource())
                     .filename(filename)
                     .contentType(partContentType);
