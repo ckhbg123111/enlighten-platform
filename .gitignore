@@ -241,3 +241,9 @@ $RECYCLE.BIN/
 *.lnk
 
 
+# Local Dev Container (do not commit)
+/Dockerfile.dev
+/.devcontainer/devcontainer.json
+/.devcontainer/docker-compose.dev.yml
+
+
