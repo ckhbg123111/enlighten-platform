@@ -288,14 +288,19 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     }
 
     private DigitalHumanStatusResponse callDhStatus(String taskId, Long userId) throws Exception {
-        String statusUrlWithUser = dhStatusUrl + "/" + taskId + "?user_id=" + userId;
+        String statusUrl = dhStatusUrl + "/" + taskId;
+        
+        // 构建表单数据
+        String formData = "user_id=" + userId;
+        
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(statusUrlWithUser))
+                .uri(URI.create(statusUrl))
                 .timeout(Duration.ofSeconds(30))
-                .GET()
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .method("GET", HttpRequest.BodyPublishers.ofString(formData, StandardCharsets.UTF_8))
                 .build();
         // 打印请求日志
-        log.info("调用数字人状态查询接口 - URL: {}", statusUrlWithUser);
+        log.info("调用数字人状态查询接口 - URL: {}, FormData: {}", statusUrl, formData);
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
