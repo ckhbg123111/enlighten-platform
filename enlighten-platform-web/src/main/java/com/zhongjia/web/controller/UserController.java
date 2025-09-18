@@ -129,10 +129,4 @@ public class UserController {
         return Result.success(userVOList);
     }
     
-    
-    
-    /**
-     * 将User实体转换为UserVO
-     */
-    
 }
