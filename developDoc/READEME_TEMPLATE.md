@@ -20,6 +20,18 @@
   - numbered_title 副标题样式 text类型
   - create_time 创建时间
   - update_time 更新时间
+- 素材表
+  - id 自增主键 bigint
+  - name 素材名称 非空，varchar
+  - hospital 所属医院 varchar
+  - department 所属科室 varchar
+  - sort 顺序
+  - delete 是否删除
+  - type 素材类型 varchar 
+  - content 素材内容 text类型
+  - deleted 是否删除
+  - create_time 创建时间
+  - update_time 更新时间
 
 ## 需求
 - 基本要求
@@ -29,7 +41,13 @@
   - 支持分页
   - 要求按照用户所在医院和科室过滤
   - 返回值：模板表中除 医院、科室、创建时间、更新时间、删除标志 之外的所有字段
-  - 控制器名称为 
-  
+  - 控制器名称为 TypesettingController
+
+- 素材的查询接口
+  - GET请求 参数有 type、页数、每页数量
+  - 支持分页
+  - 要求按照用户所在医院和科室过滤
+  - 返回值：素材表中除 医院、科室、创建时间、更新时间、删除标志 之外的所有字段
+  - 控制器名称为 TypesettingController
 
   
