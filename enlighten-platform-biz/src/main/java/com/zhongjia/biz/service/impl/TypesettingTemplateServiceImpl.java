@@ -23,7 +23,7 @@ public class TypesettingTemplateServiceImpl implements TypesettingTemplateServic
     public Page<TypesettingTemplate> getTemplatesByHospitalAndDepartment(String hospital, String department, int page, int size) {
         LambdaQueryWrapper<TypesettingTemplate> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TypesettingTemplate::getHospital, hospital)
-               .eq(TypesettingTemplate::getDepartment, department)
+//               .eq(TypesettingTemplate::getDepartment, department) fixme 暂时不区分科室
                .orderByAsc(TypesettingTemplate::getSort);
         
         Page<TypesettingTemplate> pageRequest = new Page<>(page, size);
