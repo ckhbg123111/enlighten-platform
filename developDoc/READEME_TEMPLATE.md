@@ -6,6 +6,7 @@
   - name 模板名称 非空，varchar
   - hospital 所属医院 varchar
   - department 所属科室 varchar
+  - tag 标签 varchar
   - sort 顺序
   - deleted 是否删除
   - header 模板头 text类型
@@ -24,9 +25,9 @@
 - 基本要求
     鉴权、用户ID获取方式、代码风格、异常处理、日志打印等与项目现有风格保持一致
 - 模板的查询接口
-  - GET请求
+  - GET请求，参数有 tag、pageNum、pageSize
   - 支持分页
-  - 要求按照用户所在医院和科室过滤 （科室查询到的就用对应的科室，没查询到的用 common 科室的数据）
+  - 要求按照用户所在医院和科室、标签过滤
   - 返回值：模板表中除 医院、科室、创建时间、更新时间、删除标志 之外的所有字段
   - 控制器名称为 
   
