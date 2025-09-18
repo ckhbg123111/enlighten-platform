@@ -1,8 +1,6 @@
 package com.zhongjia.biz.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.User;
 import com.zhongjia.biz.repository.UserRepository;
 import com.zhongjia.biz.service.UserService;
@@ -36,13 +34,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.list(wrapper);
     }
 
-    @Override
-    public boolean updateStatusByIds(List<Long> ids, Integer status) {
-        LambdaUpdateWrapper<User> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.in(User::getId, ids);
-        wrapper.set(User::getStatus, status);
-        return userRepository.update(wrapper);
-    }
 
     @Override
     public User getById(Long id) {
@@ -64,20 +55,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
-    public java.util.List<User> list() {
-        return userRepository.list();
-    }
 
-    @Override
-    public Page<User> page(
-            Page<User> page,
-            LambdaQueryWrapper<User> wrapper) {
-        return userRepository.page(page, wrapper);
-    }
 
-    @Override
-    public long count() {
-        return userRepository.count();
-    }
 }

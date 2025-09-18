@@ -21,10 +21,6 @@ public interface UserService {
      */
     List<User> getByStatus(Integer status);
     
-    /**
-     * 批量更新用户状态
-     */
-    boolean updateStatusByIds(List<Long> ids, Integer status);
 
     User getById(Long id);
 
@@ -34,11 +30,6 @@ public interface UserService {
 
     boolean save(User user);
 
-    java.util.List<User> list();
 
-    Page<User> page(
-            Page<User> page,
-            LambdaQueryWrapper<User> wrapper);
 
-    long count();
 }

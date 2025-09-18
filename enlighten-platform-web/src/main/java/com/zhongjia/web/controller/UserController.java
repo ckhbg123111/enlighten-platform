@@ -1,7 +1,5 @@
 package com.zhongjia.web.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.User;
 import com.zhongjia.biz.service.UserService;
 import com.zhongjia.web.req.UserCreateReq;
@@ -117,54 +115,7 @@ public class UserController {
         return Result.success(userVO);
     }
     
-    /**
-     * 分页查询用户列表
-     */
-    @GetMapping("/page")
-    @Operation(summary = "分页查询用户列表", security = {@SecurityRequirement(name = "bearer-jwt")} )
-    public Result<Page<UserVO>> getUserPage(
-            @Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") Integer current,
-            @Parameter(description = "每页数量", example = "10") @RequestParam(defaultValue = "10") Integer size,
-            @Parameter(description = "用户名关键字") @RequestParam(required = false) String username,
-            @Parameter(description = "状态：1启用/0禁用") @RequestParam(required = false) Integer status) {
-        
-        Page<User> page = new Page<>(current, size);
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        
-        if (username != null && !username.trim().isEmpty()) {
-            wrapper.like(User::getUsername, username);
-        }
-        
-        if (status != null) {
-            wrapper.eq(User::getStatus, status);
-        }
-        
-        wrapper.orderByDesc(User::getCreateTime);
-        
-        Page<User> userPage = userService.page(page, wrapper);
-        
-        // 转换为VO
-        Page<UserVO> userVOPage = new Page<>();
-        BeanUtils.copyProperties(userPage, userVOPage);
-        
-        List<UserVO> userVOList = userMapper.toVOList(userPage.getRecords());
-        
-        userVOPage.setRecords(userVOList);
-        
-        return Result.success(userVOPage);
-    }
     
-    /**
-     * 查询所有用户
-     */
-    @GetMapping("/list")
-    @Operation(summary = "查询所有用户", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<List<UserVO>> getAllUsers() {
-        List<User> users = userService.list();
-        List<UserVO> userVOList = userMapper.toVOList(users);
-        
-        return Result.success(userVOList);
-    }
     
     /**
      * 根据状态查询用户
@@ -178,35 +129,7 @@ public class UserController {
         return Result.success(userVOList);
     }
     
-    /**
-     * 批量更新用户状态
-     */
-    @PutMapping("/batch-status")
-    @Operation(summary = "批量更新用户状态", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Void> batchUpdateStatus(@Parameter(description = "用户ID列表") @RequestParam List<Long> ids,
-                                          @Parameter(description = "状态：1启用/0禁用") @RequestParam Integer status) {
-        boolean success = userService.updateStatusByIds(ids, status);
-        if (success) {
-            return Result.success();
-        } else {
-            return Result.error("批量更新状态失败");
-        }
-    }
     
-    /**
-     * 测试数据库连接
-     */
-    @GetMapping("/test-connection")
-    @Operation(summary = "测试数据库连接")
-    public Result<String> testConnection() {
-        try {
-            // 尝试查询用户总数
-            long count = userService.count();
-            return Result.success("数据库连接成功，当前用户总数：" + count);
-        } catch (Exception e) {
-            return Result.error(ErrorCode.INTERNAL_ERROR, "数据库连接失败：" + e.getMessage());
-        }
-    }
     
     /**
      * 将User实体转换为UserVO
