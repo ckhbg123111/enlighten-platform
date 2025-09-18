@@ -20,6 +20,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class FillInRecordServiceImpl implements FillInRecordService {
@@ -34,6 +36,12 @@ public class FillInRecordServiceImpl implements FillInRecordService {
     private WebClient webClient;
     @org.springframework.beans.factory.annotation.Value("${app.upstream.fill-in-url:http://192.168.1.65:8000/fill_in}")
     private String upstreamUrl;
+    
+    @org.springframework.beans.factory.annotation.Value("${app.upstream.fill-in-timeout:30}")
+    private int initialTimeoutSeconds;
+    
+    @org.springframework.beans.factory.annotation.Value("${app.upstream.fill-in-total-timeout:300}")
+    private int totalTimeoutSeconds;
 
     @Override
     public String streamFillIn(Long userId, Long tenantId, String content, java.util.function.Consumer<String> writeLine) {
@@ -45,6 +53,9 @@ public class FillInRecordServiceImpl implements FillInRecordService {
         fillInRecordRepository.save(record);
 
         StringBuilder respBuf = new StringBuilder(256);
+        AtomicBoolean firstTokenReceived = new AtomicBoolean(false);
+        AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
+        
         try {
             String body = "{" + "\"content\":\"" + escapeJson(content) + "\"}";
             final String traceId = org.slf4j.MDC.get("traceId");
@@ -62,6 +73,7 @@ public class FillInRecordServiceImpl implements FillInRecordService {
                     }
                     return Flux.error(new IllegalStateException("上游返回非200:" + resp.statusCode().value()));
                 })
+                .timeout(Duration.ofSeconds(totalTimeoutSeconds)) // 总体超时
                 .map(db -> {
                     byte[] bytes = new byte[db.readableByteCount()];
                     db.read(bytes);
@@ -81,16 +93,43 @@ public class FillInRecordServiceImpl implements FillInRecordService {
                     return Flux.fromIterable(lines);
                 })
                 .doOnNext(line -> {
+                    // 检查首次响应超时
+                    if (!firstTokenReceived.get()) {
+                        long elapsed = System.currentTimeMillis() - startTime.get();
+                        if (elapsed > initialTimeoutSeconds * 1000) {
+                            throw new RuntimeException("等待首次响应超时，已等待" + elapsed/1000 + "秒");
+                        }
+                        firstTokenReceived.set(true);
+                    }
+                    
                     if (line.startsWith("data:")) {
                         writeLine.accept(line + "\n\n");
                         respBuf.append(extractContentDelta(line));
                     }
                 })
-                .blockLast();
+                .onErrorResume(ex -> {
+                    if (ex instanceof java.util.concurrent.TimeoutException || 
+                        ex.getMessage().contains("超时")) {
+                        String errorMsg = firstTokenReceived.get() ? 
+                            "处理超时，请稍后重试" : "服务响应超时，请检查网络连接或稍后重试";
+                        writeLine.accept("data:{\"code\":408,\"success\":false,\"msg\":\"" + errorMsg + "\",\"data\":null}\n\n");
+                        return Flux.empty();
+                    }
+                    return Flux.error(ex);
+                })
+                .blockLast(Duration.ofSeconds(totalTimeoutSeconds + 5)); // 额外的阻塞超时
             record.setSuccess(true).setRespContent(respBuf.toString());
         } catch (Exception ex) {
-            record.setSuccess(false).setErrorMessage(ex.getMessage());
-            writeLine.accept("data:{\"code\":500,\"success\":false,\"msg\":\"服务异常！\",\"data\":null}\n\n");
+            String errorMessage = ex.getMessage();
+            if (ex instanceof java.util.concurrent.TimeoutException || 
+                errorMessage.contains("超时")) {
+                errorMessage = firstTokenReceived.get() ? 
+                    "处理超时" : "等待服务响应超时";
+                writeLine.accept("data:{\"code\":408,\"success\":false,\"msg\":\"" + errorMessage + "\",\"data\":null}\n\n");
+            } else {
+                writeLine.accept("data:{\"code\":500,\"success\":false,\"msg\":\"服务异常！\",\"data\":null}\n\n");
+            }
+            record.setSuccess(false).setErrorMessage(errorMessage);
         } finally {
             fillInRecordRepository.updateById(record);
         }
