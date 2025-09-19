@@ -28,7 +28,7 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         StringBuilder html = new StringBuilder();
         // header: 需要将封面图替换进 {PLACEHOLDER}。此处没有封面，保留原样或清空
         String header = safe(template.getHeader());
-        header = replace(header, "{PLACEHOLDER}", "");
+        header = replace(header, "{PLACEHOLDER}", "http://frp5.mmszxc.xin:57599/file/figure/header.png");
         html.append(nullToEmpty(header));
 
         // 标题
@@ -80,7 +80,7 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
 
         // footer
         String footer = safe(template.getFooter());
-        footer = replace(footer, "{PLACEHOLDER}", "");
+        footer = replace(footer, "{PLACEHOLDER}", "http://frp5.mmszxc.xin:57599/file/figure/footer1.jpg");
         html.append(nullToEmpty(footer));
 
         return html.toString();
