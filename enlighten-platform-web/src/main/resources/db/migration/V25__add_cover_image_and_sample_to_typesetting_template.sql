@@ -4,6 +4,6 @@ ALTER TABLE `typesetting_template`
   ADD COLUMN `cover_image` TEXT COMMENT '封面图' AFTER `image`;
 
 ALTER TABLE `typesetting_template`
-  ADD COLUMN `sample` TEXT COMMENT '样例' AFTER `cover_image`;
+  ADD COLUMN `sample` MEDIUMTEXT COMMENT '样例' AFTER `cover_image`;
 
 
