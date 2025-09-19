@@ -30,6 +30,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.zhongjia.biz.service.ArticleStructureService;
+import com.zhongjia.biz.service.TemplateApplyService;
+import com.zhongjia.biz.service.dto.ArticleStructure;
+import jakarta.validation.constraints.NotNull;
 
 @RestController
 @Tag(name = "媒体内容转换")
@@ -44,6 +48,12 @@ public class MediaConvertController {
 
     @Autowired
     private MediaConvertRecordMapper mediaConvertRecordMapper;
+
+    @Autowired
+    private ArticleStructureService articleStructureService;
+
+    @Autowired
+    private TemplateApplyService templateApplyService;
 
     // 上游调用与记录统一移至 Service 层
 
@@ -208,6 +218,38 @@ public class MediaConvertController {
         @Schema(description = "媒体唯一编码 uuid")
         @NotBlank
         private String mediaCode; // 媒体唯一编码 uuid
+    }
+
+    // 4) 转公众号图文并套用模板：传入文章内容+模板ID，返回HTML
+    @PostMapping(path = "apply_template", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "文章套用模板生成HTML", description = "传入文章与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<HtmlResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
+        requireUser();
+        // 解析结构
+        ArticleStructure structure = articleStructureService.parse(req.getEssay());
+        // 渲染
+        String html = templateApplyService.render(req.getTemplateId(), structure);
+        HtmlResp resp = new HtmlResp();
+        resp.setHtml(html);
+        return Result.success(resp);
+    }
+
+    @Data
+    @Schema(name = "ApplyTemplateReq", description = "文章套用模板请求")
+    public static class ApplyTemplateReq {
+        @Schema(description = "文章原文")
+        @NotBlank
+        private String essay;
+        @Schema(description = "模板ID")
+        @NotNull
+        private Long templateId;
+        // hospital 和 department 已不再传递至上游，仅保留 essay 和 templateId
+    }
+
+    @Data
+    @Schema(name = "HtmlResp", description = "渲染结果")
+    public static class HtmlResp {
+        private String html;
     }
 }
 
