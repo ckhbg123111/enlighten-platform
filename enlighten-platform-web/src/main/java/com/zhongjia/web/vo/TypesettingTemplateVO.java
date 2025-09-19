@@ -34,6 +34,9 @@ public class TypesettingTemplateVO {
     @Schema(description = "图片样式")
     private String image;
     
+    @Schema(description = "封面图")
+    private String coverImage;
+    
     @Schema(description = "单行标题样式")
     private String singleTitle;
     
@@ -48,4 +51,7 @@ public class TypesettingTemplateVO {
     
     @Schema(description = "副标题样式")
     private String numberedTitle;
+    
+    @Schema(description = "样例")
+    private String sample;
 }

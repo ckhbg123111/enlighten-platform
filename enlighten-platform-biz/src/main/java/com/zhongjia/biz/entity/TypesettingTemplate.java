@@ -66,6 +66,12 @@ public class TypesettingTemplate {
     private String image;
     
     /**
+     * 封面图
+     */
+    @TableField("cover_image")
+    private String coverImage;
+    
+    /**
      * 单行标题样式
      */
     private String singleTitle;
@@ -89,6 +95,11 @@ public class TypesettingTemplate {
      * 副标题样式
      */
     private String numberedTitle;
+    
+    /**
+     * 样例
+     */
+    private String sample;
     
     /**
      * 创建时间
