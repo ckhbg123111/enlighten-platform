@@ -13,6 +13,7 @@ import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.TypesettingTemplateVO;
 import com.zhongjia.web.vo.TypesettingMaterialVO;
+import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.web.mapper.TypesettingMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,7 +50,7 @@ public class TypesettingController {
      */
     @GetMapping("/templates")
     @Operation(summary = "分页查询模板列表", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Page<TypesettingTemplateVO>> getTemplates(
+    public Result<PageResponse<TypesettingTemplateVO>> getTemplates(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") int page,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") int size) {
         
@@ -68,10 +69,8 @@ public class TypesettingController {
                 .map(typesettingMapper::toTemplateVO)
                 .collect(Collectors.toList());
         
-        Page<TypesettingTemplateVO> voPage = new Page<>(page, size, templatePage.getTotal());
-        voPage.setRecords(voList);
-        
-        return Result.success(voPage);
+        PageResponse<TypesettingTemplateVO> resp = PageResponse.of(page, size, templatePage.getTotal(), voList);
+        return Result.success(resp);
     }
 
     /**
@@ -79,7 +78,7 @@ public class TypesettingController {
      */
     @GetMapping("/materials")
     @Operation(summary = "分页查询素材列表", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Page<TypesettingMaterialVO>> getMaterials(
+    public Result<PageResponse<TypesettingMaterialVO>> getMaterials(
             @Parameter(description = "素材类型") @RequestParam String type,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") int page,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") int size) {
@@ -99,10 +98,8 @@ public class TypesettingController {
                 .map(typesettingMapper::toMaterialVO)
                 .collect(Collectors.toList());
         
-        Page<TypesettingMaterialVO> voPage = new Page<>(page, size, materialPage.getTotal());
-        voPage.setRecords(voList);
-        
-        return Result.success(voPage);
+        PageResponse<TypesettingMaterialVO> resp = PageResponse.of(page, size, materialPage.getTotal(), voList);
+        return Result.success(resp);
     }
 
     /**

@@ -11,6 +11,7 @@ import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.DraftVO;
+import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.web.mapper.DraftMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -72,12 +73,10 @@ public class DraftController {
 
     @GetMapping("/list")
     @Operation(summary = "分页查询草稿", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Page<DraftVO>> list(@Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") int page,
+    public Result<PageResponse<DraftVO>> list(@Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") int page,
                                       @Parameter(description = "每页数量", example = "10") @RequestParam(defaultValue = "10") int pageSize) {
         UserContext.UserInfo user = requireUser();
         Page<DraftPO> result = draftService.pageByUser(user.userId(), page, pageSize);
-        Page<DraftVO> voPage = new Page<>();
-        org.springframework.beans.BeanUtils.copyProperties(result, voPage);
         java.util.List<DraftVO> voList = draftMapper.toVOList(result.getRecords());
         // 手动处理 mediaCodeListString -> mediaCodeList
         for (int i = 0; i < result.getRecords().size(); i++) {
@@ -90,8 +89,8 @@ public class DraftController {
                 vo.setMediaCodeList(null);
             }
         }
-        voPage.setRecords(voList);
-        return Result.success(voPage);
+        PageResponse<DraftVO> resp = PageResponse.of(page, pageSize, result.getTotal(), voList);
+        return Result.success(resp);
 	}
 
     @PostMapping("/edit")
