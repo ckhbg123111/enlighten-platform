@@ -1,4 +1,4 @@
-# AI 科普平台 API 文档 v1.11（0916）
+# AI 科普平台 API 文档 v1.12（0918）
 
 ### DEMO
 
@@ -192,24 +192,22 @@ data: {"model":"zj-llm","type":"llm_token","choices":[{"finish_reason":"stop","d
 
 *   响应内容结构 (在 `choices[0].delta.content` 内):
     
-
-```plaintext
-<FIELD:topic>高血压患者的日常健康管理指南<SEP>
-<FIELD:content>文章需涵盖高血压患者日常监测血压的方法、饮食调整建议（如低钠饮食）、规律运动的重要性及推荐运动类型、情绪管理技巧，以及药物依从性的重要性。<SEP>
-<FIELD:style>亲切口语<SEP>
-<FIELD:length>中<SEP>
-<FIELD:scene>慢病管理<SEP>
-<FIELD:mode>常规文章<SEP>
-<FIELD:containsImage>true<SEP>
-
-```
-
-*   `**<FIELD:field_name>**`: 表示一个新字段的开始，`field_name` 是对应的表单字段 `ID` (例如 `topic`, `content`, `style` 等)。
+    ```plaintext
+    <FIELD:topic>高血压患者的日常健康管理指南<SEP>
+    <FIELD:content>文章需涵盖高血压患者日常监测血压的方法、饮食调整建议（如低钠饮食）、规律运动的重要性及推荐运动类型、情绪管理技巧，以及药物依从性的重要性。<SEP>
+    <FIELD:style>亲切口语<SEP>
+    <FIELD:length>中<SEP>
+    <FIELD:scene>慢病管理<SEP>
+    <FIELD:mode>常规文章<SEP>
+    <FIELD:containsImage>true<SEP>
     
-*   `**<SEP>**`: 表示当前字段内容的结束。
-    
-*   **注意**: 即使是布尔值或下拉框选项，AI也会以字符串形式输出在 `<FIELD:...>` 和 `<SEP>` 之间。前端需自行转换。
-    
+    ```
+    *   `**<FIELD:field_name>**`: 表示一个新字段的开始，`field_name` 是对应的表单字段 `ID` (例如 `topic`, `content`, `style` 等)。
+        
+    *   `**<SEP>**`: 表示当前字段内容的结束。
+        
+    *   **注意**: 即使是布尔值或下拉框选项，AI也会以字符串形式输出在 `<FIELD:...>` 和 `<SEP>` 之间。前端需自行转换。
+        
 *   响应示例:
     
 
@@ -850,6 +848,190 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
 
 ```
 
+### 10. 获取文章结构（转换为公众号图文）/get\_article\_structure
+
+*   路由：`/get_article_structure`
+    
+
+*   请求方式：POST
+    
+*   Content-Type: `application/json`
+    
+*   字段说明:
+    
+
+| 字段名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `content` | `string` | 是 | 原文内容。 |
+
+*   请求示例:
+    
+
+```json
+{
+    "content": "# 百日咳的诊断与治疗全攻略↵百日咳，听上去像是“咳一百天”，其实它还真不是夸张。这个病名来源于其漫长的病程，咳嗽可能持续数周甚至数月。百日咳是一种由百日咳杆菌引起的急性呼吸道传染病，尤其在儿童中高发，但成人也不能掉以轻心。今天我们就来聊聊百日咳的诊断与治疗，帮你科学应对这场“持久战”。↵## 一、典型临床表现↵百日咳的病程可分为三个阶段：↵1. **卡他期（初期）**：  ↵   持续约1～2周，症状类似普通感冒，包括流涕、打喷嚏、轻咳、低热等，容易被忽视或误诊。↵2. **痉咳期（高峰期）**：  ↵   通常在发病后1～2周进入此阶段，持续2～6周甚至更久。典型表现为阵发性、痉挛性咳嗽，咳嗽剧烈且频繁，常伴有“鸡鸣样”吸气声，咳后呕吐也较常见。儿童尤其容易出现这种特征性表现。↵3. **恢复期（缓解期）**：  ↵   咳嗽频率和强度逐渐减轻，但仍可能持续数周，遇冷、烟雾等刺激时容易复发。↵## 二、实验室诊断方法↵确诊百日咳不能只靠“听咳辨病”，还需借助科学手段：↵1. **鼻咽拭子检测**：  ↵   通过PCR技术检测百日咳杆菌的DNA，敏感性高、出结果快，是早期诊断的首选方法。↵2. **血清学检查**：  ↵   检测特异性抗体水平，适用于病程中后期或无法采集呼吸道样本的患者。↵3. **细菌培养**：  ↵   虽然特异性高，但对技术和时间要求较高，临床应用相对较少。↵## 三、治疗方案↵### 1. 药物治疗↵百日咳一旦确诊，应尽早开始抗菌治疗，以缩短病程并减少传染性。↵- **首选药物**：大环内酯类抗生素（如阿奇霉素、克拉霉素、红霉素）  ↵  特别适用于儿童，尤其是婴幼儿。↵- **替代方案**：四环素类（如多西环素）适用于8岁以上儿童及成人；喹诺酮类（如左氧氟沙星）适用于18岁以上成人。↵- **家庭成员预防性用药**：密切接触者即使无症状，也建议预防性使用抗生素，防止传播。↵### 2. 对症治疗与护理↵- **止咳治疗**：目前尚无特效止咳药，但可使用镇咳剂缓解症状，尤其在夜间影响睡眠时。↵- **止吐与营养支持**：咳嗽剧烈导致呕吐者，可适当使用止吐药，并注意补充水分和营养。↵- **环境管理**：保持空气流通，避免烟雾、灰尘等刺激物，饮食宜清淡易消化。↵- **休息与观察**：尤其婴幼儿需密切观察是否有呼吸暂停、缺氧等严重并发症。↵## 四、不同人群治疗建议↵### 儿童（特别是婴幼儿）↵- 抗生素首选红霉素或阿奇霉素，需严格遵医嘱调整剂量。↵- 婴幼儿病情进展快，建议早期住院治疗。↵- 家庭护理要特别注意防止呛咳引发窒息。↵### 成人↵- 成人症状相对较轻，但仍可能成为传染源。↵- 可使用多西环素或左氧氟沙星治疗。↵- 注意避免传染给儿童，尤其是未接种疫苗的婴幼儿。↵## 五、康复注意事项↵- **坚持完成疗程**：即使症状减轻，也应按疗程服药，防止复发或耐药。↵- **隔离防护**：治疗期间应避免与婴幼儿密切接触，减少传播风险。↵- **接种疫苗是关键**：百日咳疫苗（如百白破疫苗）是预防该病最有效手段，儿童应按时接种，成人可考虑加强免疫。↵- **增强免疫力**：保持良好作息、均衡饮食和适度锻炼，有助于加快康复。↵---↵百日咳虽“咳”不容缓，但只要早诊断、早治疗，配合科学护理，绝大多数患者都能顺利康复。别让“百日咳”真的咳上一百天，及时就医才是正解。"
+}
+
+```
+
+**响应格式**
+
+*   成功响应:
+    
+    *   Content-Type: `application/json`
+        
+    *   字段说明:
+        
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `code` | `integer` | 状态码。 |
+| `success` | `boolean` | 操作是否成功。 |
+| `msg` | `string` | 描述信息。 |
+| `data` | `object` | 返回的文章结构数据 |
+
+```plaintext
+- "title"：String，文章大标题。
+- "introduction"：Map，引言部分
+  └─ "text"：String，引言文本
+- "sections"：List，正文部分
+  ├─ "section_title"：String，10字内的章节小标题
+  └─ "section_paragraphs"：List[Map]，章节正文段落
+            ├─ "paragraph_title"：String，段落带数字小标题（选填），没有的话输出null
+            ├─ "paragraph_text"：String，段落文本
+            └─ "image_url"：String，配图URL（选填），没有的话输出null
+- "summary"：String，结尾总结
+
+```
+
+*   成功响应示例:
+    
+
+```json
+{
+    "code": 200,
+    "success": true,
+    "msg": "ok",
+    "data": {
+        "title": "百日咳的诊断与治疗全攻略",
+        "introduction": {
+            "text": "百日咳，听上去像是“咳一百天”，其实它还真不是夸张。这个病名来源于其漫长的病程，咳嗽可能持续数周甚至数月。百日咳是一种由百日咳杆菌引起的急性呼吸道传染病，尤其在儿童中高发，但成人也不能掉以轻心。今天我们就来聊聊百日咳的诊断与治疗，帮你科学应对这场“持久战”。"
+        },
+        "sections": [
+            {
+                "section_title": "典型临床表现",
+                "section_paragraphs": [
+                    {
+                        "paragraph_title": "1. 卡他期（初期）",
+                        "paragraph_text": "持续约1～2周，症状类似普通感冒，包括流涕、打喷嚏、轻咳、低热等，容易被忽视或误诊。",
+                        "image_url": null
+                    },
+                    {
+                        "paragraph_title": "2. 痉咳期（高峰期）",
+                        "paragraph_text": "通常在发病后1～2周进入此阶段，持续2～6周甚至更久。典型表现为阵发性、痉挛性咳嗽，咳嗽剧烈且频繁，常伴有“鸡鸣样”吸气声，咳后呕吐也较常见。儿童尤其容易出现这种特征性表现。",
+                        "image_url": null
+                    },
+                    {
+                        "paragraph_title": "3. 恢复期（缓解期）",
+                        "paragraph_text": "咳嗽频率和强度逐渐减轻，但仍可能持续数周，遇冷、烟雾等刺激时容易复发。",
+                        "image_url": null
+                    }
+                ]
+            },
+            {
+                "section_title": "实验室诊断方法",
+                "section_paragraphs": [
+                    {
+                        "paragraph_title": "1. 鼻咽拭子检测",
+                        "paragraph_text": "通过PCR技术检测百日咳杆菌的DNA，敏感性高、出结果快，是早期诊断的首选方法。",
+                        "image_url": null
+                    },
+                    {
+                        "paragraph_title": "2. 血清学检查",
+                        "paragraph_text": "检测特异性抗体水平，适用于病程中后期或无法采集呼吸道样本的患者。",
+                        "image_url": null
+                    },
+                    {
+                        "paragraph_title": "3. 细菌培养",
+                        "paragraph_text": "虽然特异性高，但对技术和时间要求较高，临床应用相对较少。",
+                        "image_url": null
+                    }
+                ]
+            },
+            {
+                "section_title": "治疗方案",
+                "section_paragraphs": [
+                    {
+                        "paragraph_title": "1. 药物治疗",
+                        "paragraph_text": "百日咳一旦确诊，应尽早开始抗菌治疗，以缩短病程并减少传染性。首选药物：大环内酯类抗生素（如阿奇霉素、克拉霉素、红霉素） 特别适用于儿童，尤其是婴幼儿。替代方案：四环素类（如多西环素）适用于8岁以上儿童及成人；喹诺酮类（如左氧氟沙星）适用于18岁以上成人。家庭成员预防性用药：密切接触者即使无症状，也建议预防性使用抗生素，防止传播。",
+                        "image_url": null
+                    },
+                    {
+                        "paragraph_title": "2. 对症治疗与护理",
+                        "paragraph_text": "止咳治疗：目前尚无特效止咳药，但可使用镇咳剂缓解症状，尤其在夜间影响睡眠时。止吐与营养支持：咳嗽剧烈导致呕吐者，可适当使用止吐药，并注意补充水分和营养。环境管理：保持空气流通，避免烟雾、灰尘等刺激物，饮食宜清淡易消化。休息与观察：尤其婴幼儿需密切观察是否有呼吸暂停、缺氧等严重并发症。",
+                        "image_url": null
+                    }
+                ]
+            },
+            {
+                "section_title": "不同人群治疗建议",
+                "section_paragraphs": [
+                    {
+                        "paragraph_title": "儿童（特别是婴幼儿）",
+                        "paragraph_text": "抗生素首选红霉素或阿奇霉素，需严格遵医嘱调整剂量。婴幼儿病情进展快，建议早期住院治疗。家庭护理要特别注意防止呛咳引发窒息。",
+                        "image_url": null
+                    },
+                    {
+                        "paragraph_title": "成人",
+                        "paragraph_text": "成人症状相对较轻，但仍可能成为传染源。可使用多西环素或左氧氟沙星治疗。注意避免传染给儿童，尤其是未接种疫苗的婴幼儿。",
+                        "image_url": null
+                    }
+                ]
+            },
+            {
+                "section_title": "康复注意事项",
+                "section_paragraphs": [
+                    {
+                        "paragraph_title": null,
+                        "paragraph_text": "坚持完成疗程：即使症状减轻，也应按疗程服药，防止复发或耐药。隔离防护：治疗期间应避免与婴幼儿密切接触，减少传播风险。接种疫苗是关键：百日咳疫苗（如百白破疫苗）是预防该病最有效手段，儿童应按时接种，成人可考虑加强免疫。增强免疫力：保持良好作息、均衡饮食和适度锻炼，有助于加快康复。",
+                        "image_url": null
+                    }
+                ]
+            }
+        ],
+        "summary": "百日咳虽“咳”不容缓，但只要早诊断、早治疗，配合科学护理，绝大多数患者都能顺利康复。别让“百日咳”真的咳上一百天，及时就医才是正解。"
+    }
+}
+
+```
+
+*   错误响应:
+    
+    *   Content-Type: `application/json`
+        
+    *   字段说明:
+        
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `code` | `integer` | 状态码。 |
+| `success` | `boolean` | 操作是否成功。 |
+| `msg` | `string` | 描述信息。 |
+| `data` | `null` | 错误时无数据返回。 |
+
+*   错误响应示例:
+    
+
+```json
+{
+  "code": 500,
+  "success": false,
+  "msg": "服务异常！",
+  "data": null
+}
+
+```
+
 ### 二、数字人接口 
 
 ### 用于管理数字人模特、训练模型以及根据文本生成视频。
@@ -873,37 +1055,36 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
     
 *   **请求参数**:  `form-data`
     
-
-| 参数名 | 类型 | 必填 | 描述 |
-| --- | --- | --- | --- |
-| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
-
+    | 参数名 | 类型 | 必填 | 描述 |
+    | --- | --- | --- | --- |
+    | `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
+    
 *   **响应格式**
     
     *   Content-Type: `application/json`
         
     *   字段说明:
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `code` | `integer` | 状态码。 |
-| `success` | `boolean` | 操作是否成功。 |
-| `msg` | `string` | 描述信息。 |
-| `data` | `object` | 响应数据。错误时无数据返回。 |
-
+    
+    | 字段名 | 类型 | 描述 |
+    | --- | --- | --- |
+    | `code` | `integer` | 状态码。 |
+    | `success` | `boolean` | 操作是否成功。 |
+    | `msg` | `string` | 描述信息。 |
+    | `data` | `object` | 响应数据。错误时无数据返回。 |
+    
 *   成功响应字段说明 (`data` 字段):
     
     *   `List[object]`: 用户数字人模特信息列表。
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `name` | `string` | 模特名称。 |
-| `video` | `string` | 关联视频文件的url。（需拼接接口域名+端口） |
-| `thumbnail` | `string` | 模特封面图url。（需拼接接口域名+端口） |
-| `preview` | `string` | 模特视频预览图图url。（需拼接接口域名+端口） |
-
+    
+    | 字段名 | 类型 | 描述 |
+    | --- | --- | --- |
+    | `name` | `string` | 模特名称。 |
+    | `video` | `string` | 关联视频文件的url。（需拼接接口域名+端口） |
+    | `thumbnail` | `string` | 模特封面图url。（需拼接接口域名+端口） |
+    | `preview` | `string` | 模特视频预览图图url。（需拼接接口域名+端口） |
+    
 *   **成功响应示例**:
     
 
@@ -969,22 +1150,21 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
         
     *   字段说明:
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `code` | `integer` | 状态码。 |
-| `success` | `boolean` | 操作是否成功。 |
-| `msg` | `string` | 描述信息。 |
-| `data` | `object` | 响应数据。错误时无数据返回。 |
-
-*   成功响应字段说明 (`data` 字段):
+        | 字段名 | 类型 | 描述 |
+        | --- | --- | --- |
+        | `code` | `integer` | 状态码。 |
+        | `success` | `boolean` | 操作是否成功。 |
+        | `msg` | `string` | 描述信息。 |
+        | `data` | `object` | 响应数据。错误时无数据返回。 |
+        
+    *   成功响应字段说明 (`data` 字段):
+        
     
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `model_name` | `string` | 训练的模特名称。 |
-| `video_url` | `string` | 保存的视频文件URL。 |
-
+    | 字段名 | 类型 | 描述 |
+    | --- | --- | --- |
+    | `model_name` | `string` | 训练的模特名称。 |
+    | `video_url` | `string` | 保存的视频文件URL。 |
+    
 *   **成功响应示例**:
     
 
@@ -1064,14 +1244,14 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
         
     *   字段说明:
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `code` | `integer` | 状态码。 |
-| `success` | `boolean` | 操作是否成功。 |
-| `msg` | `string` | 描述信息。 |
-| `data` | `object` | task\_id：生成视频任务的唯一标识符<br>audio\_data：视频字幕数据，text：字幕内容，time：字幕起止时间 |
-
+    
+    | 字段名 | 类型 | 描述 |
+    | --- | --- | --- |
+    | `code` | `integer` | 状态码。 |
+    | `success` | `boolean` | 操作是否成功。 |
+    | `msg` | `string` | 描述信息。 |
+    | `data` | `object` | task\_id：生成视频任务的唯一标识符<br>audio\_data：视频字幕数据，text：字幕内容，time：字幕起止时间 |
+    
 *   **成功响应示例**:
     
 
@@ -1149,14 +1329,14 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
         
     *   字段说明:
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `code` | `integer` | 状态码。 |
-| `success` | `boolean` | 操作是否成功。 |
-| `msg` | `string` | 描述信息。 |
-| `data` | `string` | 生成视频任务的唯一标识符 (task\_id)。 |
-
+    
+    | 字段名 | 类型 | 描述 |
+    | --- | --- | --- |
+    | `code` | `integer` | 状态码。 |
+    | `success` | `boolean` | 操作是否成功。 |
+    | `msg` | `string` | 描述信息。 |
+    | `data` | `string` | 生成视频任务的唯一标识符 (task\_id)。 |
+    
 *   **成功响应示例**:
     
 
@@ -1198,28 +1378,26 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
         
 *   **查询参数**:  `form-data`
     
-
-| 参数名 | 类型 | 必填 | 描述 |
-| --- | --- | --- | --- |
-| `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
-
+    | 参数名 | 类型 | 必填 | 描述 |
+    | --- | --- | --- | --- |
+    | `user_id` | `string` | 是 | 用户id<br> _**0916新增**_ |
+    
 *   **响应格式**
     
     *   Content-Type: `application/json`
         
     *   成功响应字段说明 (`data` 字段):
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `status` | `string` | 任务状态 ("processing", "completed")。 |
-| `progress` | `integer` | 任务进度百分比 (0-100)。仅在 processing 状态时有效。 |
-| `result_url` | `string` 或 `null` | 生成完成视频的访问URL。仅在 completed 状态时有效。 |
-
-*   错误响应字段说明 (`msg` 字段):
-    
-    *   `string`: 错误信息。
+        | 字段名 | 类型 | 描述 |
+        | --- | --- | --- |
+        | `status` | `string` | 任务状态 ("processing", "completed")。 |
+        | `progress` | `integer` | 任务进度百分比 (0-100)。仅在 processing 状态时有效。 |
+        | `result_url` | `string` 或 `null` | 生成完成视频的访问URL。仅在 completed 状态时有效。 |
         
+    *   错误响应字段说明 (`msg` 字段):
+        
+        *   `string`: 错误信息。
+            
 *   **成功响应示例 (处理中)**:
     
 
@@ -1288,14 +1466,14 @@ data: {"model":"zj-preset","type":"llm_token","choices":[{"finish_reason":"stop"
         
     *   字段说明:
         
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `code` | `integer` | 状态码。 |
-| `success` | `boolean` | 操作是否成功。 |
-| `msg` | `string` | 描述信息。 |
-| `data` | `string` | 转换后的文本内容。 |
-
+    
+    | 字段名 | 类型 | 描述 |
+    | --- | --- | --- |
+    | `code` | `integer` | 状态码。 |
+    | `success` | `boolean` | 操作是否成功。 |
+    | `msg` | `string` | 描述信息。 |
+    | `data` | `string` | 转换后的文本内容。 |
+    
 *   **成功响应示例**:
     
 
