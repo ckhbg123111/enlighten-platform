@@ -4,16 +4,14 @@ import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.repository.TypesettingTemplateRepository;
 import com.zhongjia.biz.service.TemplateApplyService;
 import com.zhongjia.biz.service.dto.ArticleStructure;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TemplateApplyServiceImpl implements TemplateApplyService {
 
-    private final TypesettingTemplateRepository templateRepository;
-
-    public TemplateApplyServiceImpl(TypesettingTemplateRepository templateRepository) {
-        this.templateRepository = templateRepository;
-    }
+    @Autowired
+    private TypesettingTemplateRepository templateRepository;
 
     @Override
     public String render(Long templateId, ArticleStructure structure) {

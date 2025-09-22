@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.TypesettingMaterial;
 import com.zhongjia.biz.repository.TypesettingMaterialRepository;
 import com.zhongjia.biz.service.TypesettingMaterialService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,11 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TypesettingMaterialServiceImpl implements TypesettingMaterialService {
     
-    private final TypesettingMaterialRepository materialRepository;
-    
-    public TypesettingMaterialServiceImpl(TypesettingMaterialRepository materialRepository) {
-        this.materialRepository = materialRepository;
-    }
+    @Autowired
+    private TypesettingMaterialRepository materialRepository;
     
     @Override
     public Page<TypesettingMaterial> getMaterialsByTypeAndHospitalAndDepartment(String type, String hospital, String department, int page, int size) {

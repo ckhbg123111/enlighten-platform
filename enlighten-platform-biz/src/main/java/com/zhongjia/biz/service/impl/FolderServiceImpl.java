@@ -8,6 +8,7 @@ import com.zhongjia.biz.repository.FolderRepository;
 import com.zhongjia.biz.repository.GzhArticleRepository;
 import com.zhongjia.biz.service.FolderService;
 import com.zhongjia.biz.service.GzhArticleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,15 +16,12 @@ import java.util.List;
 @Service
 public class FolderServiceImpl implements FolderService {
 
-    private final FolderRepository folderRepository;
-    private final GzhArticleRepository gzhArticleRepository;
-    private final GzhArticleService gzhArticleService;
-
-    public FolderServiceImpl(FolderRepository folderRepository, GzhArticleRepository gzhArticleRepository, GzhArticleService gzhArticleService) {
-        this.folderRepository = folderRepository;
-        this.gzhArticleRepository = gzhArticleRepository;
-        this.gzhArticleService = gzhArticleService;
-    }
+    @Autowired
+    private FolderRepository folderRepository;
+    @Autowired
+    private GzhArticleRepository gzhArticleRepository;
+    @Autowired
+    private GzhArticleService gzhArticleService;
 
     @Override
     public Long create(Long userId, String name, Integer sort) {

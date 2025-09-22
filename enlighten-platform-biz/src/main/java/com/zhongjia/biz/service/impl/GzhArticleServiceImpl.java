@@ -10,6 +10,7 @@ import com.zhongjia.biz.repository.GzhArticleRepository;
 import com.zhongjia.biz.repository.RecycleBinItemRepository;
 import com.zhongjia.biz.service.GzhArticleService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,13 +21,10 @@ import java.util.List;
 @Service
 public class GzhArticleServiceImpl implements GzhArticleService {
 
-    private final GzhArticleRepository articleRepository;
-    private final RecycleBinItemRepository recycleRepository;
-
-    public GzhArticleServiceImpl(GzhArticleRepository articleRepository, RecycleBinItemRepository recycleRepository) {
-        this.articleRepository = articleRepository;
-        this.recycleRepository = recycleRepository;
-    }
+    @Autowired
+    private GzhArticleRepository articleRepository;
+    @Autowired
+    private RecycleBinItemRepository recycleRepository;
 
     @Override
     public Long createInitial(Long userId, Long folderId, String name, String tag, String coverImageUrl, String originalText, String typesetContent) {

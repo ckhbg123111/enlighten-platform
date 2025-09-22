@@ -10,6 +10,7 @@ import com.zhongjia.biz.repository.FolderRepository;
 import com.zhongjia.biz.repository.GzhArticleRepository;
 import com.zhongjia.biz.repository.RecycleBinItemRepository;
 import com.zhongjia.biz.service.RecycleBinService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,15 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class RecycleBinServiceImpl implements RecycleBinService {
 
-    private final RecycleBinItemRepository recycleRepository;
-    private final GzhArticleRepository articleRepository;
-    private final FolderRepository folderRepository;
-
-    public RecycleBinServiceImpl(RecycleBinItemRepository recycleRepository, GzhArticleRepository articleRepository, FolderRepository folderRepository) {
-        this.recycleRepository = recycleRepository;
-        this.articleRepository = articleRepository;
-        this.folderRepository = folderRepository;
-    }
+    @Autowired
+    private RecycleBinItemRepository recycleRepository;
+    @Autowired
+    private GzhArticleRepository articleRepository;
+    @Autowired
+    private FolderRepository folderRepository;
 
     @Override
     public Page<RecycleBinItem> page(Long userId, int page, int size) {

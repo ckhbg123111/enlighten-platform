@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhongjia.biz.entity.UserArticleConfig;
 import com.zhongjia.biz.repository.UserArticleConfigRepository;
 import com.zhongjia.biz.service.UserArticleConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +16,8 @@ import java.util.UUID;
 @Service
 public class UserArticleConfigServiceImpl implements UserArticleConfigService {
 
-    private final UserArticleConfigRepository userArticleConfigRepository;
-
-    public UserArticleConfigServiceImpl(UserArticleConfigRepository userArticleConfigRepository) {
-        this.userArticleConfigRepository = userArticleConfigRepository;
-    }
+    @Autowired
+    private UserArticleConfigRepository userArticleConfigRepository;
 
     @Override
     public List<UserArticleConfig> listByUserId(Long userId) {

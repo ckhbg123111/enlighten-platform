@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.repository.TypesettingTemplateRepository;
 import com.zhongjia.biz.service.TypesettingTemplateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,11 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TypesettingTemplateServiceImpl implements TypesettingTemplateService {
     
-    private final TypesettingTemplateRepository templateRepository;
-    
-    public TypesettingTemplateServiceImpl(TypesettingTemplateRepository templateRepository) {
-        this.templateRepository = templateRepository;
-    }
+    @Autowired
+    private TypesettingTemplateRepository templateRepository;
     
     @Override
     public Page<TypesettingTemplate> getTemplatesByHospitalAndDepartment(String hospital, String department, int page, int size) {
