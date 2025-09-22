@@ -92,6 +92,7 @@ public class MediaConvertController {
     // 1.1) 转公众号：重新生成
     @PostMapping(path = "convert2gzh_re", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "转公众号-重新生成", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Deprecated
     public void convertToGzhRe(@Valid @RequestBody ConvertGzhReReq req, HttpServletResponse response) throws IOException {
         UserContext.UserInfo user = requireUser();
 
@@ -121,6 +122,7 @@ public class MediaConvertController {
     // 2) 查询：通过 essayCode，倒序（按时间）
     @GetMapping("/records")
     @Operation(summary = "按文章编码查询转换记录", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Deprecated
     public Result<List<MediaConvertRecordVO>> listByEssayCode(@Parameter(description = "文章编码") @RequestParam("essayCode") String essayCode) {
         UserContext.UserInfo user = requireUser();
         List<MediaConvertRecord> list = recordRepository.list(new LambdaQueryWrapper<MediaConvertRecord>()
@@ -133,6 +135,7 @@ public class MediaConvertController {
 
     // 2.1) 查询：通过 userId，限制在当前租户内，倒序（按时间）
     @GetMapping("/records/by-user")
+    @Deprecated
     @Operation(summary = "按用户ID查询转换记录", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<List<MediaConvertRecordVO>> listByUserId() {
         UserContext.UserInfo user = requireUser();
@@ -147,6 +150,7 @@ public class MediaConvertController {
     // 3) 删除：软删除
     @DeleteMapping("/{id}")
     @Operation(summary = "删除转换记录(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Deprecated
     public Result<Boolean> softDelete(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
         UserContext.UserInfo user = requireUser();
         MediaConvertRecord exist = recordRepository.getById(id);

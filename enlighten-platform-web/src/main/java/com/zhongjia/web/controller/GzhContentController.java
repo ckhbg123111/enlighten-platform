@@ -105,7 +105,6 @@ public class GzhContentController {
     public static class CreateArticleReq {
         @Schema(description = "文件夹ID")
         private Long folderId;
-        @NotBlank
         @Schema(description = "文章名称", requiredMode = io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED)
         private String name;
         @Schema(description = "文章标签")
@@ -113,6 +112,7 @@ public class GzhContentController {
         @Schema(description = "封面图URL")
         private String coverImageUrl;
         @Schema(description = "原始文本")
+        @NotBlank
         private String originalText;
         @Schema(description = "排版内容(HTML)")
         private String typesetContent;
