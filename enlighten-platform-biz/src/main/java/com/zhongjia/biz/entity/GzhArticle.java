@@ -39,10 +39,10 @@ public class GzhArticle {
 
     private LocalDateTime deleteTime;
 
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     private LocalDateTime createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     private LocalDateTime updateTime;
 }
 
