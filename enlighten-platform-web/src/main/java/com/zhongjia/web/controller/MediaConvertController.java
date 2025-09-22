@@ -249,11 +249,33 @@ public class MediaConvertController {
     @PostMapping(path = "apply_template", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "文章套用模板生成HTML", description = "传入文章与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<HtmlResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
-        requireUser();
+        UserContext.UserInfo user = requireUser();
         // 解析结构
         ArticleStructure structure = articleStructureService.parse(req.getEssay());
         // 渲染
         String html = templateApplyService.render(req.getTemplateId(), structure);
+        // 若传入记录ID，尝试将原文与渲染结果写回对应记录
+        if (req.getRecordId() != null) {
+            GzhArticle record = gzhArticleService.getById(req.getRecordId());
+            if (record != null && (record.getDeleted() == null || record.getDeleted() == 0)
+                    && record.getUserId() != null && record.getUserId().equals(user.userId())) {
+                // 使用 updateEditing 以便同时更新状态与最后编辑时间
+                try {
+                    gzhArticleService.updateEditing(
+                            user.userId(),
+                            record.getId(),
+                            null,
+                            null,
+                            null,
+                            null,
+                            req.getEssay(), // originalText
+                            html            // typesetContent
+                    );
+                } catch (Exception ignored) {
+                    // 按要求：记录不存在或更新失败都不影响正常返回
+                }
+            }
+        }
         HtmlResp resp = new HtmlResp();
         resp.setHtml(html);
         return Result.success(resp);
@@ -340,6 +362,8 @@ public class MediaConvertController {
         @Schema(description = "模板ID")
         @NotNull
         private Long templateId;
+        @Schema(description = "公众号记录ID，可为空。若存在则会回写原文与排版内容")
+        private Long recordId;
         // hospital 和 department 已不再传递至上游，仅保留 essay 和 templateId
     }
 
