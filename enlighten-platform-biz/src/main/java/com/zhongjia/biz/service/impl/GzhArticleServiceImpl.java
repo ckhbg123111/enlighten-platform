@@ -165,11 +165,14 @@ public class GzhArticleServiceImpl implements GzhArticleService {
         if (StringUtils.isNotBlank(nameLike)) w.like(GzhArticle::getName, nameLike);
         if (StringUtils.isNotBlank(tag)) w.eq(GzhArticle::getTag, tag);
         if (StringUtils.isNotBlank(status)) w.eq(GzhArticle::getStatus, status);
-        // 排序支持：last_edit_time、name/name_pinyin、create_time
+        // 排序支持：last_edit_time、name（拼音排序）、create_time
         if ("last_edit_time".equalsIgnoreCase(sortBy)) {
             w.orderBy(true, asc, GzhArticle::getLastEditTime);
         } else if ("name".equalsIgnoreCase(sortBy)) {
-            w.orderBy(true, asc, GzhArticle::getNamePinyin).orderBy(true, asc, GzhArticle::getName);
+            // 依赖 MySQL 8.0 中文拼音排序：在列或会话设置排序规则为 utf8mb4_zh_0900_ai_ci
+            // MyBatis-Plus 的 LambdaQueryWrapper 不直接支持 COLLATE 子句，这里按 name 排序，
+            // 由数据库层面列/连接的排序规则保障拼音序。
+            w.orderBy(true, asc, GzhArticle::getName);
         } else {
             w.orderBy(true, asc, GzhArticle::getCreateTime);
         }

@@ -20,7 +20,6 @@ public class GzhArticle {
 
     private String name;
 
-    private String namePinyin;
 
     private String tag;
 
