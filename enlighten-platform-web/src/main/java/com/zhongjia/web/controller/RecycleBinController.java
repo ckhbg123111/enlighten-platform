@@ -11,9 +11,13 @@ import com.zhongjia.web.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
 import java.util.List;
 
 @RestController
@@ -41,15 +45,23 @@ public class RecycleBinController {
 
     @PostMapping("/restore")
     @Operation(summary = "从回收站恢复文章", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Boolean> restore(@RequestBody List<Long> recycleIds) {
+    public Result<Boolean> restore(@Valid @RequestBody RecycleIdsReq req) {
         Long userId = requireUser().userId();
-        return Result.success(recycleBinService.restoreArticles(userId, recycleIds));
+        return Result.success(recycleBinService.restoreArticles(userId, req.getRecycleIds()));
     }
 
     @PostMapping("/empty")
     @Operation(summary = "清空回收站（删除选中项）", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<Boolean> empty(@RequestBody List<Long> recycleIds) {
+    public Result<Boolean> empty(@Valid @RequestBody RecycleIdsReq req) {
         Long userId = requireUser().userId();
-        return Result.success(recycleBinService.empty(userId, recycleIds));
+        return Result.success(recycleBinService.empty(userId, req.getRecycleIds()));
+    }
+
+    @Data
+    @Schema(name = "RecycleIdsReq", description = "回收站条目ID列表请求")
+    public static class RecycleIdsReq {
+        @NotEmpty
+        @Schema(description = "回收站条目ID列表", requiredMode = io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED)
+        private List<Long> recycleIds;
     }
 }
