@@ -33,6 +33,7 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - JAVA_OPTS=${JAVA_OPTS}
+      - LOG_DIR=/opt/enlighten/logs/app
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${DB_NAME}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_ROOT_PASSWORD}
@@ -51,6 +52,8 @@ services:
       - ROCKETMQ_NAME_SERVER=${ROCKETMQ_NAME_SERVER}
     ports:
       - "${APP_PORT}:8080"
+    volumes:
+      - /opt/enlighten/logs/app:/opt/enlighten/logs/app
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health/liveness"]
