@@ -24,7 +24,7 @@ public class GzhArticleVO {
     private String originalText;
     @Schema(description = "排版内容(HTML)")
     private String typesetContent;
-    @Schema(description = "状态")
+    @Schema(description = "状态 INITIAL/EDITING/REVIEWING/APPROVED/REJECTED/PUBLISHED")
     private String status;
     @Schema(description = "最后编辑时间")
     private LocalDateTime lastEditTime;
