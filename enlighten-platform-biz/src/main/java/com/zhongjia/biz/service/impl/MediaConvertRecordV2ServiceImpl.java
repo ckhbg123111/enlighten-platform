@@ -23,7 +23,7 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public MediaConvertRecordV2 insertOrUpdateProcessing(Long userId, Long externalId, String platform) {
+    public Long insertOrUpdateProcessing(Long userId, Long externalId, String platform) {
         LocalDateTime now = LocalDateTime.now();
 
         // 1) 尝试插入
@@ -40,7 +40,7 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
             if (!ok) {
                 throw new IllegalStateException("插入媒体转换记录失败");
             }
-            return po;
+            return po.getId();
         } catch (DuplicateKeyException dup) {
             // 2) 若唯一键冲突，则更新为 PROCESSING，并刷新更新时间
             boolean ok = repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
@@ -54,19 +54,17 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
             if (!ok) {
                 throw new IllegalStateException("并发更新媒体转换记录失败");
             }
-            // 3) 查询并返回最新一条
+            // 3) 查询并返回ID（唯一索引保证最多一条）
             LambdaQueryWrapper<MediaConvertRecordV2> qw = new LambdaQueryWrapper<MediaConvertRecordV2>()
                     .eq(MediaConvertRecordV2::getUserId, userId)
                     .eq(MediaConvertRecordV2::getExternalId, externalId)
                     .eq(MediaConvertRecordV2::getPlatform, platform)
-                    .eq(MediaConvertRecordV2::getDeleted, 0)
-                    .orderByDesc(MediaConvertRecordV2::getUpdateTime)
-                    .last("limit 1");
+                    .eq(MediaConvertRecordV2::getDeleted, 0);
             MediaConvertRecordV2 exist = repository.getOne(qw);
             if (exist == null) {
                 throw new IllegalStateException("并发场景下未找到媒体转换记录");
             }
-            return exist;
+            return exist.getId();
         }
     }
 
