@@ -1,0 +1,35 @@
+filebeat.inputs:
+  - type: filestream
+    id: app-json-logs
+    enabled: true
+    paths:
+      - /logs/app/*.log
+    parsers:
+      - ndjson:
+          add_error_key: true
+          overwrite_keys: true
+          expand_keys: true
+
+processors:
+  - add_fields:
+      target: event
+      fields:
+        dataset: app
+  - timestamp:
+      field: "@timestamp"
+      timezone: "Asia/Shanghai"
+      ignore_missing: true
+
+setup.ilm.enabled: false
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  index: "app-logs-%{+yyyy.MM.dd}"
+
+setup.template.enabled: true
+setup.template.name: "app-logs"
+setup.template.pattern: "app-logs-*"
+setup.template.overwrite: true
+
+logging.level: info
+
+
