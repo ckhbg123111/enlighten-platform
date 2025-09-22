@@ -100,6 +100,17 @@ public class GzhContentController {
         return Result.success(resp);
     }
 
+	@GetMapping("/article/detail")
+	@Operation(summary = "按ID查询文章详情（未删除且归属校验）", security = {@SecurityRequirement(name = "bearer-jwt")})
+	public Result<GzhArticle> getArticleDetail(@RequestParam @NotNull Long id) {
+		Long userId = requireUser().userId();
+		GzhArticle article = articleService.getById(id);
+		if (article == null || !userId.equals(article.getUserId()) || !Integer.valueOf(0).equals(article.getDeleted())) {
+			return Result.error(ErrorCode.NOT_FOUND, "文章不存在");
+		}
+		return Result.success(article);
+	}
+
     @Data
     @Schema(name = "GzhCreateArticleReq", description = "创建公众号文章请求")
     public static class CreateArticleReq {
