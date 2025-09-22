@@ -346,7 +346,7 @@ public class MediaConvertController {
             }
             qw.eq(MediaConvertRecordV2::getPlatform, platform);
         }
-        qw.orderByDesc(MediaConvertRecordV2::getCreateTime);
+        qw.orderByDesc(MediaConvertRecordV2::getUpdateTime);
         Page<MediaConvertRecordV2> p = new Page<>(page, size);
         Page<MediaConvertRecordV2> result = recordV2Repository.page(p, qw);
 		PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
