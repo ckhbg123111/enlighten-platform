@@ -294,8 +294,8 @@ public class MediaConvertController {
         if (record.getOriginalText() == null || record.getOriginalText().isEmpty()) {
             return Result.error(400, "记录内容为空");
         }
-        // v2：转换前插入一条记录
-        MediaConvertRecordV2 v2 = recordV2Service.insertProcessing(user.userId(), req.getRecordId(), "gzh");
+        // v2：转换前插入或更新记录为 PROCESSING
+        MediaConvertRecordV2 v2 = recordV2Service.insertOrUpdateProcessing(user.userId(), req.getRecordId(), "gzh");
         // 解析结构
         try {
             ArticleStructure structure = articleStructureService.parse(record.getOriginalText());
