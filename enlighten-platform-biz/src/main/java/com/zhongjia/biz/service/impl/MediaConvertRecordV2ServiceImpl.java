@@ -1,12 +1,12 @@
 package com.zhongjia.biz.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhongjia.biz.entity.MediaConvertRecordV2;
 import com.zhongjia.biz.enums.MediaConvertStatus;
+import com.zhongjia.biz.mapper.MediaConvertRecordV2Mapper;
 import com.zhongjia.biz.repository.MediaConvertRecordV2Repository;
 import com.zhongjia.biz.service.MediaConvertRecordV2Service;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +15,17 @@ import java.time.LocalDateTime;
 @Service
 public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Service {
 
-    private final MediaConvertRecordV2Repository repository;
-
-    public MediaConvertRecordV2ServiceImpl(MediaConvertRecordV2Repository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private MediaConvertRecordV2Repository repository;
+    @Autowired
+    private MediaConvertRecordV2Mapper mapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long insertOrUpdateProcessing(Long userId, Long externalId, String platform) {
         LocalDateTime now = LocalDateTime.now();
 
-        // 1) 尝试插入
+        // 基于唯一索引的 upsert 一次性插入/更新并返回主键ID
         MediaConvertRecordV2 po = new MediaConvertRecordV2();
         po.setUserId(userId);
         po.setExternalId(externalId);
@@ -35,37 +34,11 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
         po.setDeleted(0);
         po.setCreateTime(now);
         po.setUpdateTime(now);
-        try {
-            boolean ok = repository.save(po);
-            if (!ok) {
-                throw new IllegalStateException("插入媒体转换记录失败");
-            }
-            return po.getId();
-        } catch (DuplicateKeyException dup) {
-            // 2) 若唯一键冲突，则更新为 PROCESSING，并刷新更新时间
-            boolean ok = repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
-                    .eq(MediaConvertRecordV2::getUserId, userId)
-                    .eq(MediaConvertRecordV2::getExternalId, externalId)
-                    .eq(MediaConvertRecordV2::getPlatform, platform)
-                    .eq(MediaConvertRecordV2::getDeleted, 0)
-                    .set(MediaConvertRecordV2::getStatus, MediaConvertStatus.PROCESSING.name())
-                    .set(MediaConvertRecordV2::getUpdateTime, now)
-            );
-            if (!ok) {
-                throw new IllegalStateException("并发更新媒体转换记录失败");
-            }
-            // 3) 查询并返回ID（唯一索引保证最多一条）
-            LambdaQueryWrapper<MediaConvertRecordV2> qw = new LambdaQueryWrapper<MediaConvertRecordV2>()
-                    .eq(MediaConvertRecordV2::getUserId, userId)
-                    .eq(MediaConvertRecordV2::getExternalId, externalId)
-                    .eq(MediaConvertRecordV2::getPlatform, platform)
-                    .eq(MediaConvertRecordV2::getDeleted, 0);
-            MediaConvertRecordV2 exist = repository.getOne(qw);
-            if (exist == null) {
-                throw new IllegalStateException("并发场景下未找到媒体转换记录");
-            }
-            return exist.getId();
+        int affected = mapper.upsertProcessing(po);
+        if (affected <= 0 || po.getId() == null) {
+            throw new IllegalStateException("upsert 媒体转换记录失败");
         }
+        return po.getId();
     }
 
     @Override
