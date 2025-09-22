@@ -195,6 +195,12 @@ public class GzhArticleServiceImpl implements GzhArticleService {
         }
         return ok;
     }
+
+    @Override
+    public GzhArticle getById(Long id) {
+        return articleRepository.getById(id);
+    }
+
 }
 
 

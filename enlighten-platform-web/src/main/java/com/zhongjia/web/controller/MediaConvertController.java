@@ -1,8 +1,10 @@
 package com.zhongjia.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zhongjia.biz.entity.GzhArticle;
 import com.zhongjia.biz.entity.MediaConvertRecord;
 import com.zhongjia.biz.enums.MediaPlatform;
+import com.zhongjia.biz.service.GzhArticleService;
 import com.zhongjia.biz.service.MediaConvertRecordService;
 import com.zhongjia.biz.service.dto.UpstreamResult;
 import com.zhongjia.biz.repository.MediaConvertRecordRepository;
@@ -54,6 +56,9 @@ public class MediaConvertController {
 
     @Autowired
     private TemplateApplyService templateApplyService;
+
+    @Autowired
+    private GzhArticleService gzhArticleService;
 
     // 上游调用与记录统一移至 Service 层
 
@@ -234,6 +239,28 @@ public class MediaConvertController {
         return Result.success(resp);
     }
 
+    // 4.1) 转公众号图文并套用模板：传入公众号内容记录ID+模板ID，返回HTML
+    @PostMapping(path = "apply_template_by_record", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "文章套用模板生成HTML-通过记录ID", description = "传入公众号内容记录ID与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<HtmlResp> applyTemplateByRecord(@Valid @RequestBody ApplyTemplateByRecordReq req) {
+        requireUser();
+        // 查询记录
+        GzhArticle record = gzhArticleService.getById(req.getRecordId());// 确保存在且未删除
+        if (record == null || (record.getDeleted() != null && record.getDeleted() == 1)) {
+            return Result.error(404, "记录不存在");
+        }
+        if (record.getOriginalText() == null || record.getOriginalText().isEmpty()) {
+            return Result.error(400, "记录内容为空");
+        }
+        // 解析结构
+        ArticleStructure structure = articleStructureService.parse(record.getOriginalText());
+        // 渲染
+        String html = templateApplyService.render(req.getTemplateId(), structure);
+        HtmlResp resp = new HtmlResp();
+        resp.setHtml(html);
+        return Result.success(resp);
+    }
+
     @Data
     @Schema(name = "ApplyTemplateReq", description = "文章套用模板请求")
     public static class ApplyTemplateReq {
@@ -244,6 +271,17 @@ public class MediaConvertController {
         @NotNull
         private Long templateId;
         // hospital 和 department 已不再传递至上游，仅保留 essay 和 templateId
+    }
+
+    @Data
+    @Schema(name = "ApplyTemplateByRecordReq", description = "文章套用模板请求-通过记录ID")
+    public static class ApplyTemplateByRecordReq {
+        @Schema(description = "公众号记录ID")
+        @NotNull
+        private Long recordId;
+        @Schema(description = "模板ID")
+        @NotNull
+        private Long templateId;
     }
 
     @Data

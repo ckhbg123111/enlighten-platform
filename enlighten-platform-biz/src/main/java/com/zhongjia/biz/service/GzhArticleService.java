@@ -12,6 +12,7 @@ public interface GzhArticleService {
     boolean batchMoveToFolder(Long userId, java.util.List<Long> ids, Long folderId);
     Page<GzhArticle> pageQuery(Long userId, Long folderId, String nameLike, String tag, String status, int page, int size, String sortBy, boolean asc);
     boolean restoreFromRecycle(Long userId, java.util.List<Long> ids);
+    GzhArticle getById(Long id);
 }
 
 
