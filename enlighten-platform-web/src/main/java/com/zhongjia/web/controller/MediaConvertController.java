@@ -5,6 +5,11 @@ import com.zhongjia.biz.entity.GzhArticle;
 import com.zhongjia.biz.entity.MediaConvertRecord;
 import com.zhongjia.biz.enums.MediaPlatform;
 import com.zhongjia.biz.service.GzhArticleService;
+import com.zhongjia.biz.entity.MediaConvertRecordV2;
+import com.zhongjia.biz.service.MediaConvertRecordV2Service;
+import com.zhongjia.biz.repository.MediaConvertRecordV2Repository;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.biz.service.MediaConvertRecordService;
 import com.zhongjia.biz.service.dto.UpstreamResult;
 import com.zhongjia.biz.repository.MediaConvertRecordRepository;
@@ -59,6 +64,12 @@ public class MediaConvertController {
 
     @Autowired
     private GzhArticleService gzhArticleService;
+
+    @Autowired
+    private MediaConvertRecordV2Service recordV2Service;
+
+    @Autowired
+    private MediaConvertRecordV2Repository recordV2Repository;
 
     // 上游调用与记录统一移至 Service 层
 
@@ -243,7 +254,7 @@ public class MediaConvertController {
     @PostMapping(path = "apply_template_by_record", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "文章套用模板生成HTML-通过记录ID", description = "传入公众号内容记录ID与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<HtmlResp> applyTemplateByRecord(@Valid @RequestBody ApplyTemplateByRecordReq req) {
-        requireUser();
+        UserContext.UserInfo user = requireUser();
         // 查询记录
         GzhArticle record = gzhArticleService.getById(req.getRecordId());// 确保存在且未删除
         if (record == null || (record.getDeleted() != null && record.getDeleted() == 1)) {
@@ -252,12 +263,46 @@ public class MediaConvertController {
         if (record.getOriginalText() == null || record.getOriginalText().isEmpty()) {
             return Result.error(400, "记录内容为空");
         }
+        // v2：转换前插入一条记录
+        MediaConvertRecordV2 v2 = recordV2Service.insertProcessing(user.userId(), req.getRecordId(), "gzh");
         // 解析结构
-        ArticleStructure structure = articleStructureService.parse(record.getOriginalText());
-        // 渲染
-        String html = templateApplyService.render(req.getTemplateId(), structure);
-        HtmlResp resp = new HtmlResp();
-        resp.setHtml(html);
+        try {
+            ArticleStructure structure = articleStructureService.parse(record.getOriginalText());
+            // 渲染
+            String html = templateApplyService.render(req.getTemplateId(), structure);
+            // 更新状态成功
+            recordV2Service.markSuccess(v2.getId());
+            HtmlResp resp = new HtmlResp();
+            resp.setHtml(html);
+            return Result.success(resp);
+        } catch (Exception e) {
+            // 更新状态失败
+            recordV2Service.markFailed(v2.getId());
+            throw e;
+        }
+    }
+
+    // v2) 查询接口：按 platform + user_id 查询最近记录
+    @GetMapping(path = "records_v2")
+    @Operation(summary = "查询媒体转换记录v2", description = "根据平台查询当前用户的转换记录（可分页，platform 可为空）", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<PageResponse<MediaConvertRecordV2>> listV2(
+            @RequestParam(value = "platform", required = false) String platform,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        UserContext.UserInfo user = requireUser();
+        LambdaQueryWrapper<MediaConvertRecordV2> qw = new LambdaQueryWrapper<MediaConvertRecordV2>()
+                .eq(MediaConvertRecordV2::getUserId, user.userId())
+                .eq(MediaConvertRecordV2::getDeleted, 0);
+        if (platform != null && !platform.isEmpty()) {
+            if (!MediaPlatform.isValid(platform) && !"gzh".equals(platform)) {
+                return Result.error(400, "platform不合法");
+            }
+            qw.eq(MediaConvertRecordV2::getPlatform, platform);
+        }
+        qw.orderByDesc(MediaConvertRecordV2::getCreateTime);
+        Page<MediaConvertRecordV2> p = new Page<>(page, size);
+        Page<MediaConvertRecordV2> result = recordV2Repository.page(p, qw);
+        PageResponse<MediaConvertRecordV2> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), result.getRecords());
         return Result.success(resp);
     }
 
