@@ -279,6 +279,22 @@ public class MediaConvertController {
             ArticleStructure structure = articleStructureService.parse(record.getOriginalText());
             // 渲染
             String html = templateApplyService.render(req.getTemplateId(), structure);
+            // 将结果更新落库：typesetContent、状态为编辑中、最后编辑时间
+            boolean saved = gzhArticleService.updateEditing(
+                    user.userId(),
+                    record.getId(),
+                    null, // folderId 不变
+                    null, // name 不变
+                    null, // tag 不变
+                    null, // coverImageUrl 不变
+                    null, // originalText 不变
+                    html  // 更新 typesetContent
+            );
+            if (!saved) {
+                // 若更新失败，标记失败并返回
+                recordV2Service.markFailed(v2.getId());
+                return Result.error(500, "更新文章失败");
+            }
             // 更新状态成功
             recordV2Service.markSuccess(v2.getId());
             HtmlResp resp = new HtmlResp();
