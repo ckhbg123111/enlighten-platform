@@ -4,6 +4,7 @@ package com.zhongjia.biz.enums;
  * 媒体平台类别
  */
 public enum MediaPlatform {
+    gzh,
     xiaohongshu,
     douyin;
 

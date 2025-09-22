@@ -298,7 +298,7 @@ public class MediaConvertController {
                 .eq(MediaConvertRecordV2::getUserId, user.userId())
                 .eq(MediaConvertRecordV2::getDeleted, 0);
         if (platform != null && !platform.isEmpty()) {
-            if (!MediaPlatform.isValid(platform) && !"gzh".equals(platform)) {
+            if (!MediaPlatform.isValid(platform)) {
                 return Result.error(400, "platform不合法");
             }
             qw.eq(MediaConvertRecordV2::getPlatform, platform);
