@@ -5,10 +5,8 @@ set -euo pipefail
 # Defaults
 ENV_FILE="./.env"
 DO_BUILD=true
-# App log dir (host) and container runtime UID/GID used for permissions
+# App log dir (host)
 LOG_DIR="${LOG_DIR:-/opt/enlighten/logs/app}"
-APP_UID="${APP_UID:-1000}"
-APP_GID="${APP_GID:-1000}"
 
 print_usage() {
   echo "Usage: $0 [-e ENV_FILE] [--no-build]"
@@ -82,14 +80,11 @@ fi
 echo "Ensuring data directories exist..."
 mkdir -p ./data/mysql ./data/redis
 
-# Ensure log directory exists and is writable for container user
+# Ensure log directory exists
 if [[ ! -d "${LOG_DIR}" ]]; then
   echo "Creating log directory: ${LOG_DIR} (requires sudo)"
   sudo mkdir -p "${LOG_DIR}"
 fi
-echo "Setting ownership to ${APP_UID}:${APP_GID} and mode 775 on ${LOG_DIR}"
-sudo chown -R "${APP_UID}:${APP_GID}" "${LOG_DIR}"
-sudo chmod 775 "${LOG_DIR}"
 
 # Detect docker compose command (v2: docker compose, v1: docker-compose)
 compose_cmd=(docker compose)

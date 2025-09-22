@@ -5,17 +5,11 @@ set -euo pipefail
 ELK_VERSION="${ELK_VERSION:-8.14.1}"
 ES_JAVA_OPTS="${ES_JAVA_OPTS:--Xms1g -Xmx1g}"
 LOG_DIR="${LOG_DIR:-/opt/enlighten/logs/app}"
-# UID/GID of the application user inside containers (default 1000:1000)
-APP_UID="${APP_UID:-1000}"
-APP_GID="${APP_GID:-1000}"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "[1/6] Preparing directories..."
 sudo mkdir -p "$LOG_DIR"
-# Assign ownership to match container runtime user (numeric IDs)
-sudo chown -R "${APP_UID}:${APP_GID}" "$LOG_DIR"
-sudo chmod 775 "$LOG_DIR"
 
 echo "[2/6] Checking docker & compose..."
 if ! command -v docker >/dev/null 2>&1; then
@@ -39,8 +33,6 @@ echo "[4/6] Exporting environment for compose..."
 export ELK_VERSION
 export ES_JAVA_OPTS
 export LOG_DIR
-export APP_UID
-export APP_GID
 
 echo "[5/6] Starting ELK stack..."
 cd "$SCRIPT_DIR"
