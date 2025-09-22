@@ -19,6 +19,8 @@ import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.MediaConvertRecordVO;
 import com.zhongjia.web.mapper.MediaConvertRecordMapper;
+import com.zhongjia.web.vo.MediaConvertRecordV2VO;
+import com.zhongjia.web.mapper.MediaConvertRecordV2WebMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -70,6 +72,9 @@ public class MediaConvertController {
 
     @Autowired
     private MediaConvertRecordV2Repository recordV2Repository;
+
+	@Autowired
+	private MediaConvertRecordV2WebMapper recordV2WebMapper;
 
     // 上游调用与记录统一移至 Service 层
 
@@ -289,7 +294,7 @@ public class MediaConvertController {
     // v2) 查询接口：按 platform + user_id 查询最近记录
     @GetMapping(path = "records_v2")
     @Operation(summary = "查询媒体转换记录v2", description = "根据平台查询当前用户的转换记录（可分页，platform 可为空）", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<PageResponse<MediaConvertRecordV2>> listV2(
+	public Result<PageResponse<MediaConvertRecordV2VO>> listV2(
             @RequestParam(value = "platform", required = false) String platform,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -306,7 +311,7 @@ public class MediaConvertController {
         qw.orderByDesc(MediaConvertRecordV2::getCreateTime);
         Page<MediaConvertRecordV2> p = new Page<>(page, size);
         Page<MediaConvertRecordV2> result = recordV2Repository.page(p, qw);
-        PageResponse<MediaConvertRecordV2> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), result.getRecords());
+		PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
         return Result.success(resp);
     }
 

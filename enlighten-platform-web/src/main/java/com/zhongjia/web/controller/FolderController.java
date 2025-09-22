@@ -1,11 +1,12 @@
 package com.zhongjia.web.controller;
 
-import com.zhongjia.biz.entity.Folder;
 import com.zhongjia.biz.service.FolderService;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.vo.FolderVO;
+import com.zhongjia.web.mapper.FolderMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,6 +28,9 @@ public class FolderController {
 
     @Autowired
     private FolderService folderService;
+
+	@Autowired
+	private FolderMapper folderMapper;
 
     private UserContext.UserInfo requireUser() {
         UserContext.UserInfo info = UserContext.get();
@@ -58,9 +62,9 @@ public class FolderController {
 
     @GetMapping("/list")
     @Operation(summary = "按顺序查询文件夹列表", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<List<Folder>> listFolders() {
+	public Result<List<FolderVO>> listFolders() {
         Long userId = requireUser().userId();
-        return Result.success(folderService.listByUser(userId));
+		return Result.success(folderMapper.toVOList(folderService.listByUser(userId)));
     }
 
     @PostMapping("/sort")

@@ -8,6 +8,8 @@ import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.vo.RecycleBinItemVO;
+import com.zhongjia.web.mapper.RecycleBinItemMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,6 +30,9 @@ public class RecycleBinController {
     @Autowired
     private RecycleBinService recycleBinService;
 
+	@Autowired
+	private RecycleBinItemMapper recycleBinItemMapper;
+
     private UserContext.UserInfo requireUser() {
         UserContext.UserInfo info = UserContext.get();
         if (info == null || info.userId() == null) throw new BizException(ErrorCode.UNAUTHORIZED);
@@ -36,11 +41,11 @@ public class RecycleBinController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询回收站", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<PageResponse<RecycleBinItem>> pageRecycle(@RequestParam(defaultValue = "1") int page,
+	public Result<PageResponse<RecycleBinItemVO>> pageRecycle(@RequestParam(defaultValue = "1") int page,
                                                             @RequestParam(defaultValue = "10") int size) {
         Long userId = requireUser().userId();
         Page<RecycleBinItem> p = recycleBinService.page(userId, page, size);
-        return Result.success(PageResponse.of(page, size, p.getTotal(), p.getRecords()));
+		return Result.success(PageResponse.of(page, size, p.getTotal(), recycleBinItemMapper.toVOList(p.getRecords())));
     }
 
     @PostMapping("/restore")
