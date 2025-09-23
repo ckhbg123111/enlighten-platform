@@ -348,21 +348,35 @@ public class MediaConvertController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         UserContext.UserInfo user = requireUser();
-        LambdaQueryWrapper<MediaConvertRecordV2> qw = new LambdaQueryWrapper<MediaConvertRecordV2>()
-                .eq(MediaConvertRecordV2::getUserId, user.userId())
-                .eq(MediaConvertRecordV2::getDeleted, 0);
         if (platform != null && !platform.isEmpty()) {
             if (!MediaPlatform.isValid(platform)) {
                 return Result.error(400, "platform不合法");
             }
-            qw.eq(MediaConvertRecordV2::getPlatform, platform);
         }
-        qw.orderByDesc(MediaConvertRecordV2::getUpdateTime);
-        Page<MediaConvertRecordV2> p = new Page<>(page, size);
-        Page<MediaConvertRecordV2> result = recordV2Repository.page(p, qw);
+        Page<MediaConvertRecordV2> result = recordV2Service.pageRecords(user.userId(), platform, page, size);
 		PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
         return Result.success(resp);
     }
+
+	// v2) 删除：软删除
+	@DeleteMapping(path = "records_v2/{id}")
+	@Operation(summary = "删除媒体转换记录v2(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
+	public Result<Boolean> softDeleteV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
+		UserContext.UserInfo user = requireUser();
+		MediaConvertRecordV2Service.SoftDeleteResult r = recordV2Service.softDeleteById(user.userId(), id);
+		switch (r) {
+			case SUCCESS:
+				return Result.success(true);
+			case FORBIDDEN:
+				return Result.error(403, "无权限");
+			case NOT_FOUND:
+			case ALREADY_DELETED:
+				return Result.error(404, "记录不存在");
+			case FAILED:
+			default:
+				return Result.error(500, "删除失败");
+		}
+	}
 
     @Data
     @Schema(name = "ApplyTemplateReq", description = "文章套用模板请求")

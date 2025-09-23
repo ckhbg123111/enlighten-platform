@@ -1,6 +1,8 @@
 package com.zhongjia.biz.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.MediaConvertRecordV2;
 import com.zhongjia.biz.enums.MediaConvertStatus;
 import com.zhongjia.biz.mapper.MediaConvertRecordV2Mapper;
@@ -57,6 +59,40 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
                 .set(MediaConvertRecordV2::getStatus, MediaConvertStatus.FAILED.name())
                 .set(MediaConvertRecordV2::getOriginalText, originalText)
                 .set(MediaConvertRecordV2::getUpdateTime, LocalDateTime.now()));
+    }
+
+    @Override
+    public SoftDeleteResult softDeleteById(Long userId, Long id) {
+        MediaConvertRecordV2 exist = repository.getById(id);
+        if (exist == null) {
+            return SoftDeleteResult.NOT_FOUND;
+        }
+        if (!exist.getUserId().equals(userId)) {
+            return SoftDeleteResult.FORBIDDEN;
+        }
+        if (exist.getDeleted() != null && exist.getDeleted() == 1) {
+            return SoftDeleteResult.ALREADY_DELETED;
+        }
+        boolean ok = repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
+                .eq(MediaConvertRecordV2::getId, id)
+                .eq(MediaConvertRecordV2::getUserId, userId)
+                .set(MediaConvertRecordV2::getDeleted, 1)
+                .set(MediaConvertRecordV2::getDeleteTime, LocalDateTime.now())
+                .set(MediaConvertRecordV2::getUpdateTime, LocalDateTime.now()));
+        return ok ? SoftDeleteResult.SUCCESS : SoftDeleteResult.FAILED;
+    }
+
+    @Override
+    public Page<MediaConvertRecordV2> pageRecords(Long userId, String platform, int page, int size) {
+        LambdaQueryWrapper<MediaConvertRecordV2> qw = new LambdaQueryWrapper<MediaConvertRecordV2>()
+                .eq(MediaConvertRecordV2::getUserId, userId)
+                .eq(MediaConvertRecordV2::getDeleted, 0)
+                .orderByDesc(MediaConvertRecordV2::getUpdateTime);
+        if (platform != null && !platform.isEmpty()) {
+            qw.eq(MediaConvertRecordV2::getPlatform, platform);
+        }
+        Page<MediaConvertRecordV2> p = new Page<>(page, size);
+        return repository.page(p, qw);
     }
 }
 
