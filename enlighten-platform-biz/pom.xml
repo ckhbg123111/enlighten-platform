@@ -37,6 +37,13 @@
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
         </dependency>
 
+        <!-- 显式引入扩展包，确保 PaginationInnerInterceptor 可用 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
         <!-- WebFlux（用于 WebClient 非阻塞上游调用） -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
