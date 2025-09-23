@@ -250,18 +250,24 @@ public class MediaConvertController {
     @Operation(summary = "文章套用模板生成HTML", description = "传入文章与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<HtmlResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
         UserContext.UserInfo user = requireUser();
+        Long recordV2Id = 0L;
+        boolean recordGenList = req.getRecordId() != null;
+        if(recordGenList){
+            // 若传入记录ID，则计入进度
+            recordV2Id = recordV2Service.insertProcessingRecord(user.userId(), req.getRecordId(), "gzh");
+        }
         // 解析结构
         ArticleStructure structure = articleStructureService.parse(req.getEssay());
         // 渲染
         String html = templateApplyService.render(req.getTemplateId(), structure);
         // 若传入记录ID，尝试将原文与渲染结果写回对应记录
-        if (req.getRecordId() != null) {
+        if (recordGenList) {
             GzhArticle record = gzhArticleService.getById(req.getRecordId());
             if (record != null && (record.getDeleted() == null || record.getDeleted() == 0)
                     && record.getUserId() != null && record.getUserId().equals(user.userId())) {
                 // 使用 updateEditing 以便同时更新状态与最后编辑时间
                 try {
-                    gzhArticleService.updateEditing(
+                    boolean saved = gzhArticleService.updateEditing(
                             user.userId(),
                             record.getId(),
                             null,
@@ -271,8 +277,14 @@ public class MediaConvertController {
                             req.getEssay(), // originalText
                             html            // typesetContent
                     );
+                    if(!saved){
+                        recordV2Service.markFailed(recordV2Id, record.getOriginalText());
+                    }else{
+                        recordV2Service.markSuccess(recordV2Id, record.getOriginalText(), html);
+                    }
                 } catch (Exception ignored) {
                     // 按要求：记录不存在或更新失败都不影响正常返回
+                    recordV2Service.markFailed(recordV2Id, record.getOriginalText());
                 }
             }
         }
