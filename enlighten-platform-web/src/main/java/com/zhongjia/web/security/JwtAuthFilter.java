@@ -24,7 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
 
-    private static final String FIXED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwidXNlcm5hbWUiOiJ0ZXN0Iiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTUxMzczODUsImV4cCI6MTc1NTc0MjE4NX0.3dUWxRk7ze0kcixoi79OAzZaXi9A6jDNbXOsalyFeZU";
+    // Removed insecure FIXED_TOKEN bypass for production safety
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
@@ -44,15 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (auth != null && auth.startsWith("Bearer ")) {
             String token = auth.substring(7);
-            if (FIXED_TOKEN.equals(token)) {
-                UserContext.set(new UserContext.UserInfo(5L, "test", null, "USER"));
-                try {
-                    filterChain.doFilter(request, response);
-                } finally {
-                    UserContext.clear();
-                }
-                return;
-            }
+            // No fixed-token bypass; all tokens must be validated
             // 检查token是否在黑名单中
             if (tokenBlacklistService.isBlacklisted(token)) {
                 writeJson(response, 401, Result.error(401, "令牌已失效"), path);
@@ -99,5 +91,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
     }
 }
-
 
