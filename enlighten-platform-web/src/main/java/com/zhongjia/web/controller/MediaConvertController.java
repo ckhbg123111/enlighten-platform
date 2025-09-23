@@ -295,7 +295,7 @@ public class MediaConvertController {
             return Result.error(400, "记录内容为空");
         }
         // v2：转换前改为仅插入 PROCESSING 记录
-        Long recordV2Id = recordV2Service.insertOrUpdateProcessing(user.userId(), req.getRecordId(), "gzh");
+        Long recordV2Id = recordV2Service.insertProcessingRecord(user.userId(), req.getRecordId(), "gzh");
         // 解析结构
         try {
             ArticleStructure structure = articleStructureService.parse(record.getOriginalText());

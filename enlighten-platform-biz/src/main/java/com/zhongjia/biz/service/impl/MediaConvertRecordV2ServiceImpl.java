@@ -22,7 +22,7 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long insertOrUpdateProcessing(Long userId, Long externalId, String platform) {
+    public Long insertProcessingRecord(Long userId, Long externalId, String platform) {
         LocalDateTime now = LocalDateTime.now();
 
         MediaConvertRecordV2 po = new MediaConvertRecordV2();
