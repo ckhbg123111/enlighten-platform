@@ -44,6 +44,13 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
 
+        <!-- 3.5.9+ 分页解析拆分到 jsqlparser 模块，需要显式引入 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
         <!-- WebFlux（用于 WebClient 非阻塞上游调用） -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
