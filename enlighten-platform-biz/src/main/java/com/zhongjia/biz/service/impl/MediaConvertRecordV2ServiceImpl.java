@@ -25,7 +25,6 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
     public Long insertOrUpdateProcessing(Long userId, Long externalId, String platform) {
         LocalDateTime now = LocalDateTime.now();
 
-        // 基于唯一索引的 upsert 一次性插入/更新并返回主键ID
         MediaConvertRecordV2 po = new MediaConvertRecordV2();
         po.setUserId(userId);
         po.setExternalId(externalId);
@@ -34,26 +33,29 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
         po.setDeleted(0);
         po.setCreateTime(now);
         po.setUpdateTime(now);
-        int affected = mapper.upsertProcessing(po);
+        int affected = mapper.insertProcessing(po);
         if (affected <= 0 || po.getId() == null) {
-            throw new IllegalStateException("upsert 媒体转换记录失败");
+            throw new IllegalStateException("insert 媒体转换记录失败");
         }
         return po.getId();
     }
 
     @Override
-    public boolean markSuccess(Long id) {
+    public boolean markSuccess(Long id, String originalText, String generatedText) {
         return repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
                 .eq(MediaConvertRecordV2::getId, id)
                 .set(MediaConvertRecordV2::getStatus, MediaConvertStatus.SUCCESS.name())
+                .set(MediaConvertRecordV2::getOriginalText, originalText)
+                .set(MediaConvertRecordV2::getGeneratedText, generatedText)
                 .set(MediaConvertRecordV2::getUpdateTime, LocalDateTime.now()));
     }
 
     @Override
-    public boolean markFailed(Long id) {
+    public boolean markFailed(Long id, String originalText) {
         return repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
                 .eq(MediaConvertRecordV2::getId, id)
                 .set(MediaConvertRecordV2::getStatus, MediaConvertStatus.FAILED.name())
+                .set(MediaConvertRecordV2::getOriginalText, originalText)
                 .set(MediaConvertRecordV2::getUpdateTime, LocalDateTime.now()));
     }
 }

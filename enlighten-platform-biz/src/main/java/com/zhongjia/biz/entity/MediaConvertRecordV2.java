@@ -26,6 +26,12 @@ public class MediaConvertRecordV2 {
     /** 状态：PROCESSING/SUCCESS/FAILED */
     private String status;
 
+    /** 原文内容 */
+    private String originalText;
+
+    /** 生成内容 */
+    private String generatedText;
+
     /** 逻辑删除：0-未删除，1-已删除 */
     private Integer deleted;
 

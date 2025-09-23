@@ -9,10 +9,9 @@ import org.apache.ibatis.annotations.Options;
 @Mapper
 public interface MediaConvertRecordV2Mapper extends BaseMapper<MediaConvertRecordV2> {
     @Insert("INSERT INTO `media_convert_record_v2` (`user_id`,`external_id`,`platform`,`status`,`deleted`,`create_time`,`update_time`) "
-        + "VALUES (#{userId},#{externalId},#{platform},#{status},#{deleted},#{createTime},#{updateTime}) "
-        + "ON DUPLICATE KEY UPDATE `status`=VALUES(`status`), `update_time`=VALUES(`update_time`), `id`=LAST_INSERT_ID(`id`)")
+        + "VALUES (#{userId},#{externalId},#{platform},#{status},#{deleted},#{createTime},#{updateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    int upsertProcessing(MediaConvertRecordV2 po);
+    int insertProcessing(MediaConvertRecordV2 po);
 }
 
 

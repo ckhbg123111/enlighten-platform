@@ -18,6 +18,10 @@ public class MediaConvertRecordV2VO {
     private String platform;
     @Schema(description = "状态：PROCESSING/SUCCESS/FAILED")
     private String status;
+    @Schema(description = "原文内容")
+    private String originalText;
+    @Schema(description = "生成内容")
+    private String generatedText;
     @Schema(description = "是否删除：0否/1是")
     private Integer deleted;
     @Schema(description = "创建时间")

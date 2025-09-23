@@ -294,7 +294,7 @@ public class MediaConvertController {
         if (record.getOriginalText() == null || record.getOriginalText().isEmpty()) {
             return Result.error(400, "记录内容为空");
         }
-        // v2：转换前插入或更新记录为 PROCESSING
+        // v2：转换前改为仅插入 PROCESSING 记录
         Long recordV2Id = recordV2Service.insertOrUpdateProcessing(user.userId(), req.getRecordId(), "gzh");
         // 解析结构
         try {
@@ -314,17 +314,17 @@ public class MediaConvertController {
             );
             if (!saved) {
                 // 若更新失败，标记失败并返回
-                recordV2Service.markFailed(recordV2Id);
+                recordV2Service.markFailed(recordV2Id, record.getOriginalText());
                 return Result.error(500, "更新文章失败");
             }
-            // 更新状态成功
-            recordV2Service.markSuccess(recordV2Id);
+            // 更新状态成功，同时写入原文与生成内容
+            recordV2Service.markSuccess(recordV2Id, record.getOriginalText(), html);
             HtmlResp resp = new HtmlResp();
             resp.setHtml(html);
             return Result.success(resp);
         } catch (Exception e) {
-            // 更新状态失败
-            recordV2Service.markFailed(recordV2Id);
+            // 更新状态失败，同时保存原文
+            recordV2Service.markFailed(recordV2Id, record.getOriginalText());
             throw e;
         }
     }
