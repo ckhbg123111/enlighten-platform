@@ -247,55 +247,54 @@ public class MediaConvertController {
 
     // 4) 转公众号图文并套用模板：传入文章内容+模板ID，返回HTML
     @PostMapping(path = "apply_template", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "文章套用模板生成HTML", description = "传入文章与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Operation(summary = "文章套用模板生成HTML-文章原文和排版结果会落库，生成记录列表多一条记录", description = "传入文章与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<HtmlResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
         UserContext.UserInfo user = requireUser();
-        Long recordV2Id = 0L;
-        boolean recordGenList = req.getRecordId() != null;
-        if(recordGenList){
-            // 若传入记录ID，则计入进度
-            recordV2Id = recordV2Service.insertProcessingRecord(user.userId(), req.getRecordId(), "gzh");
+        // 查询记录
+        GzhArticle record = gzhArticleService.getById(req.getRecordId());// 确保存在且未删除
+        if (record == null || (record.getDeleted() != null && record.getDeleted() == 1)) {
+            return Result.error(404, "记录不存在");
         }
+
+        // v2：转换前改为仅插入 PROCESSING 记录
+        Long recordV2Id = recordV2Service.insertProcessingRecord(user.userId(), req.getRecordId(), "gzh");
         // 解析结构
-        ArticleStructure structure = articleStructureService.parse(req.getEssay());
-        // 渲染
-        String html = templateApplyService.render(req.getTemplateId(), structure);
-        // 若传入记录ID，尝试将原文与渲染结果写回对应记录
-        if (recordGenList) {
-            GzhArticle record = gzhArticleService.getById(req.getRecordId());
-            if (record != null && (record.getDeleted() == null || record.getDeleted() == 0)
-                    && record.getUserId() != null && record.getUserId().equals(user.userId())) {
-                // 使用 updateEditing 以便同时更新状态与最后编辑时间
-                try {
-                    boolean saved = gzhArticleService.updateEditing(
-                            user.userId(),
-                            record.getId(),
-                            null,
-                            null,
-                            null,
-                            null,
-                            req.getEssay(), // originalText
-                            html            // typesetContent
-                    );
-                    if(!saved){
-                        recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-                    }else{
-                        recordV2Service.markSuccess(recordV2Id, record.getOriginalText(), html);
-                    }
-                } catch (Exception ignored) {
-                    // 按要求：记录不存在或更新失败都不影响正常返回
-                    recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-                }
+        try {
+            ArticleStructure structure = articleStructureService.parse(req.getEssay());
+            // 渲染
+            String html = templateApplyService.render(req.getTemplateId(), structure);
+            // 将结果更新落库：typesetContent、状态为编辑中、最后编辑时间
+            boolean saved = gzhArticleService.updateEditing(
+                    user.userId(),
+                    record.getId(),
+                    null, // folderId 不变
+                    null, // name 不变
+                    null, // tag 不变
+                    null, // coverImageUrl 不变
+                    req.getEssay(), // 更新 originalText
+                    null  // 不更新 typesetContent，由用户自行保存
+            );
+            if (!saved) {
+                // 若更新失败，标记失败并返回
+                recordV2Service.markFailed(recordV2Id, record.getOriginalText());
+                return Result.error(500, "更新文章失败");
             }
+            // 更新状态成功，同时写入原文与生成内容
+            recordV2Service.markSuccess(recordV2Id, record.getOriginalText(), html);
+            HtmlResp resp = new HtmlResp();
+            resp.setHtml(html);
+            return Result.success(resp);
+        } catch (Exception e) {
+            // 更新状态失败，同时保存原文
+            recordV2Service.markFailed(recordV2Id, record.getOriginalText());
+            throw e;
         }
-        HtmlResp resp = new HtmlResp();
-        resp.setHtml(html);
-        return Result.success(resp);
     }
 
     // 4.1) 转公众号图文并套用模板：传入公众号内容记录ID+模板ID，返回HTML
     @PostMapping(path = "apply_template_by_record", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "文章套用模板生成HTML-通过记录ID", description = "传入公众号内容记录ID与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Deprecated
     public Result<HtmlResp> applyTemplateByRecord(@Valid @RequestBody ApplyTemplateByRecordReq req) {
         UserContext.UserInfo user = requireUser();
         // 查询记录
@@ -375,6 +374,7 @@ public class MediaConvertController {
         @NotNull
         private Long templateId;
         @Schema(description = "公众号记录ID，可为空。若存在则会回写原文与排版内容")
+        @NotNull
         private Long recordId;
         // hospital 和 department 已不再传递至上游，仅保留 essay 和 templateId
     }
