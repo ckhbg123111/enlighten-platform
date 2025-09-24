@@ -29,11 +29,15 @@ public class ArticleStructureServiceImpl implements ArticleStructureService {
     public ArticleStructure parse(String essay) {
         try {
             String body = toBody(essay);
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(upstreamUrl))
                 .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
+                .header("Content-Type", "application/json");
+            String traceId = org.slf4j.MDC.get("traceId");
+            if (traceId != null && !traceId.isEmpty()) {
+                builder.header("X-Trace-Id", traceId);
+            }
+            HttpRequest request = builder
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
             HttpResponse<String> resp = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));

@@ -16,6 +16,8 @@ public class MediaConvertTaskMessage {
     private String platform;
     /** 文章原文（apply_template直接传入）*/
     private String essay;
+    /** traceId 用于链路跟踪 */
+    private String traceId;
 }
 
 

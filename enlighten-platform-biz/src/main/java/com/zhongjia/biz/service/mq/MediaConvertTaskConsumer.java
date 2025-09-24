@@ -34,6 +34,10 @@ public class MediaConvertTaskConsumer implements RocketMQListener<String> {
         try {
             MediaConvertTaskMessage msg = objectMapper.readValue(message, MediaConvertTaskMessage.class);
             Long v2Id = msg.getRecordV2Id();
+            // 设定MDC traceId，便于下游带上请求头
+            if (msg.getTraceId() != null && !msg.getTraceId().isEmpty()) {
+                org.slf4j.MDC.put("traceId", msg.getTraceId());
+            }
 
             // 消费前先检查是否被取消
             if (cancelService.isCancelled(v2Id)) {
@@ -91,6 +95,9 @@ public class MediaConvertTaskConsumer implements RocketMQListener<String> {
             } catch (Exception ignore) {
                 // 忽略兜底失败
             }
+        } finally {
+            // 清理MDC，避免线程复用污染
+            org.slf4j.MDC.remove("traceId");
         }
     }
 }

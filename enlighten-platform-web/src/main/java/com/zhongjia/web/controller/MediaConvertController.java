@@ -273,6 +273,8 @@ public class MediaConvertController {
         msg.setUserId(user.userId());
         msg.setPlatform("gzh");
         msg.setEssay(req.getEssay());
+        String traceId = org.slf4j.MDC.get("traceId");
+        msg.setTraceId(traceId);
         mediaConvertTaskProducer.send(msg);
 
         StartResp resp = new StartResp();
