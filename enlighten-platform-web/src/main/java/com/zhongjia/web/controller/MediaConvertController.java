@@ -43,6 +43,9 @@ import com.zhongjia.biz.service.ArticleStructureService;
 import com.zhongjia.biz.service.TemplateApplyService;
 import com.zhongjia.biz.service.dto.ArticleStructure;
 import jakarta.validation.constraints.NotNull;
+import com.zhongjia.biz.service.mq.MediaConvertTaskProducer;
+import com.zhongjia.biz.service.mq.MediaConvertTaskMessage;
+import com.zhongjia.biz.service.MediaConvertCancelService;
 
 @RestController
 @Tag(name = "媒体内容转换")
@@ -75,6 +78,12 @@ public class MediaConvertController {
 
 	@Autowired
 	private MediaConvertRecordV2WebMapper recordV2WebMapper;
+
+    @Autowired
+    private MediaConvertTaskProducer mediaConvertTaskProducer;
+
+    @Autowired
+    private MediaConvertCancelService cancelService;
 
     // 上游调用与记录统一移至 Service 层
 
@@ -245,50 +254,30 @@ public class MediaConvertController {
         private String mediaCode; // 媒体唯一编码 uuid
     }
 
-    // 4) 转公众号图文并套用模板：传入文章内容+模板ID，返回HTML
+    // 4) 转公众号图文并套用模板：异步
     @PostMapping(path = "apply_template", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "文章套用模板生成HTML-文章原文和排版结果会落库，生成记录列表多一条记录", description = "传入文章与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<HtmlResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
+    @Operation(summary = "文章套用模板-异步", description = "立即返回记录ID，异步生成；支持打断与轮询", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<StartResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
         UserContext.UserInfo user = requireUser();
         // 查询记录
         GzhArticle record = gzhArticleService.getById(req.getRecordId());// 确保存在且未删除
         if (record == null || (record.getDeleted() != null && record.getDeleted() == 1)) {
             return Result.error(404, "记录不存在");
         }
-
-        // v2：转换前改为仅插入 PROCESSING 记录
+        // v2：仅插入 PROCESSING 记录并发送任务，立即返回ID
         Long recordV2Id = recordV2Service.insertProcessingRecord(user.userId(), req.getRecordId(), "gzh");
-        // 解析结构
-        try {
-            ArticleStructure structure = articleStructureService.parse(req.getEssay());
-            // 渲染
-            String html = templateApplyService.render(req.getTemplateId(), structure);
-            // 将结果更新落库：typesetContent、状态为编辑中、最后编辑时间
-            boolean saved = gzhArticleService.updateEditing(
-                    user.userId(),
-                    record.getId(),
-                    null, // folderId 不变
-                    null, // name 不变
-                    null, // tag 不变
-                    null, // coverImageUrl 不变
-                    req.getEssay(), // 更新 originalText
-                    null  // 不更新 typesetContent，由用户自行保存
-            );
-            if (!saved) {
-                // 若更新失败，标记失败并返回
-                recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-                return Result.error(500, "更新文章失败");
-            }
-            // 更新状态成功，同时写入原文与生成内容
-            recordV2Service.markSuccess(recordV2Id, record.getOriginalText(), html);
-            HtmlResp resp = new HtmlResp();
-            resp.setHtml(html);
-            return Result.success(resp);
-        } catch (Exception e) {
-            // 更新状态失败，同时保存原文
-            recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-            throw e;
-        }
+        MediaConvertTaskMessage msg = new MediaConvertTaskMessage();
+        msg.setRecordV2Id(recordV2Id);
+        msg.setExternalId(req.getRecordId());
+        msg.setTemplateId(req.getTemplateId());
+        msg.setUserId(user.userId());
+        msg.setPlatform("gzh");
+        msg.setEssay(req.getEssay());
+        mediaConvertTaskProducer.send(msg);
+
+        StartResp resp = new StartResp();
+        resp.setId(recordV2Id);
+        return Result.success(resp);
     }
 
     // 4.1) 转公众号图文并套用模板：传入公众号内容记录ID+模板ID，返回HTML
@@ -358,6 +347,44 @@ public class MediaConvertController {
         return Result.success(resp);
     }
 
+	// v2) 查询单条记录（轮询）
+	@GetMapping(path = "records_v2/{id}")
+	@Operation(summary = "查询单条媒体转换记录v2", security = {@SecurityRequirement(name = "bearer-jwt")})
+	public Result<MediaConvertRecordV2VO> getOneV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
+		UserContext.UserInfo user = requireUser();
+		MediaConvertRecordV2 record = recordV2Service.getById(id);
+		if (record == null || record.getDeleted() != null && record.getDeleted() == 1) {
+			return Result.error(404, "记录不存在");
+		}
+		if (!record.getUserId().equals(user.userId())) {
+			return Result.error(403, "无权限");
+		}
+		return Result.success(recordV2WebMapper.toVO(record));
+	}
+
+	// v2) 打断任务
+	@PostMapping(path = "records_v2/{id}/cancel")
+	@Operation(summary = "打断媒体转换任务v2", description = "PROCESSING状态下设置取消标记，并标记为已打断", security = {@SecurityRequirement(name = "bearer-jwt")})
+	public Result<Boolean> cancelV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
+		UserContext.UserInfo user = requireUser();
+		MediaConvertRecordV2 record = recordV2Service.getById(id);
+		if (record == null || record.getDeleted() != null && record.getDeleted() == 1) {
+			return Result.error(404, "记录不存在");
+		}
+		if (!record.getUserId().equals(user.userId())) {
+			return Result.error(403, "无权限");
+		}
+		if (!"PROCESSING".equals(record.getStatus())) {
+			return Result.success(true);
+		}
+		cancelService.cancel(id);
+		String original = null;
+		GzhArticle gzh = gzhArticleService.getById(record.getExternalId());
+		if (gzh != null) original = gzh.getOriginalText();
+		recordV2Service.markInterrupted(id, original);
+		return Result.success(true);
+	}
+
 	// v2) 删除：软删除
 	@DeleteMapping(path = "records_v2/{id}")
 	@Operation(summary = "删除媒体转换记录v2(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
@@ -409,6 +436,12 @@ public class MediaConvertController {
     public static class HtmlResp {
         private String html;
     }
+
+	@Data
+	@Schema(name = "StartResp", description = "异步任务启动响应")
+	public static class StartResp {
+		private Long id;
+	}
 }
 
 

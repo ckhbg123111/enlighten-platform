@@ -6,7 +6,8 @@ package com.zhongjia.biz.enums;
 public enum MediaConvertStatus {
     PROCESSING,
     SUCCESS,
-    FAILED
+    FAILED,
+    INTERRUPTED
 }
 
 

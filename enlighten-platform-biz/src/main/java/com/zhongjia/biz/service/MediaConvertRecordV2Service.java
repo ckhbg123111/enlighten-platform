@@ -10,6 +10,12 @@ public interface MediaConvertRecordV2Service {
     /** 将记录更新为失败，并写入原文 */
     boolean markFailed(Long id, String originalText);
 
+    /** 将记录更新为已打断，不落库生成内容，仅保存原文 */
+    boolean markInterrupted(Long id, String originalText);
+
+    /** 查询记录（用于轮询与校验）*/
+    com.zhongjia.biz.entity.MediaConvertRecordV2 getById(Long id);
+
     enum SoftDeleteResult {
         SUCCESS,
         NOT_FOUND,

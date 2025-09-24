@@ -62,6 +62,15 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
     }
 
     @Override
+    public boolean markInterrupted(Long id, String originalText) {
+        return repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
+                .eq(MediaConvertRecordV2::getId, id)
+                .set(MediaConvertRecordV2::getStatus, MediaConvertStatus.INTERRUPTED.name())
+                .set(MediaConvertRecordV2::getOriginalText, originalText)
+                .set(MediaConvertRecordV2::getUpdateTime, LocalDateTime.now()));
+    }
+
+    @Override
     public SoftDeleteResult softDeleteById(Long userId, Long id) {
         MediaConvertRecordV2 exist = repository.getById(id);
         if (exist == null) {
@@ -93,6 +102,11 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
         }
         Page<MediaConvertRecordV2> p = new Page<>(page, size);
         return repository.page(p, qw);
+    }
+
+    @Override
+    public MediaConvertRecordV2 getById(Long id) {
+        return repository.getById(id);
     }
 }
 
