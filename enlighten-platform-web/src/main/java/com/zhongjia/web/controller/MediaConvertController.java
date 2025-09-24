@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhongjia.biz.entity.GzhArticle;
 import com.zhongjia.biz.entity.MediaConvertRecord;
 import com.zhongjia.biz.enums.MediaPlatform;
+import com.zhongjia.biz.enums.MediaConvertStatus;
 import com.zhongjia.biz.service.GzhArticleService;
 import com.zhongjia.biz.entity.MediaConvertRecordV2;
 import com.zhongjia.biz.service.MediaConvertRecordV2Service;
@@ -336,6 +337,7 @@ public class MediaConvertController {
     @Operation(summary = "查询媒体转换记录v2", description = "根据平台查询当前用户的转换记录（可分页，platform 可为空）", security = {@SecurityRequirement(name = "bearer-jwt")})
 	public Result<PageResponse<MediaConvertRecordV2VO>> listV2(
             @RequestParam(value = "platform", required = false) String platform,
+            @RequestParam(value = "statuses", required = false) java.util.List<MediaConvertStatus> statuses,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         UserContext.UserInfo user = requireUser();
@@ -344,7 +346,7 @@ public class MediaConvertController {
                 return Result.error(400, "platform不合法");
             }
         }
-        Page<MediaConvertRecordV2> result = recordV2Service.pageRecords(user.userId(), platform, page, size);
+        Page<MediaConvertRecordV2> result = recordV2Service.pageRecords(user.userId(), platform, statuses, page, size);
 		PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
         return Result.success(resp);
     }

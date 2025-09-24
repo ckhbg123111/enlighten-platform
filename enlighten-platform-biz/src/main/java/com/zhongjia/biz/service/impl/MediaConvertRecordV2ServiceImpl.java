@@ -92,13 +92,17 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
     }
 
     @Override
-    public Page<MediaConvertRecordV2> pageRecords(Long userId, String platform, int page, int size) {
+    public Page<MediaConvertRecordV2> pageRecords(Long userId, String platform, java.util.List<com.zhongjia.biz.enums.MediaConvertStatus> statuses, int page, int size) {
         LambdaQueryWrapper<MediaConvertRecordV2> qw = new LambdaQueryWrapper<MediaConvertRecordV2>()
                 .eq(MediaConvertRecordV2::getUserId, userId)
                 .eq(MediaConvertRecordV2::getDeleted, 0)
                 .orderByDesc(MediaConvertRecordV2::getUpdateTime);
         if (platform != null && !platform.isEmpty()) {
             qw.eq(MediaConvertRecordV2::getPlatform, platform);
+        }
+        if (statuses != null && !statuses.isEmpty()) {
+            java.util.List<String> statusNames = statuses.stream().map(Enum::name).toList();
+            qw.in(MediaConvertRecordV2::getStatus, statusNames);
         }
         Page<MediaConvertRecordV2> p = new Page<>(page, size);
         return repository.page(p, qw);

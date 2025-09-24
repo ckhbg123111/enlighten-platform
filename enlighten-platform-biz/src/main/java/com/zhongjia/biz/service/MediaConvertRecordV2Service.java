@@ -33,7 +33,7 @@ public interface MediaConvertRecordV2Service {
      * 分页查询当前用户的记录（可选按平台过滤），按更新时间倒序
      */
     com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.zhongjia.biz.entity.MediaConvertRecordV2> pageRecords(
-            Long userId, String platform, int page, int size);
+            Long userId, String platform, java.util.List<com.zhongjia.biz.enums.MediaConvertStatus> statuses, int page, int size);
 }
 
 
