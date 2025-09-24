@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -260,6 +262,10 @@ public class MediaConvertController {
     @Operation(summary = "文章套用模板-异步", description = "立即返回记录ID，异步生成；支持打断与轮询", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<StartResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
         UserContext.UserInfo user = requireUser();
+        if(Objects.isNull(req.getRecordId())){
+            Long initial = gzhArticleService.createInitial(user.userId(), null, null, null, null, req.getEssay(), null);
+            req.setRecordId(initial);
+        }
         // 查询记录
         GzhArticle record = gzhArticleService.getById(req.getRecordId());// 确保存在且未删除
         if (record == null || (record.getDeleted() != null && record.getDeleted() == 1)) {
@@ -419,7 +425,6 @@ public class MediaConvertController {
         @NotNull
         private Long templateId;
         @Schema(description = "公众号记录ID，可为空。若存在则会回写原文与排版内容")
-        @NotNull
         private Long recordId;
         // hospital 和 department 已不再传递至上游，仅保留 essay 和 templateId
     }
