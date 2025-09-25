@@ -53,8 +53,8 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
                     html.append(replace(single, "{PLACEHOLDER}", escape(section.getSection_title())));
                 }
                 if (section.getSection_paragraphs() != null) {
+                    StringBuilder sectionParagraph = new StringBuilder();
                     for (ArticleStructure.Paragraph p : section.getSection_paragraphs()) {
-                        StringBuilder sectionParagraph = new StringBuilder();
                         if (p.getParagraph_title() != null && !p.getParagraph_title().isEmpty()) {
                             String numbered = nullToEmpty(template.getNumberedTitle());
                             sectionParagraph.append(replace(numbered, "{PLACEHOLDER}", escape(p.getParagraph_title())));
@@ -68,10 +68,10 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
                             String imgTag = "<img src=\"" + escapeAttr(p.getImage_url()) + "\" alt=\"\"/>";
                             sectionParagraph.append(replace(imgTpl, "{PLACEHOLDER}", imgTag));
                         }
-                        if(StringUtils.isNotBlank(sectionParagraph.toString())) {
-                            String blockCardTpl = nullToEmpty(template.getBlockCard());
-                            html.append(replace(blockCardTpl, "{PLACEHOLDER}", escape(sectionParagraph.toString())));
-                        }
+                    }
+                    if (StringUtils.isNotBlank(sectionParagraph.toString())) {
+                        String blockCardTpl = nullToEmpty(template.getBlockCard());
+                        html.append(replace(blockCardTpl, "{PLACEHOLDER}", escape(sectionParagraph.toString())));
                     }
                 }
             }
