@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhongjia.biz.entity.GzhArticle;
 import com.zhongjia.biz.entity.MediaConvertRecord;
 import com.zhongjia.biz.entity.MediaConvertRecordV2;
+import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.enums.MediaConvertStatus;
 import com.zhongjia.biz.enums.MediaPlatform;
 import com.zhongjia.biz.repository.MediaConvertRecordRepository;
+import com.zhongjia.biz.repository.TypesettingTemplateRepository;
 import com.zhongjia.biz.service.*;
 import com.zhongjia.biz.service.dto.ArticleStructure;
 import com.zhongjia.biz.service.dto.UpstreamResult;
@@ -77,6 +79,10 @@ public class MediaConvertController {
 
     @Autowired
     private MediaConvertCancelService cancelService;
+
+    @Autowired
+    private TypesettingTemplateRepository tplRespository;
+
 
     // 上游调用与记录统一移至 Service 层
 
@@ -276,6 +282,22 @@ public class MediaConvertController {
         StartResp resp = new StartResp();
         resp.setId(recordV2Id);
         return Result.success(resp);
+    }
+
+    record ReplaceSampleReq(ArticleStructure context, Long tplId){};
+
+    @PostMapping(path = "replace_sample")
+    @Deprecated
+    public Result<String> replaceSample(@RequestBody ReplaceSampleReq req) {
+        String html = templateApplyService.render(req.tplId, req.context);
+        TypesettingTemplate t = new  TypesettingTemplate();
+        t.setId(req.tplId);
+        t.setSample(html);
+        t.setCreateTime(LocalDateTime.now());
+        t.setUpdateTime(LocalDateTime.now());
+        t.setDeleted(0);
+        tplRespository.updateById(t);
+        return Result.success("成功");
     }
 
     // 4.1) 转公众号图文并套用模板：传入公众号内容记录ID+模板ID，返回HTML
