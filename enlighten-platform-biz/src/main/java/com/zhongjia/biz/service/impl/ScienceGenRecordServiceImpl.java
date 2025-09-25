@@ -1,6 +1,5 @@
 package com.zhongjia.biz.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.zhongjia.biz.entity.ScienceGenRecord;
 import com.zhongjia.biz.repository.ScienceGenRecordRepository;
 import com.zhongjia.biz.service.ScienceGenRecordService;
@@ -13,14 +12,8 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import reactor.core.publisher.Flux;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -33,14 +26,15 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
 
     @Autowired
     private HttpClient httpClient;
-    
+
     @Autowired
     private WebClient webClient;
-    @org.springframework.beans.factory.annotation.Value("${app.upstream.science-generator-url:http://192.168.1.65:8000/science-generator}")
+    @Value("${app.upstream.url:http://192.168.1.65:8000}")
     private String upstreamUrl;
 
-    @Value("${app.upstream.science-regenerator-url:http://192.168.1.65:8000/science-regenerator}")
-    private String regenerateUrl;
+    private static final String SCIENCE_GENERATOR_PATH = "/science-generator_o";
+
+    private static final String REGENERATE_PATH = "/science-regenerator_o";
 
     @Override
     public String streamGenerate(Long userId, Long tenantId, String code, String upstreamBody, Consumer<String> writeLine) {
@@ -58,7 +52,7 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
             final StringBuilder carry = new StringBuilder();
 
             webClient.post()
-                .uri(upstreamUrl)
+                .uri(upstreamUrl + SCIENCE_GENERATOR_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header("X-Trace-Id", traceId == null ? "" : traceId)
@@ -125,7 +119,7 @@ public class ScienceGenRecordServiceImpl implements ScienceGenRecordService {
             final StringBuilder carry2 = new StringBuilder();
 
             webClient.post()
-                .uri(regenerateUrl)
+                .uri(upstreamUrl + REGENERATE_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header("X-Trace-Id", traceId2 == null ? "" : traceId2)

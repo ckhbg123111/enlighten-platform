@@ -38,18 +38,20 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     
     @Autowired
     private HttpClient httpClient;
-    
-    @Value("${app.upstream.dh-generate-url:http://frp5.mmszxc.xin:57599/dh/generate}")
-    private String dhGenerateUrl;
-    
-    @Value("${app.upstream.dh-status-url:http://frp5.mmszxc.xin:57599/dh/status}")
-    private String dhStatusUrl;
-    
-    @Value("${app.upstream.subtitle-burn-url:http://localhost:8081/api/subtitles/burn-url-srt/async}")
-    private String subtitleBurnUrl;
-    
-    @Value("${app.upstream.subtitle-status-url:http://localhost:8081/api/subtitles/task}")
-    private String subtitleStatusUrl;
+
+    @Value("${app.upstream.url}")
+    private String upstreamUrl;
+
+    @Value("${app.subtitle.fusion.url}")
+    private String subtitleFusionUrl;
+
+    private static final String DH_GENERATE_PATH = "/dh/generate";
+
+    private static final String DH_STATUS_PATH = "/dh/status";
+
+    private static final String SUBTITLES_BURN_PATH = "/api/subtitles/burn-url-srt/async";
+
+    private static final String SUBTITLES_STATUS_PATH = "/api/subtitles/task";
     
     @Value("${app.upstream.subtitle-token:}")
     private String subtitleToken;
@@ -270,13 +272,13 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         String body = objectMapper.writeValueAsString(request);
         
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(dhGenerateUrl))
+                .uri(URI.create(upstreamUrl + DH_GENERATE_PATH))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
         // 打印请求日志
-        log.info("调用数字人生成接口 - URL: {}, Body: {}", dhGenerateUrl, body);
+        log.info("调用数字人生成接口 - URL: {}, Body: {}", upstreamUrl + DH_GENERATE_PATH, body);
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         
         if (response.statusCode() != 200) {
@@ -288,7 +290,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     }
 
     private DigitalHumanStatusResponse callDhStatus(String taskId, Long userId) throws Exception {
-        String statusUrl = dhStatusUrl + "/" + taskId;
+        String statusUrl = upstreamUrl + DH_STATUS_PATH + "/" + taskId;
         
         // 构建表单数据
         String formData = "user_id=" + userId;
@@ -336,7 +338,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
         bodyBuilder.append("--").append(boundary).append("--\r\n");
         
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(subtitleBurnUrl))
+                .uri(URI.create(subtitleFusionUrl + SUBTITLES_BURN_PATH))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
                 .POST(HttpRequest.BodyPublishers.ofString(bodyBuilder.toString(), StandardCharsets.UTF_8));
@@ -356,7 +358,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     
     private SubtitleBurnResponse callSubtitleStatus(String taskId) throws Exception {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(subtitleStatusUrl + "/" + taskId))
+                .uri(URI.create(subtitleFusionUrl + SUBTITLES_STATUS_PATH + "/" + taskId))
                 .timeout(Duration.ofSeconds(30))
                 .GET();
         if (subtitleToken != null && !subtitleToken.isBlank()) {

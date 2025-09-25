@@ -4,6 +4,7 @@ import com.zhongjia.biz.entity.FillInRecord;
 import com.zhongjia.biz.repository.FillInRecordRepository;
 import com.zhongjia.biz.service.FillInRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,8 +33,11 @@ public class FillInRecordServiceImpl implements FillInRecordService {
     
     @Autowired
     private WebClient webClient;
-    @org.springframework.beans.factory.annotation.Value("${app.upstream.fill-in-url:http://192.168.1.65:8000/fill_in}")
+
+    @Value("${app.upstream.url}")
     private String upstreamUrl;
+
+    private static final String fillInPath = "/fill_in";
 
     @Override
     public String streamFillIn(Long userId, Long tenantId, String content, java.util.function.Consumer<String> writeLine) {
@@ -51,7 +55,7 @@ public class FillInRecordServiceImpl implements FillInRecordService {
             final StringBuilder carry = new StringBuilder();
 
             webClient.post()
-                .uri(upstreamUrl)
+                .uri(upstreamUrl + fillInPath)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header("X-Trace-Id", traceId == null ? "" : traceId)

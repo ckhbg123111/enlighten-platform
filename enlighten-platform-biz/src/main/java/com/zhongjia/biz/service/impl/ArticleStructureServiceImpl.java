@@ -20,8 +20,10 @@ public class ArticleStructureServiceImpl implements ArticleStructureService {
     @Autowired
     private HttpClient httpClient;
 
-    @Value("${app.upstream.get-article-structure-url:http://192.168.1.65:8000/get_article_structure}")
+    @Value("${app.upstream.url}")
     private String upstreamUrl;
+
+    private static final String ARTICLE_STRUCTURE = "/get_article_structure";
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -30,7 +32,7 @@ public class ArticleStructureServiceImpl implements ArticleStructureService {
         try {
             String body = toBody(essay);
             HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .uri(URI.create(upstreamUrl))
+                .uri(URI.create(upstreamUrl + ARTICLE_STRUCTURE))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "application/json");
             String traceId = org.slf4j.MDC.get("traceId");

@@ -17,12 +17,7 @@ import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -42,11 +37,12 @@ public class DhModelServiceImpl implements DhModelService {
     @Autowired
     private WebClient webClient;
 
-    @Value("${app.upstream.dh-models-url:http://127.0.0.1:57599/dh/models}")
-    private String dhModelsUrl;
+    @Value("${app.upstream.url}")
+    private String upstreamUrl;
 
-    @Value("${app.upstream.dh-train-url:http://127.0.0.1:57599/dh/train}")
-    private String dhTrainUrl;
+    private static final String DH_MODELS_PATH = "/dh/models";
+
+    private static final String DH_TRAIN_PATH = "/dh/train";
 
     @Value("${app.dh.default-models:}")
     private String defaultModels;
@@ -113,7 +109,7 @@ public class DhModelServiceImpl implements DhModelService {
                 mb.part("user_id", String.valueOf(userId));
 
                 String upstreamBody = webClient.method(HttpMethod.GET)
-                        .uri(dhModelsUrl)
+                        .uri(upstreamUrl + DH_MODELS_PATH)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .body(BodyInserters.fromMultipartData(mb.build()))
                         .retrieve()
@@ -179,7 +175,7 @@ public class DhModelServiceImpl implements DhModelService {
             String traceId = org.slf4j.MDC.get("traceId");
 
             String body = webClient.post()
-                    .uri(dhTrainUrl)
+                    .uri(upstreamUrl + DH_TRAIN_PATH)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .headers(h -> { if (traceId != null) h.add("X-Trace-Id", traceId); })
                     .body(BodyInserters.fromMultipartData(mb.build()))

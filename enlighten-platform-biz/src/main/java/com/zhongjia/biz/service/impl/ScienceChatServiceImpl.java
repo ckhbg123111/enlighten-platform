@@ -47,8 +47,10 @@ public class ScienceChatServiceImpl implements ScienceChatService {
     @Autowired
     private WebClient webClient;
 
-    @Value("${app.upstream.science-chat-url:http://192.168.1.65:8000/science-chat}")
+    @Value("${app.upstream.url}")
     private String upstreamUrl;
+
+    private static final String UPSTREAM_CHAT_PATH = "/science-chat";
 
     @Value("${app.chat.history-limit:10}")
     private int defaultHistoryLimit;
@@ -88,7 +90,7 @@ public class ScienceChatServiceImpl implements ScienceChatService {
             final StringBuilder carry = new StringBuilder();
 
             webClient.post()
-                .uri(upstreamUrl)
+                .uri(upstreamUrl + UPSTREAM_CHAT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header("X-Trace-Id", traceId == null ? "" : traceId)

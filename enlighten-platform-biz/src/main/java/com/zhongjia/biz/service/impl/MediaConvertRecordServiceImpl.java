@@ -8,6 +8,7 @@ import com.zhongjia.biz.service.UserService;
 import com.zhongjia.biz.service.dto.UpstreamResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -31,14 +32,14 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
     private UserService userService;
     private static final ObjectMapper JSON = new ObjectMapper();
 
-    @org.springframework.beans.factory.annotation.Value("${app.upstream.convert2media-url:http://192.168.1.65:8000/convert2media}")
+    @Value("${app.upstream.url}")
     private String upstreamUrl;
 
-    @org.springframework.beans.factory.annotation.Value("${app.upstream.convert2gzh-re-url:http://192.168.1.65:8000/convert2gzh_re}")
-    private String upstreamGzhReUrl;
+    private static final String CONVERT2MEDIA = "/convert2media";
 
-    @org.springframework.beans.factory.annotation.Value("${app.upstream.convert2gzh-url:http://192.168.1.65:8000/convert2gzh}")
-    private String upstreamGzhUrl;
+    private static final String GZH_RE_GEN = "/convert2gzh_re";
+
+    private static final String GZH_GEN = "/convert2gzh";
 
     @Override
     public UpstreamResult convertCommon(Long userId, Long tenantId, String mediaCode, String essayCode, String content, String platform) {
@@ -158,7 +159,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             "\"platform\":\"" + escapeJson(platform) + "\"" +
             "}";
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(upstreamUrl))
+            .uri(URI.create(upstreamUrl + CONVERT2MEDIA))
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json")
             .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
@@ -183,7 +184,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
             "\"department\":\"" + escapeJson(department) + "\"" +
             "}";
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(upstreamGzhReUrl))
+            .uri(URI.create(upstreamUrl + GZH_RE_GEN))
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json")
             .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
@@ -199,7 +200,7 @@ public class MediaConvertRecordServiceImpl implements MediaConvertRecordService 
     private String callUpstreamGzh(String contentJson) throws Exception {
         String body = contentJson;
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(upstreamGzhUrl))
+            .uri(URI.create(upstreamUrl + GZH_GEN))
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json")
             .header("X-Trace-Id", org.slf4j.MDC.get("traceId"))
