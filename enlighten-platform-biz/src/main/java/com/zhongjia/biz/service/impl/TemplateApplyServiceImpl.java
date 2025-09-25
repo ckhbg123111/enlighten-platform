@@ -94,7 +94,11 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
     private String nullToEmpty(String s) { return s == null ? "" : s; }
     private String safe(String s) { return s == null ? "" : s; }
     private String replace(String src, String token, String val) { return src == null ? "" : src.replace(token, val); }
-    private String escape(String s) { return s == null ? "" : s.replace("<", "&lt;").replace(">", "&gt;"); }
+
+    private String escape(String s) {
+//        return s == null ? "" : s.replace("<", "&lt;").replace(">", "&gt;");
+        return s;
+    }
     private String escapeAttr(String s) { return s == null ? "" : s.replace("\"", "&quot;"); }
 }
 
