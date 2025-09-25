@@ -2,7 +2,7 @@ package com.zhongjia.web.mapper;
 
 import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.entity.TypesettingMaterial;
-import com.zhongjia.web.vo.TypesettingTemplateVO;
+import com.zhongjia.web.vo.TypesettingTemplateInfoVO;
 import com.zhongjia.web.vo.TypesettingMaterialVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,11 @@ public class TypesettingMapper {
     /**
      * 模板实体转VO
      */
-    public TypesettingTemplateVO toTemplateVO(TypesettingTemplate template) {
+    public TypesettingTemplateInfoVO toTemplateVO(TypesettingTemplate template) {
         if (template == null) {
             return null;
         }
-        TypesettingTemplateVO vo = new TypesettingTemplateVO();
+        TypesettingTemplateInfoVO vo = new TypesettingTemplateInfoVO();
         BeanUtils.copyProperties(template, vo);
         return vo;
     }

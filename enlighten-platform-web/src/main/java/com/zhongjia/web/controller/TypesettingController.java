@@ -11,7 +11,7 @@ import com.zhongjia.web.security.UserContext;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
-import com.zhongjia.web.vo.TypesettingTemplateVO;
+import com.zhongjia.web.vo.TypesettingTemplateInfoVO;
 import com.zhongjia.web.vo.TypesettingMaterialVO;
 import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.web.mapper.TypesettingMapper;
@@ -50,7 +50,7 @@ public class TypesettingController {
      */
     @GetMapping("/templates")
     @Operation(summary = "分页查询模板列表", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<PageResponse<TypesettingTemplateVO>> getTemplates(
+    public Result<PageResponse<TypesettingTemplateInfoVO>> getTemplates(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") int page,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") int size) {
         
@@ -65,11 +65,11 @@ public class TypesettingController {
                 user.getHospital(), user.getDepartment(), page, size);
         
         // 转换为VO
-        List<TypesettingTemplateVO> voList = templatePage.getRecords().stream()
+        List<TypesettingTemplateInfoVO> voList = templatePage.getRecords().stream()
                 .map(typesettingMapper::toTemplateVO)
                 .collect(Collectors.toList());
         
-        PageResponse<TypesettingTemplateVO> resp = PageResponse.of(page, size, templatePage.getTotal(), voList);
+        PageResponse<TypesettingTemplateInfoVO> resp = PageResponse.of(page, size, templatePage.getTotal(), voList);
         return Result.success(resp);
     }
 
