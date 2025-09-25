@@ -26,6 +26,9 @@ public class MediaConvertRecordV2 {
     /** 状态：PROCESSING/SUCCESS/FAILED */
     private String status;
 
+    /** 标题 */
+    private String title;
+
     /** 原文内容 */
     private String originalText;
 

@@ -102,6 +102,12 @@ public class TypesettingTemplate {
     private String sample;
     
     /**
+     * 标题样例
+     */
+    @TableField("title_sample")
+    private String titleSample;
+    
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
