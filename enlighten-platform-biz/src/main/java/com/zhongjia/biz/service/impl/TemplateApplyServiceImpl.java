@@ -40,7 +40,9 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         // 引言
         if (structure.getIntroduction() != null && structure.getIntroduction().getText() != null) {
             String textTpl = nullToEmpty(template.getText());
-            html.append(replace(textTpl, "{PLACEHOLDER}", escape(structure.getIntroduction().getText())));
+            String textSection = replace(textTpl, "{PLACEHOLDER}", escape(structure.getIntroduction().getText()));
+            String textCardTpl = nullToEmpty(template.getText());
+            html.append(replace(textCardTpl, "{PLACEHOLDER}", escape(textSection)));
         }
 
         // sections
