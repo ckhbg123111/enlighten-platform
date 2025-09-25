@@ -190,11 +190,13 @@ public class VideoGenerationController {
      */
     @GetMapping("/tasks")
     @Operation(summary = "获取用户的视频任务列表", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<java.util.List<VideoStatusResponse>> getUserTasks() {
+    public Result<java.util.List<VideoStatusResponse>> getUserTasks(
+            @RequestParam(value = "statuses", required = false) java.util.List<String> statuses) {
         UserContext.UserInfo user = requireUser();
         
         try {
-            java.util.List<com.zhongjia.biz.entity.VideoGenerationTask> tasks = videoGenerationMQService.listTasksByUser(user.userId());
+            java.util.List<com.zhongjia.biz.entity.VideoGenerationTask> tasks =
+                    videoGenerationMQService.listTasksByUserAndStatuses(user.userId(), statuses);
             java.util.List<VideoStatusResponse> list = new java.util.ArrayList<>(tasks.size());
             for (com.zhongjia.biz.entity.VideoGenerationTask t : tasks) {
                 VideoStatusResponse dto = new VideoStatusResponse()

@@ -63,6 +63,16 @@ public class VideoGenerationMQService {
     public java.util.List<VideoGenerationTask> listTasksByUser(Long userId) {
         return taskRepository.findByUser(userId);
     }
+
+    /**
+     * 按用户+状态查询任务列表（statuses 为空或空列表表示不限）
+     */
+    public java.util.List<VideoGenerationTask> listTasksByUserAndStatuses(Long userId, java.util.List<String> statuses) {
+        if (statuses == null || statuses.isEmpty()) {
+            return taskRepository.findByUser(userId);
+        }
+        return taskRepository.findByUserAndStatuses(userId, statuses);
+    }
     
     /**
      * 手动重试任务 (管理员功能)
