@@ -3,26 +3,26 @@ package com.zhongjia.web.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhongjia.biz.entity.GzhArticle;
 import com.zhongjia.biz.service.GzhArticleService;
-import com.zhongjia.web.mapper.GzhArticleMapper;
-import com.zhongjia.web.vo.GzhArticleVO;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
+import com.zhongjia.web.mapper.GzhArticleMapper;
 import com.zhongjia.web.security.UserContext;
+import com.zhongjia.web.vo.GzhArticleVO;
 import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.web.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +34,8 @@ public class GzhContentController {
     @Autowired
     private GzhArticleService articleService;
 
-	@Autowired
-	private GzhArticleMapper gzhArticleMapper;
+    @Autowired
+    private GzhArticleMapper gzhArticleMapper;
 
     private UserContext.UserInfo requireUser() {
         UserContext.UserInfo info = UserContext.get();
@@ -87,9 +87,9 @@ public class GzhContentController {
         return Result.success(articleService.batchMoveToFolder(userId, req.getIds(), req.getFolderId()));
     }
 
-	@GetMapping("/article/page")
-	@Operation(summary = "分页查询文章（未删除）", security = {@SecurityRequirement(name = "bearer-jwt")})
-	public Result<PageResponse<GzhArticleVO>> pageArticles(
+    @GetMapping("/article/page")
+    @Operation(summary = "分页查询文章（未删除）", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<PageResponse<GzhArticleVO>> pageArticles(
             @RequestParam(required = false) Long folderId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String tag,
@@ -100,21 +100,21 @@ public class GzhContentController {
             @Parameter(description = "升序：true/false") @RequestParam(defaultValue = "false") boolean asc
     ) {
         Long userId = requireUser().userId();
-		Page<GzhArticle> p = articleService.pageQuery(userId, folderId, name, tag, status, page, size, sortBy, asc);
-		PageResponse<GzhArticleVO> resp = PageResponse.of(page, size, p.getTotal(), gzhArticleMapper.toVOList(p.getRecords()));
+        Page<GzhArticle> p = articleService.pageQuery(userId, folderId, name, tag, status, page, size, sortBy, asc);
+        PageResponse<GzhArticleVO> resp = PageResponse.of(page, size, p.getTotal(), gzhArticleMapper.toVOList(p.getRecords()));
         return Result.success(resp);
     }
 
-	@GetMapping("/article/detail")
-	@Operation(summary = "按ID查询文章详情（未删除且归属校验）", security = {@SecurityRequirement(name = "bearer-jwt")})
-	public Result<GzhArticleVO> getArticleDetail(@RequestParam @NotNull Long id) {
-		Long userId = requireUser().userId();
-		GzhArticle article = articleService.getById(id);
-		if (article == null || !userId.equals(article.getUserId()) || !Integer.valueOf(0).equals(article.getDeleted())) {
-			return Result.error(ErrorCode.NOT_FOUND, "文章不存在");
-		}
-		return Result.success(gzhArticleMapper.toVO(article));
-	}
+    @GetMapping("/article/detail")
+    @Operation(summary = "按ID查询文章详情（未删除且归属校验）", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<GzhArticleVO> getArticleDetail(@RequestParam @NotNull Long id) {
+        Long userId = requireUser().userId();
+        GzhArticle article = articleService.getById(id);
+        if (article == null || !userId.equals(article.getUserId()) || !Integer.valueOf(0).equals(article.getDeleted())) {
+            return Result.error(ErrorCode.NOT_FOUND, "文章不存在");
+        }
+        return Result.success(gzhArticleMapper.toVO(article));
+    }
 
     @Data
     @Schema(name = "GzhCreateArticleReq", description = "创建公众号文章请求")
