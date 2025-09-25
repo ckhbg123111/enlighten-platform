@@ -6,6 +6,7 @@ import com.zhongjia.biz.service.MediaConvertCancelService;
 import com.zhongjia.biz.service.MediaConvertRecordV2Service;
 import com.zhongjia.biz.service.TemplateApplyService;
 import com.zhongjia.biz.service.dto.ArticleStructure;
+import com.zhongjia.biz.service.dto.RenderResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
@@ -66,8 +67,11 @@ public class MediaConvertTaskConsumer implements RocketMQListener<String> {
 
             // 渲染
             String html;
+            String title;
             try {
-                html = templateApplyService.render(msg.getTemplateId(), structure);
+                RenderResult render = templateApplyService.render(msg.getTemplateId(), structure);
+                html = render.getHtml();
+                title = render.getTitle();
             } catch (Exception renderEx) {
                 log.warn("模板渲染失败，标记为FAILED。v2Id={}", v2Id, renderEx);
                 recordV2Service.markFailed(v2Id, original);
@@ -82,7 +86,7 @@ public class MediaConvertTaskConsumer implements RocketMQListener<String> {
             }
 
             // 只更新 v2 记录为 SUCCESS，并写入生成内容；不改 gzhArticle（由前端保存）
-            recordV2Service.markSuccess(v2Id, original, html);
+            recordV2Service.markSuccess(v2Id, original, html, title);
         } catch (Exception e) {
             log.error("处理媒体转换消息失败", e);
             try {

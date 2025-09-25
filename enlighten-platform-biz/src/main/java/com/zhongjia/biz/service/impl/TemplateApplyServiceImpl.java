@@ -4,10 +4,10 @@ import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.repository.TypesettingTemplateRepository;
 import com.zhongjia.biz.service.TemplateApplyService;
 import com.zhongjia.biz.service.dto.ArticleStructure;
+import com.zhongjia.biz.service.dto.RenderResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 
 @Service
 public class TemplateApplyServiceImpl implements TemplateApplyService {
@@ -16,7 +16,7 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
     private TypesettingTemplateRepository templateRepository;
 
     @Override
-    public String render(Long templateId, ArticleStructure structure) {
+    public RenderResult render(Long templateId, ArticleStructure structure) {
         if (templateId == null || structure == null) {
             throw new IllegalArgumentException("参数不能为空");
         }
@@ -30,12 +30,6 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         String header = safe(template.getHeader());
         header = replace(header, "{PLACEHOLDER}", "http://frp5.mmszxc.xin:57599/file/figure/header.png");
         html.append(nullToEmpty(header));
-
-        // 标题
-        if (structure.getTitle() != null && !structure.getTitle().isEmpty()) {
-            String single = nullToEmpty(template.getSingleTitle());
-            html.append(replace(single, "{PLACEHOLDER}", escape(structure.getTitle())));
-        }
 
         // 引言
         if (structure.getIntroduction() != null && !structure.getIntroduction().getText().isEmpty()) {
@@ -90,18 +84,29 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         footer = replace(footer, "{PLACEHOLDER}", "http://frp5.mmszxc.xin:57599/file/figure/footer1.jpg");
         html.append(nullToEmpty(footer));
 
-        return html.toString();
+        return new RenderResult(structure.getTitle(), html.toString());
     }
 
-    private String nullToEmpty(String s) { return s == null ? "" : s; }
-    private String safe(String s) { return s == null ? "" : s; }
-    private String replace(String src, String token, String val) { return src == null ? "" : src.replace(token, val); }
+    private String nullToEmpty(String s) {
+        return s == null ? "" : s;
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
+
+    private String replace(String src, String token, String val) {
+        return src == null ? "" : src.replace(token, val);
+    }
 
     private String escape(String s) {
 //        return s == null ? "" : s.replace("<", "&lt;").replace(">", "&gt;");
         return s;
     }
-    private String escapeAttr(String s) { return s == null ? "" : s.replace("\"", "&quot;"); }
+
+    private String escapeAttr(String s) {
+        return s == null ? "" : s.replace("\"", "&quot;");
+    }
 }
 
 
