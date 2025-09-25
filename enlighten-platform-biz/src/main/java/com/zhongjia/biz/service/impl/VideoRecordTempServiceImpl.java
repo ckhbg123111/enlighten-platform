@@ -51,14 +51,23 @@ public class VideoRecordTempServiceImpl implements VideoRecordTempService {
     }
 
     @Override
-    public List<VideoRecordTemp> listByUserOrderByTimeDesc(Long userId, Integer limit, Long lastId) {
+    public List<VideoRecordTemp> listByUser(Long userId, Integer limit, Long lastId, Boolean asc) {
         LambdaQueryWrapper<VideoRecordTemp> qw = new LambdaQueryWrapper<>();
         qw.eq(VideoRecordTemp::getUserId, userId)
-          .eq(VideoRecordTemp::getDeleted, 0)
-          .orderByDesc(VideoRecordTemp::getCreateTime);
-        if (lastId != null) {
-            // 采用 id 游标倒序，假设 id 自增与时间近似相关
-            qw.lt(VideoRecordTemp::getId, lastId);
+          .eq(VideoRecordTemp::getDeleted, 0);
+        boolean isAsc = Boolean.TRUE.equals(asc);
+        if (isAsc) {
+            qw.orderByAsc(VideoRecordTemp::getCreateTime);
+            if (lastId != null) {
+                // 正序时，lastId 表示已取到的最后一个，继续取 id > lastId
+                qw.gt(VideoRecordTemp::getId, lastId);
+            }
+        } else {
+            qw.orderByDesc(VideoRecordTemp::getCreateTime);
+            if (lastId != null) {
+                // 倒序时，lastId 表示已取到的最后一个，继续取 id < lastId
+                qw.lt(VideoRecordTemp::getId, lastId);
+            }
         }
         if (limit != null && limit > 0) {
             qw.last("LIMIT " + Math.min(limit, 100));

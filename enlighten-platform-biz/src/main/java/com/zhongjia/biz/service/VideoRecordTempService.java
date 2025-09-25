@@ -10,7 +10,7 @@ public interface VideoRecordTempService {
 
     boolean updateStatusAndUrl(Long userId, Long id, String status, String url, java.util.List<Object> stepList);
 
-    List<VideoRecordTemp> listByUserOrderByTimeDesc(Long userId, Integer limit, Long lastId);
+    List<VideoRecordTemp> listByUser(Long userId, Integer limit, Long lastId, Boolean asc);
 }
 
 

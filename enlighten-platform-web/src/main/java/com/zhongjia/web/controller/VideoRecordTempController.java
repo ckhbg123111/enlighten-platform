@@ -55,11 +55,13 @@ public class VideoRecordTempController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "按用户查询列表，按时间倒序", security = {@SecurityRequirement(name = "bearer-jwt")})
+    @Operation(summary = "按用户查询列表（支持正序/倒序）", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<List<VideoRecordTempVO>> list(@RequestParam(value = "limit", required = false) Integer limit,
-                                             @RequestParam(value = "lastId", required = false) Long lastId) {
+                                             @RequestParam(value = "lastId", required = false) Long lastId,
+                                             @RequestParam(value = "order", required = false, defaultValue = "desc") String order) {
         Long userId = requireUser().userId();
-        java.util.List<com.zhongjia.biz.entity.VideoRecordTemp> list = service.listByUserOrderByTimeDesc(userId, limit, lastId);
+        boolean asc = "asc".equalsIgnoreCase(order);
+        java.util.List<com.zhongjia.biz.entity.VideoRecordTemp> list = service.listByUser(userId, limit, lastId, asc);
         return Result.success(VideoRecordTempWebMapper.toVOList(list));
     }
 
