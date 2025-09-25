@@ -54,4 +54,7 @@ public class TypesettingTemplateVO {
     
     @Schema(description = "样例")
     private String sample;
+    
+    @Schema(description = "标题样例")
+    private String titleSample;
 }

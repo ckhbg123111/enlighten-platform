@@ -294,6 +294,7 @@ public class MediaConvertController {
         TypesettingTemplate t = new  TypesettingTemplate();
         t.setId(req.tplId);
         t.setSample(render.getHtml());
+        t.setTitleSample(render.getTitle());
         t.setCreateTime(LocalDateTime.now());
         t.setUpdateTime(LocalDateTime.now());
         t.setDeleted(0);
