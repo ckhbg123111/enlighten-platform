@@ -4,8 +4,10 @@ import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.repository.TypesettingTemplateRepository;
 import com.zhongjia.biz.service.TemplateApplyService;
 import com.zhongjia.biz.service.dto.ArticleStructure;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
 @Service
 public class TemplateApplyServiceImpl implements TemplateApplyService {
@@ -50,18 +52,23 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
                 }
                 if (section.getSection_paragraphs() != null) {
                     for (ArticleStructure.Paragraph p : section.getSection_paragraphs()) {
+                        StringBuilder sectionParagraph = new StringBuilder();
                         if (p.getParagraph_title() != null && !p.getParagraph_title().isEmpty()) {
                             String single = nullToEmpty(template.getSingleTitle());
-                            html.append(replace(single, "{PLACEHOLDER}", escape(p.getParagraph_title())));
+                            sectionParagraph.append(replace(single, "{PLACEHOLDER}", escape(p.getParagraph_title())));
                         }
                         if (p.getParagraph_text() != null && !p.getParagraph_text().isEmpty()) {
                             String textTpl = nullToEmpty(template.getText());
-                            html.append(replace(textTpl, "{PLACEHOLDER}", escape(p.getParagraph_text())));
+                            sectionParagraph.append(replace(textTpl, "{PLACEHOLDER}", escape(p.getParagraph_text())));
                         }
                         if (p.getImage_url() != null && !p.getImage_url().isEmpty()) {
                             String imgTpl = nullToEmpty(template.getImage());
                             String imgTag = "<img src=\"" + escapeAttr(p.getImage_url()) + "\" alt=\"\"/>";
-                            html.append(replace(imgTpl, "{PLACEHOLDER}", imgTag));
+                            sectionParagraph.append(replace(imgTpl, "{PLACEHOLDER}", imgTag));
+                        }
+                        if(StringUtils.isNotBlank(sectionParagraph.toString())) {
+                            String blockCardTpl = nullToEmpty(template.getBlockCard());
+                            html.append(replace(blockCardTpl, "{PLACEHOLDER}", escape(sectionParagraph.toString())));
                         }
                     }
                 }
