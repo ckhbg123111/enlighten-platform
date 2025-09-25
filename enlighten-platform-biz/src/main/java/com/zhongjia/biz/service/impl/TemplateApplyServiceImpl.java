@@ -47,15 +47,15 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         if (structure.getSections() != null) {
             for (ArticleStructure.Section section : structure.getSections()) {
                 if (section.getSection_title() != null && !section.getSection_title().isEmpty()) {
-                    String numbered = nullToEmpty(template.getNumberedTitle());
-                    html.append(replace(numbered, "{PLACEHOLDER}", escape(section.getSection_title())));
+                    String single = nullToEmpty(template.getSingleTitle());
+                    html.append(replace(single, "{PLACEHOLDER}", escape(section.getSection_title())));
                 }
                 if (section.getSection_paragraphs() != null) {
                     for (ArticleStructure.Paragraph p : section.getSection_paragraphs()) {
                         StringBuilder sectionParagraph = new StringBuilder();
                         if (p.getParagraph_title() != null && !p.getParagraph_title().isEmpty()) {
-                            String single = nullToEmpty(template.getSingleTitle());
-                            sectionParagraph.append(replace(single, "{PLACEHOLDER}", escape(p.getParagraph_title())));
+                            String numbered = nullToEmpty(template.getNumberedTitle());
+                            sectionParagraph.append(replace(numbered, "{PLACEHOLDER}", escape(p.getParagraph_title())));
                         }
                         if (p.getParagraph_text() != null && !p.getParagraph_text().isEmpty()) {
                             String textTpl = nullToEmpty(template.getText());
