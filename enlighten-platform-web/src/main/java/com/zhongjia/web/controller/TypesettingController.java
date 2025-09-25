@@ -13,6 +13,7 @@ import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.vo.Result;
 import com.zhongjia.web.vo.TypesettingTemplateInfoVO;
 import com.zhongjia.web.vo.TypesettingMaterialVO;
+import com.zhongjia.web.vo.TypesettingTemplateDetailVO;
 import com.zhongjia.web.vo.PageResponse;
 import com.zhongjia.web.mapper.TypesettingMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -100,6 +101,34 @@ public class TypesettingController {
         
         PageResponse<TypesettingMaterialVO> resp = PageResponse.of(page, size, materialPage.getTotal(), voList);
         return Result.success(resp);
+    }
+
+    /**
+     * 按ID查询模板详情
+     */
+    @GetMapping("/templates/{id}")
+    @Operation(summary = "按ID查询模板详情", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<TypesettingTemplateDetailVO> getTemplateDetail(
+            @Parameter(description = "模板ID") @PathVariable("id") Long id) {
+
+        UserContext.UserInfo userInfo = requireUser();
+        User user = userService.getById(userInfo.userId());
+        if (user == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+
+        TypesettingTemplate template = templateService.getById(id);
+        if (template == null) {
+            throw new BizException(ErrorCode.NOT_FOUND);
+        }
+
+        // 权限：仅允许访问同医院（与分页列表保持一致）。科室暂未限制。
+        if (template.getHospital() != null && user.getHospital() != null && !template.getHospital().equals(user.getHospital())) {
+            throw new BizException(ErrorCode.FORBIDDEN);
+        }
+
+        TypesettingTemplateDetailVO vo = typesettingMapper.toTemplateDetailVO(template);
+        return Result.success(vo);
     }
 
     /**

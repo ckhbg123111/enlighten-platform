@@ -18,4 +18,11 @@ public interface TypesettingTemplateService {
      * @return 分页结果
      */
     Page<TypesettingTemplate> getTemplatesByHospitalAndDepartment(String hospital, String department, int page, int size);
+
+    /**
+     * 按ID获取模板
+     * @param id 模板ID
+     * @return 模板实体，可能为null
+     */
+    TypesettingTemplate getById(Long id);
 }
