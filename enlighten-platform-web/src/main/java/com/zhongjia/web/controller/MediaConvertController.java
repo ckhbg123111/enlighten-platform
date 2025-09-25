@@ -323,7 +323,7 @@ public class MediaConvertController {
         } catch (Exception e) {
             // 更新状态失败，同时保存原文
             recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-            throw e;
+            return Result.error(500, e.getMessage());
         }
     }
 
