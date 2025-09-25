@@ -56,6 +56,13 @@ public class VideoGenerationMQService {
         
         return task.getId();
     }
+
+    /**
+     * 按用户查询任务列表（按创建时间倒序）
+     */
+    public java.util.List<VideoGenerationTask> listTasksByUser(Long userId) {
+        return taskRepository.findByUser(userId);
+    }
     
     /**
      * 手动重试任务 (管理员功能)
