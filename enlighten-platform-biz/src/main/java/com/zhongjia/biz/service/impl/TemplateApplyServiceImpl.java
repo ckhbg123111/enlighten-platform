@@ -68,7 +68,7 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
                         }
                         if(StringUtils.isNotBlank(sectionParagraph.toString())) {
                             String blockCardTpl = nullToEmpty(template.getBlockCard());
-                            html.append(replace(blockCardTpl, "{PLACEHOLDER}", escapeAttr(escape(sectionParagraph.toString()))));
+                            html.append(replace(blockCardTpl, "{PLACEHOLDER}", escape(sectionParagraph.toString())));
                         }
                     }
                 }
