@@ -79,10 +79,10 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
 
         // summary
         if (structure.getSummary() != null && !structure.getSummary().isEmpty()) {
-            String block = nullToEmpty(template.getBlockCard());
+            String textCardTpl = nullToEmpty(template.getTextCard());
             String textTpl = nullToEmpty(template.getText());
             String content = replace(textTpl, "{PLACEHOLDER}", escape(structure.getSummary()));
-            html.append(replace(block, "{PLACEHOLDER}", content));
+            html.append(replace(textCardTpl, "{PLACEHOLDER}", content));
         }
 
         // footer
