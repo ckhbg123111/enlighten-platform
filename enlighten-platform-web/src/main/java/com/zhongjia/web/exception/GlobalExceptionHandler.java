@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.slf4j.MDC;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 @Slf4j
@@ -104,6 +105,23 @@ public class GlobalExceptionHandler {
             return convert2MediaError(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
         }
         return Result.error(ErrorCode.INTERNAL_ERROR.getCode(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Object handleNotFound(NoResourceFoundException e, HttpServletRequest request) {
+        try {
+            log.info("NotFound uri={} traceId={}",
+                    request != null ? request.getRequestURI() : "-",
+                    MDC.get("traceId"));
+        } catch (Throwable ignore) { }
+        if (isSse(request)) {
+            return sseError(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getDefaultMessage());
+        }
+        if (isConvert2Media(request)) {
+            return convert2MediaError(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getDefaultMessage());
+        }
+        return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+                .body(Result.error(ErrorCode.NOT_FOUND));
     }
 
     private String firstMsg(Exception e) {

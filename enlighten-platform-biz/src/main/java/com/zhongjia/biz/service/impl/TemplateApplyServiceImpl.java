@@ -4,6 +4,8 @@ import com.zhongjia.biz.entity.TypesettingTemplate;
 import com.zhongjia.biz.repository.TypesettingTemplateRepository;
 import com.zhongjia.biz.service.TemplateApplyService;
 import com.zhongjia.biz.service.dto.ArticleStructure;
+import com.zhongjia.biz.service.dto.RenderResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
     private TypesettingTemplateRepository templateRepository;
 
     @Override
-    public String render(Long templateId, ArticleStructure structure) {
+    public RenderResult render(Long templateId, ArticleStructure structure) {
         if (templateId == null || structure == null) {
             throw new IllegalArgumentException("参数不能为空");
         }
@@ -29,40 +31,41 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         header = replace(header, "{PLACEHOLDER}", "http://frp5.mmszxc.xin:57599/file/figure/header.png");
         html.append(nullToEmpty(header));
 
-        // 标题
-        if (structure.getTitle() != null && !structure.getTitle().isEmpty()) {
-            String single = nullToEmpty(template.getSingleTitle());
-            html.append(replace(single, "{PLACEHOLDER}", escape(structure.getTitle())));
-        }
-
         // 引言
-        if (structure.getIntroduction() != null && structure.getIntroduction().getText() != null) {
+        if (structure.getIntroduction() != null && !structure.getIntroduction().getText().isEmpty()) {
+            String textCardTpl = nullToEmpty(template.getTextCard());
             String textTpl = nullToEmpty(template.getText());
-            html.append(replace(textTpl, "{PLACEHOLDER}", escape(structure.getIntroduction().getText())));
+            String content = replace(textTpl, "{PLACEHOLDER}", escape(structure.getIntroduction().getText()));
+            html.append(replace(textCardTpl, "{PLACEHOLDER}", content));
         }
 
         // sections
         if (structure.getSections() != null) {
             for (ArticleStructure.Section section : structure.getSections()) {
                 if (section.getSection_title() != null && !section.getSection_title().isEmpty()) {
-                    String numbered = nullToEmpty(template.getNumberedTitle());
-                    html.append(replace(numbered, "{PLACEHOLDER}", escape(section.getSection_title())));
+                    String single = nullToEmpty(template.getSingleTitle());
+                    html.append(replace(single, "{PLACEHOLDER}", escape(section.getSection_title())));
                 }
                 if (section.getSection_paragraphs() != null) {
+                    StringBuilder sectionParagraph = new StringBuilder();
                     for (ArticleStructure.Paragraph p : section.getSection_paragraphs()) {
                         if (p.getParagraph_title() != null && !p.getParagraph_title().isEmpty()) {
-                            String single = nullToEmpty(template.getSingleTitle());
-                            html.append(replace(single, "{PLACEHOLDER}", escape(p.getParagraph_title())));
+                            String numbered = nullToEmpty(template.getNumberedTitle());
+                            sectionParagraph.append(replace(numbered, "{PLACEHOLDER}", escape(p.getParagraph_title())));
                         }
                         if (p.getParagraph_text() != null && !p.getParagraph_text().isEmpty()) {
                             String textTpl = nullToEmpty(template.getText());
-                            html.append(replace(textTpl, "{PLACEHOLDER}", escape(p.getParagraph_text())));
+                            sectionParagraph.append(replace(textTpl, "{PLACEHOLDER}", escape(p.getParagraph_text())));
                         }
                         if (p.getImage_url() != null && !p.getImage_url().isEmpty()) {
                             String imgTpl = nullToEmpty(template.getImage());
                             String imgTag = "<img src=\"" + escapeAttr(p.getImage_url()) + "\" alt=\"\"/>";
-                            html.append(replace(imgTpl, "{PLACEHOLDER}", imgTag));
+                            sectionParagraph.append(replace(imgTpl, "{PLACEHOLDER}", imgTag));
                         }
+                    }
+                    if (StringUtils.isNotBlank(sectionParagraph.toString())) {
+                        String blockCardTpl = nullToEmpty(template.getBlockCard());
+                        html.append(replace(blockCardTpl, "{PLACEHOLDER}", escape(sectionParagraph.toString())));
                     }
                 }
             }
@@ -70,10 +73,10 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
 
         // summary
         if (structure.getSummary() != null && !structure.getSummary().isEmpty()) {
-            String block = nullToEmpty(template.getBlockCard());
+            String textCardTpl = nullToEmpty(template.getTextCard());
             String textTpl = nullToEmpty(template.getText());
             String content = replace(textTpl, "{PLACEHOLDER}", escape(structure.getSummary()));
-            html.append(replace(block, "{PLACEHOLDER}", content));
+            html.append(replace(textCardTpl, "{PLACEHOLDER}", content));
         }
 
         // footer
@@ -81,14 +84,29 @@ public class TemplateApplyServiceImpl implements TemplateApplyService {
         footer = replace(footer, "{PLACEHOLDER}", "http://frp5.mmszxc.xin:57599/file/figure/footer1.jpg");
         html.append(nullToEmpty(footer));
 
-        return html.toString();
+        return new RenderResult(structure.getTitle(), html.toString());
     }
 
-    private String nullToEmpty(String s) { return s == null ? "" : s; }
-    private String safe(String s) { return s == null ? "" : s; }
-    private String replace(String src, String token, String val) { return src == null ? "" : src.replace(token, val); }
-    private String escape(String s) { return s == null ? "" : s.replace("<", "&lt;").replace(">", "&gt;"); }
-    private String escapeAttr(String s) { return s == null ? "" : s.replace("\"", "&quot;"); }
+    private String nullToEmpty(String s) {
+        return s == null ? "" : s;
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
+
+    private String replace(String src, String token, String val) {
+        return src == null ? "" : src.replace(token, val);
+    }
+
+    private String escape(String s) {
+//        return s == null ? "" : s.replace("<", "&lt;").replace(">", "&gt;");
+        return s;
+    }
+
+    private String escapeAttr(String s) {
+        return s == null ? "" : s.replace("\"", "&quot;");
+    }
 }
 
 

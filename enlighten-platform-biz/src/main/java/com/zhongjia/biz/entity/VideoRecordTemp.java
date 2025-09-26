@@ -1,7 +1,10 @@
 package com.zhongjia.biz.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,36 +13,29 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-@TableName("media_convert_record_v2")
-public class MediaConvertRecordV2 {
+@TableName("video_record_temp")
+public class VideoRecordTemp {
+
     @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long userId;
 
-    /** 关联的外部ID（如 gzh_article.id） */
-    private Long externalId;
+    private String taskId;
 
-    /** 媒体平台：gzh/xiaohongshu/douyin */
-    private String platform;
-
-    /** 状态：PROCESSING/SUCCESS/FAILED */
     private String status;
 
-    /** 标题 */
-    private String title;
+    private String url;
 
-    /** 原文内容 */
-    private String originalText;
+    private String stepList;
 
-    /** 生成内容 */
-    private String generatedText;
-
-    /** 逻辑删除：0-未删除，1-已删除 */
+    @TableLogic
     private Integer deleted;
 
+    @TableField(insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     private LocalDateTime createTime;
 
+    @TableField(insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     private LocalDateTime updateTime;
 
     private LocalDateTime deleteTime;

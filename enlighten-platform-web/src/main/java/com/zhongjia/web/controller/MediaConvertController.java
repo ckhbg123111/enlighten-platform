@@ -1,30 +1,40 @@
 package com.zhongjia.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhongjia.biz.entity.GzhArticle;
 import com.zhongjia.biz.entity.MediaConvertRecord;
-import com.zhongjia.biz.enums.MediaPlatform;
-import com.zhongjia.biz.enums.MediaConvertStatus;
-import com.zhongjia.biz.service.GzhArticleService;
 import com.zhongjia.biz.entity.MediaConvertRecordV2;
-import com.zhongjia.biz.service.MediaConvertRecordV2Service;
-import com.zhongjia.biz.repository.MediaConvertRecordV2Repository;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zhongjia.web.vo.PageResponse;
-import com.zhongjia.biz.service.MediaConvertRecordService;
-import com.zhongjia.biz.service.dto.UpstreamResult;
+import com.zhongjia.biz.entity.TypesettingTemplate;
+import com.zhongjia.biz.enums.MediaConvertStatus;
+import com.zhongjia.biz.enums.MediaPlatform;
 import com.zhongjia.biz.repository.MediaConvertRecordRepository;
-import com.zhongjia.web.security.UserContext;
+import com.zhongjia.biz.repository.TypesettingTemplateRepository;
+import com.zhongjia.biz.service.*;
+import com.zhongjia.biz.service.dto.ArticleStructure;
+import com.zhongjia.biz.service.dto.RenderResult;
+import com.zhongjia.biz.service.dto.UpstreamResult;
+import com.zhongjia.biz.service.mq.MediaConvertTaskMessage;
+import com.zhongjia.biz.service.mq.MediaConvertTaskProducer;
 import com.zhongjia.web.exception.BizException;
 import com.zhongjia.web.exception.ErrorCode;
-import com.zhongjia.web.vo.Result;
-import com.zhongjia.web.vo.MediaConvertRecordVO;
 import com.zhongjia.web.mapper.MediaConvertRecordMapper;
-import com.zhongjia.web.vo.MediaConvertRecordV2VO;
 import com.zhongjia.web.mapper.MediaConvertRecordV2WebMapper;
+import com.zhongjia.web.security.UserContext;
+import com.zhongjia.web.vo.MediaConvertRecordV2VO;
+import com.zhongjia.web.vo.MediaConvertRecordVO;
+import com.zhongjia.web.vo.PageResponse;
+import com.zhongjia.web.vo.Result;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,20 +45,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import com.zhongjia.biz.service.ArticleStructureService;
-import com.zhongjia.biz.service.TemplateApplyService;
-import com.zhongjia.biz.service.dto.ArticleStructure;
-import jakarta.validation.constraints.NotNull;
-import com.zhongjia.biz.service.mq.MediaConvertTaskProducer;
-import com.zhongjia.biz.service.mq.MediaConvertTaskMessage;
-import com.zhongjia.biz.service.MediaConvertCancelService;
 
 @RestController
 @Tag(name = "媒体内容转换")
@@ -77,16 +73,17 @@ public class MediaConvertController {
     private MediaConvertRecordV2Service recordV2Service;
 
     @Autowired
-    private MediaConvertRecordV2Repository recordV2Repository;
-
-	@Autowired
-	private MediaConvertRecordV2WebMapper recordV2WebMapper;
+    private MediaConvertRecordV2WebMapper recordV2WebMapper;
 
     @Autowired
     private MediaConvertTaskProducer mediaConvertTaskProducer;
 
     @Autowired
     private MediaConvertCancelService cancelService;
+
+    @Autowired
+    private TypesettingTemplateRepository tplRespository;
+
 
     // 上游调用与记录统一移至 Service 层
 
@@ -210,7 +207,6 @@ public class MediaConvertController {
         return info;
     }
 
-    
 
     @Data
     @Schema(name = "ConvertCommonReq", description = "通用媒体转换请求")
@@ -262,7 +258,7 @@ public class MediaConvertController {
     @Operation(summary = "文章套用模板-异步", description = "立即返回记录ID，异步生成；支持打断与轮询", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<StartResp> applyTemplate(@Valid @RequestBody ApplyTemplateReq req) {
         UserContext.UserInfo user = requireUser();
-        if(Objects.isNull(req.getRecordId())){
+        if (Objects.isNull(req.getRecordId())) {
             Long initial = gzhArticleService.createInitial(user.userId(), null, null, null, null, req.getEssay(), null);
             req.setRecordId(initial);
         }
@@ -289,59 +285,27 @@ public class MediaConvertController {
         return Result.success(resp);
     }
 
-    // 4.1) 转公众号图文并套用模板：传入公众号内容记录ID+模板ID，返回HTML
-    @PostMapping(path = "apply_template_by_record", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "文章套用模板生成HTML-通过记录ID", description = "传入公众号内容记录ID与模板ID，返回渲染后的HTML", security = {@SecurityRequirement(name = "bearer-jwt")})
+    record ReplaceSampleReq(ArticleStructure context, Long tplId){};
+
+    @PostMapping(path = "replace_sample")
     @Deprecated
-    public Result<HtmlResp> applyTemplateByRecord(@Valid @RequestBody ApplyTemplateByRecordReq req) {
-        UserContext.UserInfo user = requireUser();
-        // 查询记录
-        GzhArticle record = gzhArticleService.getById(req.getRecordId());// 确保存在且未删除
-        if (record == null || (record.getDeleted() != null && record.getDeleted() == 1)) {
-            return Result.error(404, "记录不存在");
-        }
-        if (record.getOriginalText() == null || record.getOriginalText().isEmpty()) {
-            return Result.error(400, "记录内容为空");
-        }
-        // v2：转换前改为仅插入 PROCESSING 记录
-        Long recordV2Id = recordV2Service.insertProcessingRecord(user.userId(), req.getRecordId(), "gzh");
-        // 解析结构
-        try {
-            ArticleStructure structure = articleStructureService.parse(record.getOriginalText());
-            // 渲染
-            String html = templateApplyService.render(req.getTemplateId(), structure);
-            // 将结果更新落库：typesetContent、状态为编辑中、最后编辑时间
-            boolean saved = gzhArticleService.updateEditing(
-                    user.userId(),
-                    record.getId(),
-                    null, // folderId 不变
-                    null, // name 不变
-                    null, // tag 不变
-                    null, // coverImageUrl 不变
-                    null, // originalText 不变
-                    html  // 更新 typesetContent
-            );
-            if (!saved) {
-                // 若更新失败，标记失败并返回
-                recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-                return Result.error(500, "更新文章失败");
-            }
-            // 更新状态成功，同时写入原文与生成内容
-            recordV2Service.markSuccess(recordV2Id, record.getOriginalText(), html);
-            HtmlResp resp = new HtmlResp();
-            resp.setHtml(html);
-            return Result.success(resp);
-        } catch (Exception e) {
-            // 更新状态失败，同时保存原文
-            recordV2Service.markFailed(recordV2Id, record.getOriginalText());
-            throw e;
-        }
+    public Result<String> replaceSample(@RequestBody ReplaceSampleReq req) {
+        RenderResult render = templateApplyService.render(req.tplId, req.context);
+        TypesettingTemplate t = new  TypesettingTemplate();
+        t.setId(req.tplId);
+        t.setSample(render.getHtml());
+        t.setTitleSample(render.getTitle());
+        t.setCreateTime(LocalDateTime.now());
+        t.setUpdateTime(LocalDateTime.now());
+        t.setDeleted(0);
+        tplRespository.updateById(t);
+        return Result.success("成功");
     }
 
     // v2) 查询接口：按 platform + user_id 查询最近记录
     @GetMapping(path = "records_v2")
     @Operation(summary = "查询媒体转换记录v2", description = "根据平台查询当前用户的转换记录（可分页，platform 可为空）", security = {@SecurityRequirement(name = "bearer-jwt")})
-	public Result<PageResponse<MediaConvertRecordV2VO>> listV2(
+    public Result<PageResponse<MediaConvertRecordV2VO>> listV2(
             @RequestParam(value = "platform", required = false) String platform,
             @RequestParam(value = "statuses", required = false) java.util.List<MediaConvertStatus> statuses,
             @RequestParam(defaultValue = "1") int page,
@@ -353,67 +317,67 @@ public class MediaConvertController {
             }
         }
         Page<MediaConvertRecordV2> result = recordV2Service.pageRecords(user.userId(), platform, statuses, page, size);
-		PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
+        PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
         return Result.success(resp);
     }
 
-	// v2) 查询单条记录（轮询）
-	@GetMapping(path = "records_v2/{id}")
-	@Operation(summary = "查询单条媒体转换记录v2", security = {@SecurityRequirement(name = "bearer-jwt")})
-	public Result<MediaConvertRecordV2VO> getOneV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
-		UserContext.UserInfo user = requireUser();
-		MediaConvertRecordV2 record = recordV2Service.getById(id);
-		if (record == null || record.getDeleted() != null && record.getDeleted() == 1) {
-			return Result.error(404, "记录不存在");
-		}
-		if (!record.getUserId().equals(user.userId())) {
-			return Result.error(403, "无权限");
-		}
-		return Result.success(recordV2WebMapper.toVO(record));
-	}
+    // v2) 查询单条记录（轮询）
+    @GetMapping(path = "records_v2/{id}")
+    @Operation(summary = "查询单条媒体转换记录v2", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<MediaConvertRecordV2VO> getOneV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
+        UserContext.UserInfo user = requireUser();
+        MediaConvertRecordV2 record = recordV2Service.getById(id);
+        if (record == null || record.getDeleted() != null && record.getDeleted() == 1) {
+            return Result.error(404, "记录不存在");
+        }
+        if (!record.getUserId().equals(user.userId())) {
+            return Result.error(403, "无权限");
+        }
+        return Result.success(recordV2WebMapper.toVO(record));
+    }
 
-	// v2) 打断任务
-	@PostMapping(path = "records_v2/{id}/cancel")
-	@Operation(summary = "打断媒体转换任务v2", description = "PROCESSING状态下设置取消标记，并标记为已打断", security = {@SecurityRequirement(name = "bearer-jwt")})
-	public Result<Boolean> cancelV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
-		UserContext.UserInfo user = requireUser();
-		MediaConvertRecordV2 record = recordV2Service.getById(id);
-		if (record == null || record.getDeleted() != null && record.getDeleted() == 1) {
-			return Result.error(404, "记录不存在");
-		}
-		if (!record.getUserId().equals(user.userId())) {
-			return Result.error(403, "无权限");
-		}
-		if (!"PROCESSING".equals(record.getStatus())) {
-			return Result.success(true);
-		}
-		cancelService.cancel(id);
-		String original = null;
-		GzhArticle gzh = gzhArticleService.getById(record.getExternalId());
-		if (gzh != null) original = gzh.getOriginalText();
-		recordV2Service.markInterrupted(id, original);
-		return Result.success(true);
-	}
+    // v2) 打断任务
+    @PostMapping(path = "records_v2/{id}/cancel")
+    @Operation(summary = "打断媒体转换任务v2", description = "PROCESSING状态下设置取消标记，并标记为已打断", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Boolean> cancelV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
+        UserContext.UserInfo user = requireUser();
+        MediaConvertRecordV2 record = recordV2Service.getById(id);
+        if (record == null || record.getDeleted() != null && record.getDeleted() == 1) {
+            return Result.error(404, "记录不存在");
+        }
+        if (!record.getUserId().equals(user.userId())) {
+            return Result.error(403, "无权限");
+        }
+        if (!"PROCESSING".equals(record.getStatus())) {
+            return Result.success(true);
+        }
+        cancelService.cancel(id);
+        String original = null;
+        GzhArticle gzh = gzhArticleService.getById(record.getExternalId());
+        if (gzh != null) original = gzh.getOriginalText();
+        recordV2Service.markInterrupted(id, original);
+        return Result.success(true);
+    }
 
-	// v2) 删除：软删除
-	@DeleteMapping(path = "records_v2/{id}")
-	@Operation(summary = "删除媒体转换记录v2(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
-	public Result<Boolean> softDeleteV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
-		UserContext.UserInfo user = requireUser();
-		MediaConvertRecordV2Service.SoftDeleteResult r = recordV2Service.softDeleteById(user.userId(), id);
-		switch (r) {
-			case SUCCESS:
-				return Result.success(true);
-			case FORBIDDEN:
-				return Result.error(403, "无权限");
-			case NOT_FOUND:
-			case ALREADY_DELETED:
-				return Result.error(404, "记录不存在");
-			case FAILED:
-			default:
-				return Result.error(500, "删除失败");
-		}
-	}
+    // v2) 删除：软删除
+    @DeleteMapping(path = "records_v2/{id}")
+    @Operation(summary = "删除媒体转换记录v2(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Boolean> softDeleteV2(@Parameter(description = "记录ID") @PathVariable("id") Long id) {
+        UserContext.UserInfo user = requireUser();
+        MediaConvertRecordV2Service.SoftDeleteResult r = recordV2Service.softDeleteById(user.userId(), id);
+        switch (r) {
+            case SUCCESS:
+                return Result.success(true);
+            case FORBIDDEN:
+                return Result.error(403, "无权限");
+            case NOT_FOUND:
+            case ALREADY_DELETED:
+                return Result.error(404, "记录不存在");
+            case FAILED:
+            default:
+                return Result.error(500, "删除失败");
+        }
+    }
 
     @Data
     @Schema(name = "ApplyTemplateReq", description = "文章套用模板请求")
@@ -446,11 +410,11 @@ public class MediaConvertController {
         private String html;
     }
 
-	@Data
-	@Schema(name = "StartResp", description = "异步任务启动响应")
-	public static class StartResp {
-		private Long id;
-	}
+    @Data
+    @Schema(name = "StartResp", description = "异步任务启动响应")
+    public static class StartResp {
+        private Long id;
+    }
 }
 
 
