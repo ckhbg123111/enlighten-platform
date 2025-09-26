@@ -298,7 +298,6 @@ public class MediaConvertController {
         t.setCreateTime(LocalDateTime.now());
         t.setUpdateTime(LocalDateTime.now());
         t.setDeleted(0);
-        t.setSingleTitle(render.getTitle());
         tplRespository.updateById(t);
         return Result.success("成功");
     }
