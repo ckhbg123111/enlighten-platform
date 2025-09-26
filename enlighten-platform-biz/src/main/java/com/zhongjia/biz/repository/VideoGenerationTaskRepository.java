@@ -38,4 +38,12 @@ public interface VideoGenerationTaskRepository extends IService<VideoGenerationT
      * @return 任务列表
      */
     List<VideoGenerationTask> findByUser(Long userId);
+
+    /**
+     * 查询用户的任务列表（可按状态过滤）
+     * @param userId 用户ID
+     * @param statuses 状态列表，可为空或空列表表示不限
+     * @return 任务列表
+     */
+    List<VideoGenerationTask> findByUserAndStatuses(Long userId, java.util.List<String> statuses);
 }

@@ -46,4 +46,25 @@ public interface VideoGenerationTaskMapper extends BaseMapper<VideoGenerationTas
      */
     @Select("SELECT * FROM video_generation_task WHERE user_id = #{userId} AND deleted = 0 ORDER BY created_at DESC")
     List<VideoGenerationTask> selectByUser(@Param("userId") Long userId);
+
+    /**
+     * 查询用户的任务列表（可按状态过滤）
+     * @param userId 用户ID
+     * @param statuses 状态列表，可为空或空列表表示不限
+     * @return 任务列表
+     */
+    @Select({
+            "<script>",
+            "SELECT * FROM video_generation_task",
+            "WHERE user_id = #{userId} AND deleted = 0",
+            "<if test='statuses != null and statuses.size() > 0'>",
+            "  AND status IN",
+            "  <foreach collection='statuses' item='st' open='(' separator=',' close=')'>",
+            "    #{st}",
+            "  </foreach>",
+            "</if>",
+            "ORDER BY created_at DESC",
+            "</script>"
+    })
+    List<VideoGenerationTask> selectByUserAndStatuses(@Param("userId") Long userId, @Param("statuses") java.util.List<String> statuses);
 }

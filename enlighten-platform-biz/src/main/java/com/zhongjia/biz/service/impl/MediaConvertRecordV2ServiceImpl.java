@@ -43,12 +43,13 @@ public class MediaConvertRecordV2ServiceImpl implements MediaConvertRecordV2Serv
     }
 
     @Override
-    public boolean markSuccess(Long id, String originalText, String generatedText) {
+    public boolean markSuccess(Long id, String originalText, String generatedText, String title) {
         return repository.update(new LambdaUpdateWrapper<MediaConvertRecordV2>()
                 .eq(MediaConvertRecordV2::getId, id)
                 .set(MediaConvertRecordV2::getStatus, MediaConvertStatus.SUCCESS.name())
                 .set(MediaConvertRecordV2::getOriginalText, originalText)
                 .set(MediaConvertRecordV2::getGeneratedText, generatedText)
+                .set(MediaConvertRecordV2::getTitle, title)
                 .set(MediaConvertRecordV2::getUpdateTime, LocalDateTime.now()));
     }
 

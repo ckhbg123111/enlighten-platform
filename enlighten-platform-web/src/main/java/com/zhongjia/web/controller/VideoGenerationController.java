@@ -190,13 +190,25 @@ public class VideoGenerationController {
      */
     @GetMapping("/tasks")
     @Operation(summary = "获取用户的视频任务列表", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<java.util.List<VideoStatusResponse>> getUserTasks() {
+    public Result<java.util.List<VideoStatusResponse>> getUserTasks(
+            @RequestParam(value = "statuses", required = false) java.util.List<String> statuses) {
         UserContext.UserInfo user = requireUser();
         
         try {
-            // 这里需要在服务中添加查询用户任务列表的方法
-            // 暂时先返回空列表，后续可以扩展
-            return Result.success(java.util.Collections.emptyList());
+            java.util.List<com.zhongjia.biz.entity.VideoGenerationTask> tasks =
+                    videoGenerationMQService.listTasksByUserAndStatuses(user.userId(), statuses);
+            java.util.List<VideoStatusResponse> list = new java.util.ArrayList<>(tasks.size());
+            for (com.zhongjia.biz.entity.VideoGenerationTask t : tasks) {
+                VideoStatusResponse dto = new VideoStatusResponse()
+                        .setStatus(t.getStatus())
+                        .setProgress(t.getProgress())
+                        .setResultUrl(t.getOutputUrl())
+                        .setMessage(t.getErrorMessage())
+                        .setCreatedAt(t.getCreatedAt() == null ? null : t.getCreatedAt().format(DATETIME_FORMATTER))
+                        .setUpdatedAt(t.getUpdatedAt() == null ? null : t.getUpdatedAt().format(DATETIME_FORMATTER));
+                list.add(dto);
+            }
+            return Result.success(list);
             
         } catch (Exception e) {
             log.error("获取用户视频任务列表异常 - 用户: {}", user.userId(), e);

@@ -27,4 +27,9 @@ public class TypesettingTemplateServiceImpl implements TypesettingTemplateServic
         Page<TypesettingTemplate> pageRequest = new Page<>(page, size);
         return templateRepository.page(pageRequest, wrapper);
     }
+
+    @Override
+    public TypesettingTemplate getById(Long id) {
+        return templateRepository.getById(id);
+    }
 }
