@@ -58,11 +58,13 @@ public class TypesettingTemplate {
     /**
      * 正文模板
      */
+    @TableField("`text`")
     private String text;
     
     /**
      * 图片样式
      */
+    @TableField("`image`")
     private String image;
     
     /**
@@ -100,6 +102,12 @@ public class TypesettingTemplate {
      * 样例
      */
     private String sample;
+    
+    /**
+     * 标题样例
+     */
+    @TableField("title_sample")
+    private String titleSample;
     
     /**
      * 创建时间
