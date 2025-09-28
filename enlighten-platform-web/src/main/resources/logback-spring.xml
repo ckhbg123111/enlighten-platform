@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <!-- 时区与基础属性 -->
+    <timestamp key="byHour" datePattern="yyyyMMdd-HH"/>
+
+    <!-- 控制台输出（保留以便本地调试；生产可降级为 WARN） -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [traceId=%X{traceId}] [%thread] %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件滚动：每小时生成一个新文件，历史按天与大小综合控制 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/enlighten/app.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [traceId=%X{traceId}] [%thread] %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每小时一个文件 -->
+            <fileNamePattern>/var/log/enlighten/app.%d{yyyy-MM-dd_HH}.log.gz</fileNamePattern>
+            <!-- 保留 168 小时（7天）的小时文件，可按需调整 -->
+            <maxHistory>168</maxHistory>
+            <!-- 限制总大小，防止磁盘占满，例如 5GB -->
+            <totalSizeCap>5GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 业务日志级别 -->
+    <logger name="com.zhongjia" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- ROOT 日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
+
+
