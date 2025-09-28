@@ -29,6 +29,10 @@ WORKDIR /app
 # Create non-root user
 RUN useradd -ms /bin/bash appuser
 
+# Prepare log directory for rolling files
+RUN mkdir -p /var/log/enlighten \
+    && chown -R appuser:appuser /var/log/enlighten
+
 # Copy jar from previous stage
 COPY --from=build /app/enlighten-platform-web/target/enlighten-platform-web-*.jar /app/app.jar
 

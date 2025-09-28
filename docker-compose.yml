@@ -45,6 +45,10 @@ services:
       - ROCKETMQ_NAME_SERVER=${ROCKETMQ_NAME_SERVER}
     ports:
       - "${APP_PORT}:8080"
+    volumes:
+      - ./logs/app:/var/log/enlighten
+    logging:
+      driver: "none"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health/liveness"]
