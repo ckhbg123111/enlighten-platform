@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class VideoStatusResponse {
+    private String taskId;
     
     /**
      * 任务状态: CREATED/DH_PROCESSING/DH_DONE/BURN_PROCESSING/COMPLETED/FAILED

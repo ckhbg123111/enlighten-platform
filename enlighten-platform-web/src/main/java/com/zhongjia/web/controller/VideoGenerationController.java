@@ -200,6 +200,7 @@ public class VideoGenerationController {
             java.util.List<VideoStatusResponse> list = new java.util.ArrayList<>(tasks.size());
             for (com.zhongjia.biz.entity.VideoGenerationTask t : tasks) {
                 VideoStatusResponse dto = new VideoStatusResponse()
+                        .setTaskId(t.getId())
                         .setStatus(t.getStatus())
                         .setProgress(t.getProgress())
                         .setResultUrl(t.getOutputUrl())
