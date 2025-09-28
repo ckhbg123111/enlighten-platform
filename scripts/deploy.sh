@@ -109,6 +109,8 @@ fi
 # Up
 "${compose_cmd[@]}" --env-file "${ENV_FILE}" up -d
 
-echo "[Enlighten] Done. Check logs with: ${compose_cmd[*]} logs -f app"
+echo "[Enlighten] Done. Logs are written to ./logs/app/app.log (hourly rotation)."
+echo "[Enlighten] Follow logs on host: tail -F logs/app/app.log"
+echo "[Enlighten] Or inside container: docker exec -it enlighten-app sh -c 'tail -F /var/log/enlighten/app.log'"
 
 

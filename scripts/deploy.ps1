@@ -22,6 +22,8 @@ if ($Build) {
 
 docker compose --env-file $EnvFile up -d | cat
 
-Write-Host "[Enlighten] Done. Check logs with: docker compose logs -f app" -ForegroundColor Green
+Write-Host "[Enlighten] Done. Logs are written to .\\logs\\app\\app.log (hourly rotation)." -ForegroundColor Green
+Write-Host "[Enlighten] Follow logs on host: Get-Content .\\logs\\app\\app.log -Tail 200 -Wait" -ForegroundColor Green
+Write-Host "[Enlighten] Or inside container: docker exec -it enlighten-app sh -c 'tail -F /var/log/enlighten/app.log'" -ForegroundColor Green
 
 
