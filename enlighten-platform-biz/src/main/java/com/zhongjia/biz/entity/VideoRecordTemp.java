@@ -23,6 +23,8 @@ public class VideoRecordTemp {
 
     private String taskId;
 
+    private String name;
+
     private String status;
 
     private String url;

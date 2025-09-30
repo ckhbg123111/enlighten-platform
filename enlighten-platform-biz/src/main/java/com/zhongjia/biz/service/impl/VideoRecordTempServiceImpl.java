@@ -24,6 +24,7 @@ public class VideoRecordTempServiceImpl implements VideoRecordTempService {
         VideoRecordTemp po = new VideoRecordTemp();
         po.setUserId(userId);
         po.setTaskId(taskId);
+        po.setName(generateNextNameForUser(userId));
         po.setStatus(status);
         po.setUrl(url);
         if (stepList != null) {
@@ -84,6 +85,14 @@ public class VideoRecordTempServiceImpl implements VideoRecordTempService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String generateNextNameForUser(Long userId) {
+        LambdaQueryWrapper<VideoRecordTemp> qw = new LambdaQueryWrapper<>();
+        qw.eq(VideoRecordTemp::getUserId, userId);
+        long count = repository.count(qw);
+        long next = count + 1;
+        return "视频" + next;
     }
 }
 

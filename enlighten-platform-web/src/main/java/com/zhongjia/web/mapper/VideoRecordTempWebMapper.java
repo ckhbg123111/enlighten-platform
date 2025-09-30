@@ -17,6 +17,7 @@ public class VideoRecordTempWebMapper {
         vo.setId(po.getId());
         vo.setUserId(po.getUserId());
         vo.setTaskId(po.getTaskId());
+        vo.setName(po.getName());
         vo.setStatus(po.getStatus());
         vo.setUrl(po.getUrl());
         vo.setCreateTime(po.getCreateTime());

@@ -12,6 +12,7 @@ public class VideoRecordTempVO {
     private Long id;
     private Long userId;
     private String taskId;
+    private String name;
     private String status;
     private String url;
     private List<Object> stepList;
