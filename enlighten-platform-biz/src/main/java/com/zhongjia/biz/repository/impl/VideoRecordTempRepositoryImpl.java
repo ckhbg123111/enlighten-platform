@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class VideoRecordTempRepositoryImpl extends ServiceImpl<VideoRecordTempMapper, VideoRecordTemp>
         implements VideoRecordTempRepository {
+    @Override
+    public Long countAllByUserId(Long userId) {
+        return this.baseMapper.countAllByUserId(userId);
+    }
 }
 
 

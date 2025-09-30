@@ -88,11 +88,20 @@ public class VideoRecordTempServiceImpl implements VideoRecordTempService {
     }
 
     private String generateNextNameForUser(Long userId) {
-        LambdaQueryWrapper<VideoRecordTemp> qw = new LambdaQueryWrapper<>();
-        qw.eq(VideoRecordTemp::getUserId, userId);
-        long count = repository.count(qw);
+        Long count = repository.countAllByUserId(userId);
+        if (count == null) count = 0L;
         long next = count + 1;
         return "视频" + next;
+    }
+
+    @Override
+    public boolean softDelete(Long userId, Long id) {
+        LambdaUpdateWrapper<VideoRecordTemp> uw = new LambdaUpdateWrapper<>();
+        uw.eq(VideoRecordTemp::getId, id)
+          .eq(VideoRecordTemp::getUserId, userId)
+          .set(VideoRecordTemp::getDeleted, 1)
+          .set(VideoRecordTemp::getDeleteTime, java.time.LocalDateTime.now());
+        return repository.update(uw);
     }
 }
 

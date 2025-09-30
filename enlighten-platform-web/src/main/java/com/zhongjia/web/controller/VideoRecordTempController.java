@@ -35,6 +35,14 @@ public class VideoRecordTempController {
         return info;
     }
 
+    @PostMapping("/delete")
+    @Operation(summary = "删除视频临时记录（软删除）", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Boolean> delete(@Valid @RequestBody DeleteReq req) {
+        Long userId = requireUser().userId();
+        boolean ok = service.softDelete(userId, req.getId());
+        return ok ? Result.success(true) : Result.error(ErrorCode.INTERNAL_ERROR, "删除失败");
+    }
+
     @PostMapping("/insert")
     @Operation(summary = "插入一条视频临时记录", security = {@SecurityRequirement(name = "bearer-jwt")})
     public Result<Map<String, Long>> insert(@Valid @RequestBody InsertReq req) {
@@ -84,6 +92,13 @@ public class VideoRecordTempController {
         private String status;
         private String url;
         private java.util.List<Object> stepList;
+    }
+
+    @Data
+    @Schema(name = "VideoRecordTempDeleteReq", description = "删除视频临时记录请求")
+    public static class DeleteReq {
+        @NotNull
+        private Long id;
     }
 }
 
