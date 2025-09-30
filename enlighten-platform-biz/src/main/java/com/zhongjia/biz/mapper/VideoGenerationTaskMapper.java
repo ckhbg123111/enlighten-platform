@@ -67,4 +67,10 @@ public interface VideoGenerationTaskMapper extends BaseMapper<VideoGenerationTas
             "</script>"
     })
     List<VideoGenerationTask> selectByUserAndStatuses(@Param("userId") Long userId, @Param("statuses") java.util.List<String> statuses);
+
+    /**
+     * 统计指定用户的任务总数（忽略软删除，按业务要求不受软删除影响）
+     */
+    @Select("SELECT COUNT(1) FROM video_generation_task WHERE user_id = #{userId}")
+    long countAllByUser(@Param("userId") Long userId);
 }

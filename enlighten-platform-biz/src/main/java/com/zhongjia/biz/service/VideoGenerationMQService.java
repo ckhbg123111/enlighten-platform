@@ -3,6 +3,7 @@ package com.zhongjia.biz.service;
 import com.zhongjia.biz.entity.VideoGenerationTask;
 import com.zhongjia.biz.repository.VideoGenerationTaskRepository;
 import com.zhongjia.biz.service.mq.VideoTaskProducer;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,17 @@ public class VideoGenerationMQService {
     public String createTaskWithMQ(Long userId, String inputText, String modelName, String voice) {
         log.info("创建视频生成任务(MQ版本) - 用户: {}, 文本长度: {}", userId, inputText.length());
         
+        // 生成视频名称：视频 + 用户维度自增序号（忽略软删除）
+        long total = taskRepository.countAllByUser(userId);
+        String videoName = "视频" + (total + 1);
+
         // 创建任务记录
         VideoGenerationTask task = new VideoGenerationTask()
                 .setUserId(userId)
                 .setInputText(inputText)
                 .setModelName(modelName)
                 .setVoice(voice != null ? voice : "Female_Voice_1")
+                .setVideoName(videoName)
                 .setStatus("CREATED")
                 .setProgress(0)
                 .setCreatedAt(LocalDateTime.now())
@@ -147,6 +153,36 @@ public class VideoGenerationMQService {
         }
     }
     
+    public enum SoftDeleteResult {
+        SUCCESS,
+        NOT_FOUND,
+        FORBIDDEN,
+        ALREADY_DELETED,
+        FAILED
+    }
+
+    /**
+     * 按ID软删除任务：仅允许本人删除
+     */
+    public SoftDeleteResult softDeleteById(Long userId, String taskId) {
+        VideoGenerationTask exist = taskRepository.getById(taskId);
+        if (exist == null) {
+            return SoftDeleteResult.NOT_FOUND;
+        }
+        if (!exist.getUserId().equals(userId)) {
+            return SoftDeleteResult.FORBIDDEN;
+        }
+        if (exist.getDeleted() != null && exist.getDeleted() == 1) {
+            return SoftDeleteResult.ALREADY_DELETED;
+        }
+        boolean ok = taskRepository.update(new LambdaUpdateWrapper<VideoGenerationTask>()
+                .eq(VideoGenerationTask::getId, taskId)
+                .eq(VideoGenerationTask::getUserId, userId)
+                .set(VideoGenerationTask::getDeleted, 1)
+                .set(VideoGenerationTask::getUpdatedAt, LocalDateTime.now()));
+        return ok ? SoftDeleteResult.SUCCESS : SoftDeleteResult.FAILED;
+    }
+
     /**
      * 获取任务统计信息
      */

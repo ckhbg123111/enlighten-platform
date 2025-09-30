@@ -46,4 +46,9 @@ public interface VideoGenerationTaskRepository extends IService<VideoGenerationT
      * @return 任务列表
      */
     List<VideoGenerationTask> findByUserAndStatuses(Long userId, java.util.List<String> statuses);
+
+    /**
+     * 统计用户所有任务数量（忽略软删除）
+     */
+    long countAllByUser(Long userId);
 }

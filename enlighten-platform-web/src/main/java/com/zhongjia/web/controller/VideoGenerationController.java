@@ -76,6 +76,34 @@ public class VideoGenerationController {
     }
     
     /**
+     * 删除视频生成任务(软删除)
+     */
+    @DeleteMapping("/tasks/{taskId}")
+    @Operation(summary = "删除视频生成任务(软删除)", security = {@SecurityRequirement(name = "bearer-jwt")})
+    public Result<Boolean> softDeleteTask(@Parameter(description = "任务ID") @PathVariable("taskId") String taskId) {
+        UserContext.UserInfo user = requireUser();
+        try {
+            com.zhongjia.biz.service.VideoGenerationMQService.SoftDeleteResult r =
+                    videoGenerationMQService.softDeleteById(user.userId(), taskId);
+            switch (r) {
+                case SUCCESS:
+                    return Result.success(true);
+                case FORBIDDEN:
+                    return Result.error(403, "无权限");
+                case NOT_FOUND:
+                case ALREADY_DELETED:
+                    return Result.error(404, "任务不存在");
+                case FAILED:
+                default:
+                    return Result.error(500, "删除失败");
+            }
+        } catch (Exception e) {
+            log.error("删除视频任务异常 - 用户: {}, 任务ID: {}", user.userId(), taskId, e);
+            return Result.error(500, "删除失败");
+        }
+    }
+
+    /**
      * 下载视频结果（返回直链，不重定向）
      */
     @GetMapping("/download2/{taskId}")
@@ -121,6 +149,8 @@ public class VideoGenerationController {
             VideoGenerationTask task = videoGenerationService.getTaskStatus(taskId, user.userId());
             
             VideoStatusResponse response = new VideoStatusResponse()
+                    .setTaskId(task.getId())
+                    .setVideoName(task.getVideoName())
                     .setStatus(task.getStatus())
                     .setProgress(task.getProgress())
                     .setResultUrl(task.getOutputUrl())
@@ -201,6 +231,7 @@ public class VideoGenerationController {
             for (com.zhongjia.biz.entity.VideoGenerationTask t : tasks) {
                 VideoStatusResponse dto = new VideoStatusResponse()
                         .setTaskId(t.getId())
+                        .setVideoName(t.getVideoName())
                         .setStatus(t.getStatus())
                         .setProgress(t.getProgress())
                         .setResultUrl(t.getOutputUrl())

@@ -32,6 +32,11 @@ public class VideoGenerationTask {
     private String inputText;
     
     /**
+     * 视频名称（例如：视频1、视频2...）
+     */
+    private String videoName;
+    
+    /**
      * 数字人模型名称
      */
     private String modelName;

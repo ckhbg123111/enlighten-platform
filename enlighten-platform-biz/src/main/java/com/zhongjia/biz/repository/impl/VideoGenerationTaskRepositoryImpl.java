@@ -39,4 +39,9 @@ public class VideoGenerationTaskRepositoryImpl extends ServiceImpl<VideoGenerati
     public List<VideoGenerationTask> findByUserAndStatuses(Long userId, java.util.List<String> statuses) {
         return baseMapper.selectByUserAndStatuses(userId, statuses);
     }
+
+    @Override
+    public long countAllByUser(Long userId) {
+        return baseMapper.countAllByUser(userId);
+    }
 }

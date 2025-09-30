@@ -12,6 +12,11 @@ public class VideoStatusResponse {
     private String taskId;
     
     /**
+     * 视频名称
+     */
+    private String videoName;
+    
+    /**
      * 任务状态: CREATED/DH_PROCESSING/DH_DONE/BURN_PROCESSING/COMPLETED/FAILED
      */
     private String status;

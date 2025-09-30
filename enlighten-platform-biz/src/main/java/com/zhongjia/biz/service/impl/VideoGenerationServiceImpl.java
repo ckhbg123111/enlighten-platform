@@ -63,12 +63,17 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     public String createTask(Long userId, String inputText, String modelName, String voice) {
         log.info("创建视频生成任务 - 用户: {}, 文本长度: {}", userId, inputText.length());
         
+        // 生成视频名称：视频 + 用户维度自增序号（忽略软删除）
+        long total = taskRepository.countAllByUser(userId);
+        String videoName = "视频" + (total + 1);
+
         // 创建任务记录
         VideoGenerationTask task = new VideoGenerationTask()
                 .setUserId(userId)
                 .setInputText(inputText)
                 .setModelName(modelName)
                 .setVoice(voice != null ? voice : "Female_Voice_1")
+                .setVideoName(videoName)
                 .setVersion(0)
                 .setStatus("CREATED")
                 .setProgress(0)
@@ -246,7 +251,7 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
                     return false;
                 }
             } else {
-                log.warn("字幕烧录状态查询失败 - 任务ID: {}, 响应: {}", task.getId(), response.getMessage());
+                log.warn("字幕烧录状态查询失败 - 任务ID: {}, 响应为空", task.getId());
                 return false;
             }
 
