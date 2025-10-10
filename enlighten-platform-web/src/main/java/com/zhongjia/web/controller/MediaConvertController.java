@@ -22,10 +22,7 @@ import com.zhongjia.web.exception.ErrorCode;
 import com.zhongjia.web.mapper.MediaConvertRecordMapper;
 import com.zhongjia.web.mapper.MediaConvertRecordV2WebMapper;
 import com.zhongjia.web.security.UserContext;
-import com.zhongjia.web.vo.MediaConvertRecordV2VO;
-import com.zhongjia.web.vo.MediaConvertRecordVO;
-import com.zhongjia.web.vo.PageResponse;
-import com.zhongjia.web.vo.Result;
+import com.zhongjia.web.vo.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -305,7 +302,7 @@ public class MediaConvertController {
     // v2) 查询接口：按 platform + user_id 查询最近记录
     @GetMapping(path = "records_v2")
     @Operation(summary = "查询媒体转换记录v2", description = "根据平台查询当前用户的转换记录（可分页，platform 可为空）", security = {@SecurityRequirement(name = "bearer-jwt")})
-    public Result<PageResponse<MediaConvertRecordV2VO>> listV2(
+    public Result<PageResponse<MediaConvertRecordV2InfoVO>> listV2(
             @RequestParam(value = "platform", required = false) String platform,
             @RequestParam(value = "statuses", required = false) java.util.List<MediaConvertStatus> statuses,
             @RequestParam(defaultValue = "1") int page,
@@ -317,7 +314,7 @@ public class MediaConvertController {
             }
         }
         Page<MediaConvertRecordV2> result = recordV2Service.pageRecords(user.userId(), platform, statuses, page, size);
-        PageResponse<MediaConvertRecordV2VO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toVOList(result.getRecords()));
+        PageResponse<MediaConvertRecordV2InfoVO> resp = PageResponse.of((int) result.getCurrent(), (int) result.getSize(), result.getTotal(), recordV2WebMapper.toInfoVOList(result.getRecords()));
         return Result.success(resp);
     }
 
