@@ -59,6 +59,9 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
     @Value("${app.upstream.video-download-url}")
     private String videoDownloadUrl;
     
+    @Value("${app.dh.text-split-len:10}")
+    private Integer defaultTextSplitLen;
+    
     @Override
     public String createTask(Long userId, String inputText, String modelName, String voice) {
         log.info("创建视频生成任务 - 用户: {}, 文本长度: {}", userId, inputText.length());
@@ -110,7 +113,9 @@ public class VideoGenerationServiceImpl implements VideoGenerationService {
             DigitalHumanRequest request = new DigitalHumanRequest()
                     .setModel_name(task.getModelName())
                     .setText(task.getInputText())
-                    .setVoice(task.getVoice());
+                    .setVoice(task.getVoice())
+                    // 兜底：每行字体上限可配置，默认10
+                    .setText_split_len(defaultTextSplitLen);
             
             // 上游 0916 新增 user_id
             request.setUser_id(String.valueOf(task.getUserId()));

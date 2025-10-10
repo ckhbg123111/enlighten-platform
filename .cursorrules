@@ -1,0 +1,38 @@
+# 规则：Flyway 数据库迁移脚本版本规范（严禁硬编码）
+
+## 目标
+- 确保每次新增的 Flyway 迁移脚本遵循严格的版本递增规则，禁止随意指定脚本版本（如直接写 V19）。
+
+## 适用范围
+- 迁移目录：`enlighten-platform-web/src/main/resources/db/migration/`
+- 命名格式：`V{version}__{snake_case_description}.sql`（例如：`V20__add_video_name_to_video_generation_task.sql`）
+
+## 强制约束
+1) 禁止硬编码版本号。新增迁移前，必须基于仓库现有脚本自动计算下一个版本号。
+2) 版本号必须为当前目录中最大版本号的 +1，不得跳号、不得复用。
+3) 若检测到同名或同版本冲突，必须继续自增版本直到可用为止。
+4) 仅新增脚本，不得修改或重写历史版本脚本。
+
+## 执行步骤（新增迁移时必须遵循）
+- 步骤A：扫描 `enlighten-platform-web/src/main/resources/db/migration/` 下所有文件名，匹配前缀 `V{number}__`，取最大 `{number}` 为 M。
+- 步骤B：令新版本号 `N = M + 1`。
+- 步骤C：将描述转为蛇形命名（snake_case），仅使用小写字母、数字与下划线。
+- 步骤D：在上述目录创建 `V{N}__{description}.sql`，内容仅包含所需 DDL/DML 变更，不包含无关注释或样板。
+- 步骤E：如涉及表结构变更（新增列/索引等），必须同步更新：
+  - 相关实体类（如 `enlighten-platform-biz` 中的 Entity）
+  - Mapper/Repository 查询或插入/更新逻辑
+  - 控制器/DTO/VO 的出入参
+
+## SQL 风格要求
+- 使用与现有迁移一致的语法风格与注释习惯。
+- 变更需显式加上列注释（COMMENT），确保可读性。
+
+## 违规示例（禁止）
+- 直接创建 `V19__xxx.sql` 而未扫描现有版本。
+- 跳过若干版本号（如从 V17 直接到 V25）。
+- 修改历史脚本、重写已有版本。
+
+## 备注
+- 如无任何现有版本脚本，`M` 视为 0，则首个版本为 `V1`。
+
+
